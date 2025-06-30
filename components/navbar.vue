@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="primary" dark>
-    <v-app-bar-title>Food Order</v-app-bar-title>
+    <v-app-bar-title>Хоолны захиалга</v-app-bar-title>
     <v-spacer />
     <v-btn icon to="/">
       <v-icon>mdi-home</v-icon>
