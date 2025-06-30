@@ -28,19 +28,19 @@
 const foods = [
   {
     id: 1,
-    name: 'Hool1',
+    name: 'burger1',
     price: 3,
     photo: '/zurag/1.jpg'
   },
   {
     id: 2,
-    name: 'Hool2',
+    name: 'burger2',
     price: 2,
     photo: '/zurag/2.jpg'
   },
   {
     id: 3,
-    name: 'Hool3',
+    name: 'burger3',
     price: 1,
     photo: '/zurag/3.png'
   },
