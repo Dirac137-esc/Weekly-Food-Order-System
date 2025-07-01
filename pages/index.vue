@@ -28,7 +28,7 @@
           <v-card-title>{{
             item.name.charAt(0).toUpperCase() + item.name.slice(1)
           }}</v-card-title>
-          <v-card-subtitle> Орц : {{ item.recipe }} </v-card-subtitle>
+          <v-card-subtitle> {{ item.recipe.join(', ')  }} </v-card-subtitle>
           <v-card-text>Үнэ: {{ item.price }}₮</v-card-text>
           <v-card-actions>
             <v-btn
@@ -82,7 +82,7 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
+<script setup >
 const sliderday = ref(new Date().getDay() - 1);
 const today = ref((new Date().getDay() + 6)%7);
 const total = ref(0);
@@ -115,21 +115,21 @@ const menu = {
       name: "burger",
       price: 14320,
       photo: "/zurag/burger.jpg",
-      recipe: "Beef patty, lettuce, tomato, cheese, bun",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "fries",
       price: 16870,
       photo: "/zurag/fries.jpg",
-      recipe: "Potatoes, salt, vegetable oil",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "cola",
       price: 11230,
       photo: "/zurag/cola.jpg",
-      recipe: "Carbonated water, sugar, flavorings",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   TUE: [
@@ -138,21 +138,21 @@ const menu = {
       name: "pizza",
       price: 17890,
       photo: "/zurag/1.jpg",
-      recipe: "Dough, tomato sauce, cheese, toppings",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "salad",
       price: 13500,
       photo: "/zurag/2.jpg",
-      recipe: "Lettuce, tomato, cucumber, dressing",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "juice",
       price: 14990,
       photo: "/zurag/3.png",
-      recipe: "Fresh fruits, water, sugar (optional)",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   WED: [
@@ -161,21 +161,21 @@ const menu = {
       name: "sushi",
       price: 19750,
       photo: "/zurag/sushi.jpg",
-      recipe: "Rice, seaweed, raw fish, vegetables",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "ramen",
       price: 15860,
       photo: "/zurag/ramen.jpg",
-      recipe: "Noodles, broth, pork, egg, scallions",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "green tea",
       price: 12440,
       photo: "/zurag/tea.jpg",
-      recipe: "Green tea leaves, hot water",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   THU: [
@@ -184,21 +184,21 @@ const menu = {
       name: "steak",
       price: 17220,
       photo: "/zurag/steak.jpg",
-      recipe: "Beef steak, salt, pepper, garlic butter",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "mashed potatoes",
       price: 10980,
       photo: "/zurag/potatoes.jpg",
-      recipe: "Potatoes, butter, milk, salt",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "water",
       price: 11400,
       photo: "/zurag/water.jpg",
-      recipe: "Filtered drinking water",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   FRI: [
@@ -207,21 +207,21 @@ const menu = {
       name: "tacos",
       price: 13210,
       photo: "/zurag/tacos.jpg",
-      recipe: "Tortilla, meat, lettuce, cheese, salsa",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "nachos",
       price: 18570,
       photo: "/zurag/nachos.jpg",
-      recipe: "Tortilla chips, cheese, beans, jalapenos",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "lemonade",
       price: 12330,
       photo: "/zurag/lemonade.jpg",
-      recipe: "Lemon juice, water, sugar",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   SAT: [
@@ -230,21 +230,21 @@ const menu = {
       name: "pancakes",
       price: 15340,
       photo: "/zurag/pancakes.jpg",
-      recipe: "Flour, eggs, milk, sugar, baking powder",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "bacon",
       price: 19000,
       photo: "/zurag/bacon.jpg",
-      recipe: "Cured pork belly, cooked crispy",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "coffee",
       price: 13660,
       photo: "/zurag/coffee.jpg",
-      recipe: "Ground coffee, hot water",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
   SUN: [
@@ -253,21 +253,21 @@ const menu = {
       name: "dumplings",
       price: 30000,
       photo: "/zurag/dumplings.jpg",
-      recipe: "Dough, minced meat, onion, spices",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 2,
       name: "noodles",
       price: 25000,
       photo: "/zurag/noodles.jpg",
-      recipe: "Wheat noodles, soy sauce, vegetables",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
     {
       id: 3,
       name: "milk tea",
       price: 11110,
       photo: "/zurag/milktea.jpg",
-      recipe: "Black tea, milk, sugar",
+      recipe: ["Beef" ,"patty", "lettuce", "tomato", "cheese"," bun"],
     },
   ],
 };
