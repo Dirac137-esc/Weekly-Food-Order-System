@@ -35,11 +35,8 @@
       <v-card-actions>
         <v-spacer />
         <v-btn color="primary" @click="editProfile">Засах</v-btn>
-        <router-link to="/login">
-          <v-btn color="secondary" class="ms-2">Нэвтрэх</v-btn>
-        </router-link>
-        <router-link to="/register">
-          <v-btn color="success" class="ms-2">Бүртгүүлэх</v-btn>
+        <router-link to="/auth">
+          <v-btn color="secondary" class="ms-2">Нэвтрэх / Бүртгүүлэх</v-btn>
         </router-link>
       </v-card-actions>
     </v-card>

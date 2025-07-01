@@ -1,5 +1,6 @@
 <template>
   <v-container class="pt-16">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <h1>Захиалга</h1>
     <v-row>
       <v-col v-for="item in foods" :key="item.id" cols="12" md="4">

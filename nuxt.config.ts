@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
@@ -14,7 +15,10 @@ export default defineNuxtConfig({
       })
     },
     //...
+    'nuxt-vue3-google-signin'
   ],
+ googleSignIn: {
+    clientId: 'CLIENT ID OBTAINED FROM GOOGLE API CONSOLE', },
   vite: {
     vue: {
       template: {
