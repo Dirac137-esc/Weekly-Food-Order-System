@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "20": "^3.1.9",
+    "@jridgewell/sourcemap-codec": "^1.4.14",
     "@mdi/font": "^7.4.47",
+    "magic-string": "^0.30.0",
     "nuxt": "^3.17.5",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
