@@ -46,7 +46,7 @@
 <script setup>
 const user = {
   name: 'name name',
-  email: 'nameee.com',
+  email: 'name.com',
   username: 'username',
   phone: '+88118811',
   joined: '2024-06-30'
