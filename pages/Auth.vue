@@ -195,6 +195,8 @@ async function login() {
     const result = await response.json()
     if (response.ok) {
       loginResult.value = 'Амжилттай нэвтэрлээ!'
+      // Store user info (role) in localStorage
+      localStorage.setItem('user', JSON.stringify(result.user))
     } else {
       loginResult.value = 'Алдаа: ' + (result.message || 'Нэвтрэхэд амжилтгүй')
     }
