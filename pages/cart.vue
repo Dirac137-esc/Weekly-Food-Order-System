@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useCartStore } from "../stores/cart";
-
+import { useRouter } from 'vue-router';
 const cartStore = useCartStore();
 const step = ref(1);
+
+const router = useRouter();
+function toStatus()
+{
+    router.push('./status')
+}
 </script>
 
 <template>
@@ -106,7 +112,7 @@ const step = ref(1);
                     <v-text-field label="CVC" maxlength="3" placeholder="000" variant="outlined" color="primary" />
                   </v-col>
                 </v-row>
-                <v-btn block class="pay-btn mt-4" large>Төлбөр төлөх</v-btn>
+                <v-btn block class="pay-btn mt-4" large @click="toStatus">Төлбөр төлөх</v-btn>
               </v-card>
             </v-col>
           </v-row>
