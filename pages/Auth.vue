@@ -29,8 +29,8 @@
         class="d-flex justify-center align-center"
         style="z-index:2; min-height: 100vh; margin-left: 50vw;"
       >
-        <v-card max-width="420" class="pa-6 mt-10 color-login pt-10 right-card" elevation="10">
-          <transition name="slide-fade" mode="out-in">
+      <v-card max-width="600" class="pa-6 mt-10 right-card auth-card mr-5" elevation="10">
+        <transition name="slide-fade" mode="out-in">
             <v-row :key="isLogin" class="mb-6 justify-center">
               <v-btn-toggle
                 v-model="isLogin"
@@ -81,22 +81,6 @@
                     Нууц үгээ мартсан
                   </v-btn>
                 </div>
-                <v-btn
-                  color="primary"
-                  type="submit"
-                  block
-                  class="main-action-btn mb-2"
-                  elevation="6"
-                >
-                  Нэвтрэх
-                </v-btn>
-                <v-divider class="my-4" />
-                <v-btn color="red" class="mb-2 social-btn" block @click="loginWithGoogle">
-                  <v-icon left>mdi-google</v-icon> Google-р нэвтрэх
-                </v-btn>
-                <v-btn color="blue darken-4" class="mb-2 social-btn" block @click="loginWithFacebook">
-                  <v-icon left>mdi-facebook</v-icon> Facebook-р нэвтрэх
-                </v-btn>
               </v-form>
                                             <!-- Register хэсэг -->
               <v-form v-else @submit.prevent="register">
@@ -114,26 +98,51 @@
                     density="compact"
                   />
                 </div>
-                <v-btn
-                  color="#4BB543"
-                  type="submit"
-                  block
-                  class="main-action-btn mb-2"
-                  elevation="6"
-                >
-                  Бүртгүүлэх
-                </v-btn>
-                <v-divider class="my-4" />
-                <v-btn color="red" class="mb-2 social-btn" block @click="registerWithGoogle">
-                  <v-icon left>mdi-google</v-icon> Google-р бүртгүүлэх
-                </v-btn>
-                <v-btn color="blue darken-4" class="social-btn" block @click="registerWithFacebook">
-                  <v-icon left>mdi-facebook</v-icon> Facebook-р бүртгүүлэх
-                </v-btn>
               </v-form>
             </div>
           </transition>
         </v-card>
+                                              <!-- Хажуу хэсэг -->
+        <div class="action-section-outside mr-10">
+        <div class="text-center mb-4" style="color: #666; font-size: 0.9rem;">
+        Та мөн үүгээр нэвтрэх боломжтой
+        </div>
+          <v-row no-gutters>
+            <v-col cols="12">
+              <v-btn color="red" class="social-btn" block @click="isLogin ? loginWithGoogle() : registerWithGoogle()">
+                <v-icon left>mdi-google</v-icon> Google
+              </v-btn>
+              <v-btn color="blue darken-4" class="social-btn" block @click="isLogin ? loginWithFacebook() : registerWithFacebook()">
+                <v-icon left>mdi-facebook</v-icon> Facebook
+              </v-btn>
+            </v-col>
+            <v-col cols="12">
+              <v-divider class="my-2" />
+              <v-btn
+                v-if="isLogin"
+                color="primary"
+                type="submit"
+                block
+                class="main-action-btn"
+                elevation="6"
+                @click="login"
+              >
+                Нэвтрэх
+              </v-btn>
+              <v-btn
+                v-else
+                color="#4BB543"
+                type="submit"
+                block
+                class="main-action-btn"
+                elevation="6"
+                @click="register"
+              >
+                Бүртгүүлэх
+              </v-btn>
+            </v-col>
+          </v-row>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -182,6 +191,23 @@ function registerWithFacebook() {
 
 
 <style scoped>
+html, body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  margin: 0;
+  padding: 0;
+}
+.auth-bg {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  overflow: hidden;
+}
+.v-container {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  overflow: hidden;
+  padding-top: 0 !important;
+}
 .auth-bg {
   background-image: url('/zurag/back-zurag.jpg'); 
   background-size: cover;
@@ -249,7 +275,59 @@ body {
   letter-spacing: normal !important;
 }
 .right-card {
-  border-radius: 2rem !important; /* or any value you like */
+  border-radius: 2rem !important;
   overflow: hidden;
+}
+.auth-card {
+  background: rgba(255,255,255,0.8) !important; 
+  border-radius: 2rem !important;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15);
+  min-height: unset !important;
+  width: 100%;
+}
+.action-section {
+  margin-top: 32px;
+  padding: 24px 16px 8px 16px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-section-outside {
+  margin-top: 48px; /* more space between boxes */
+  padding: 24px 16px 16px 16px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.social-btn {
+  margin-bottom: 10px;
+}
+.social-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  text-align: center;
+}
+@media (max-width: 960px) {
+  .action-section, .action-section-outside {
+    padding: 16px 4px 4px 4px;
+    border-radius: 1rem;
+    padding: 16px 4px 4px 4px;
+    border-radius: 1rem;
+    max-width: 98vw;
+  }
 }
 </style>
