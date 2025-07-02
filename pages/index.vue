@@ -44,7 +44,7 @@
               :disabled="sliderday < today"
               color="white"
               class="bg-success"
-              @click="plus(item)"
+              @click="cartStore.plus(item)"
             >
               <v-icon icon="mdi-plus"></v-icon>
             </v-btn>
@@ -52,7 +52,7 @@
               class="bg-red"
               :disabled="sliderday < today"
               color="white"
-              @click="minus(item)"
+              @click="cartStore.minus(item)"
             >
               <v-icon icon="mdi-minus"></v-icon>
             </v-btn>
@@ -66,7 +66,7 @@
     <v-row>
       <v-col class="d-flex justify-space-between mb-5">
         <h2>Нийт</h2>
-        <h2>{{ total }} төгрөг</h2>
+        <h2>{{ cartStore.total }} төгрөг</h2>
       </v-col>
     </v-row>
     <v-table>
@@ -80,7 +80,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="[item, freq] in cart">
+        <tr v-for="[item, freq] in cartStore.cart">
           <td class="text-center">
             {{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}
           </td>
@@ -88,7 +88,7 @@
           <td class="text-center">{{ freq }}</td>
           <td class="text-center">{{ item.price * freq }}</td>
           <td class="text-center">
-            <v-btn color="red" @click="removeItem(item, freq)">Устгах</v-btn>
+            <v-btn color="red" @click="cartStore.removeItem(item)">Устгах</v-btn>
           </td>
         </tr>
       </tbody>
@@ -102,36 +102,16 @@
 </template>
 
 <script setup>
+import {useCartStore} from '../stores/cart.ts'
+
+const cartStore = useCartStore();
+
 const router = useRouter()
 const sliderday = ref((new Date().getDay() + 6) % 7);
 const today = ref((new Date().getDay() + 6) % 7);
-const total = ref(0);
-const cart = ref(new Map());
-
 function goCart()
 {
     router.push('/cart')
-}
-
-function removeItem(item, freq) {
-  total.value -= freq * item.price;
-  cart.value.delete(item);
-}
-function plus(item) {
-  if (!cart.value.has(item)) {
-    cart.value.set(item, 0);
-  }
-  cart.value.set(item, cart.value.get(item) + 1);
-  total.value += item.price;
-}
-function minus(item) {
-  if (cart.value.get(item)) {
-    cart.value.set(item, cart.value.get(item) - 1);
-    total.value -= item.price;
-  }
-  if (cart.value.get(item) === 0) {
-    cart.value.delete(item);
-  }
 }
 const menu = {
   MON: [
