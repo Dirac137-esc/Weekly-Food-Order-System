@@ -2,17 +2,15 @@
   <v-container
     fluid
     class="auth-bg"
-    style="min-height: 100vh; padding-top: 40px; position: relative;"
-  >
+    style="min-height: 100vh; padding-top: 40px; position: relative;">
     <div class="auth-overlay"></div>
     <v-row class="fill-height" no-gutters>
-                                        <!-- Зүүн талын хэсэг -->
+      <!-- Зүүн талын хэсэг -->
       <v-col
         cols="12"
         md="6"
         class="d-flex flex-column justify-center align-center text-center quote-col"
-        style="z-index:2;"
-      > 
+        style="z-index:2;"> 
         <div class="left-side">
           <h1 class="display-1 font-weight-bold mb-4" style="color: #fff; text-shadow: 2px 2px 8px #000;">
             "Хоолны захиалга"-т тавтай морилно уу!
@@ -22,14 +20,14 @@
           </p>
         </div>
       </v-col>
-                                        <!-- Баруун талын хэсэг -->
+      <!-- Баруун талын хэсэг -->
       <v-col
         cols="12"
         md="6"
+        sm="12"
         class="d-flex justify-center align-center"
-        style="z-index:2; min-height: 100vh; margin-left: 50vw;"
-      >
-      <v-card max-width="600" class="pa-6 mt-10 right-card auth-card mr-5" elevation="10">
+        style="z-index:2; min-height: 100vh; margin-left: 50vw;">
+      <v-card max-width="600"  class=" pa-6 mt-10 right-card auth-card mr-5" elevation="10">
         <transition name="slide-fade" mode="out-in">
             <v-row :key="isLogin" class="mb-6 justify-center">
               <v-btn-toggle
@@ -64,11 +62,11 @@
           </transition>
           <transition name="slide-fade" mode="out-in">
             <div :key="isLogin">
-                                              <!-- Login хэсэг -->
+              <!-- Login хэсэг -->
               <v-form v-if="isLogin" @submit.prevent="login">
                 <v-card-title class="justify-center pb-2 text-center">Нэвтрэх</v-card-title>
-                <v-text-field v-model="loginUsername" label="Хэрэглэгчийн нэр" prepend-inner-icon="mdi-account" required />
-                <v-text-field v-model="loginPassword" label="Нууц үг" type="password" prepend-inner-icon="mdi-lock" required />
+                <v-text-field v-model="loginUsername" label="Хэрэглэгчийн нэр" prepend-inner-icon="mdi-account" autocomplete="username" required />
+                <v-text-field v-model="loginPassword" label="Нууц үг" type="password" prepend-inner-icon="mdi-lock" autocomplete="password" required />
                 <div class="d-flex align-center justify-space-between mb-3">
                   <v-checkbox
                     v-model="loginRememberMe"
@@ -82,13 +80,13 @@
                   </v-btn>
                 </div>
               </v-form>
-                                            <!-- Register хэсэг -->
+              <!-- Register хэсэг -->
               <v-form v-else @submit.prevent="register">
                 <v-card-title class="justify-center pb-2 text-center">Бүртгүүлэх</v-card-title>
-                <v-text-field v-model="registerName" label="Нэр" prepend-inner-icon="mdi-account" required />
-                <v-text-field v-model="registerEmail" label="Имэйл" type="email" prepend-inner-icon="mdi-email" required />
-                <v-text-field v-model="phone" label="Хэрэглэгчийн утас" prepend-inner-icon="mdi-phone" type="number" required />
-                <v-text-field v-model="registerPassword" label="Нууц үг" type="password" prepend-inner-icon="mdi-lock" required />
+                <v-text-field v-model="registerName" label="Нэр" prepend-inner-icon="mdi-account" autocomplete="name" required />
+                <v-text-field v-model="registerEmail" label="Имэйл" type="email" prepend-inner-icon="mdi-email" autocomplete="email" required />
+                <v-text-field v-model="phone" label="Хэрэглэгчийн утас" prepend-inner-icon="mdi-phone" type="number"  required />
+                <v-text-field v-model="registerPassword" label="Нууц үг" type="password" prepend-inner-icon="mdi-lock" autocomplete="password" required />
                 <div class="d-flex align-center mb-3">
                   <v-checkbox
                     v-model="registerRememberMe"
@@ -102,7 +100,7 @@
             </div>
           </transition>
         </v-card>
-                                              <!-- Хажуу хэсэг -->
+        <!-- Хажуу хэсэг -->
         <div class="action-section-outside mr-10">
         <div class="text-center mb-4" style="color: #666; font-size: 0.9rem;">
         Та мөн үүгээр нэвтрэх боломжтой
@@ -147,7 +145,7 @@
     </v-row>
   </v-container>
 </template>
-
+                                              <!-- SCRIPT -->
 <script setup>
 import { ref } from 'vue'
 
@@ -188,7 +186,7 @@ function registerWithFacebook() {
   alert('Facebook-r register')
 }
 </script>
-
+                                                <!-- STYLE -->
 
 <style scoped>
 html, body {
@@ -196,11 +194,6 @@ html, body {
   height: 100vh !important;
   margin: 0;
   padding: 0;
-}
-.auth-bg {
-  min-height: 100vh !important;
-  height: 100vh !important;
-  overflow: hidden;
 }
 .v-container {
   min-height: 100vh !important;
@@ -215,6 +208,9 @@ html, body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   position: relative;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  overflow: hidden;
 }
 .auth-overlay {
   position: absolute;
@@ -238,15 +234,11 @@ html, body {
   opacity: 0;
   transform: translateX(-40px);
 }
-
-.auth-bg, .v-card, .v-btn, .v-text-field, .v-card-title, .v-col, .v-row, .left-side {
-  font-family: 'Montserrat', Arial, sans-serif !important;
-}
 body {
   font-family: 'Noto Sans', sans-serif;
 }
 .color-login {
-    background-color:rgb(213, 247, 235)
+  background-color:rgb(213, 247, 235)
     }
 .quote-col {
   position: fixed;
@@ -260,15 +252,6 @@ body {
   background: transparent;
   z-index: 2;
   pointer-events: none;
-}
-@media (max-width: 960px) {
-  .quote-col {
-    position: static;
-    width: 100vw;
-    height: auto;
-    min-height: unset;
-    pointer-events: auto;
-  }
 }
 .toggle-btn, .main-action-btn, .forgot-btn, .social-btn  {
   text-transform: none !important;
@@ -298,7 +281,7 @@ body {
 }
 
 .action-section-outside {
-  margin-top: 48px; /* more space between boxes */
+  margin-top: 48px;
   padding: 24px 16px 16px 16px;
   background: rgba(255,255,255,0.85);
   border-radius: 1.5rem;
@@ -320,6 +303,41 @@ body {
   color: #333;
   margin-bottom: 12px;
   text-align: center;
+}
+@media (max-width: 960px) {
+  html, body, .auth-bg, .v-container {
+    overflow: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+  .quote-col {
+    display: none !important;
+  }
+  .right-card,
+  .auth-card,
+  .action-section-outside {
+    max-width: 98vw !important;
+    margin: 0 auto !important;
+    border-radius: 1rem !important;
+    padding: 12px 4px !important;
+    min-height: unset !important;
+  }
+  .mr-5, .mr-10 {
+    margin-right: 0 !important;
+  }
+  .mt-10 {
+    margin-top: 12px !important;
+  }
+  .action-section-outside {
+    margin-top: 24px !important;
+    padding: 12px 4px 8px 4px !important;
+  }
+  .display-1 {
+    font-size: 2rem !important;
+  }
+  [style*="margin-left: 50vw;"] {
+    margin-left: 0 !important;
+  }
 }
 @media (max-width: 960px) {
   .action-section, .action-section-outside {
