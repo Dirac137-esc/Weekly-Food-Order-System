@@ -195,8 +195,12 @@ async function login() {
     const result = await response.json()
     if (response.ok) {
       loginResult.value = 'Амжилттай нэвтэрлээ!'
-      // Store user info (role) in localStorage
+      // Store user info
       localStorage.setItem('user', JSON.stringify(result.user))
+      // Store token 
+      if (result.token) {
+        localStorage.setItem('token', result.token)
+      }
     } else {
       loginResult.value = 'Алдаа: ' + (result.message || 'Нэвтрэхэд амжилтгүй')
     }
@@ -223,6 +227,10 @@ async function register() {
     if (response.ok) {
       registerResult.value = 'Бүртгэл амжилттай!'
       isLogin.value = true
+      // Store token 
+      if (result.token) {
+        localStorage.setItem('token', result.token)
+      }
     } else {
       registerResult.value = 'Алдаа: ' + (result.message || 'Бүртгэхэд амжилтгүй')
     }
@@ -231,7 +239,7 @@ async function register() {
   }
 }
 
-// Redirect to home if login is successful
+// Redirect to home
 watch(loginResult, (val) => {
   if (val === 'Амжилттай нэвтэрлээ!') {
     setTimeout(() => {
