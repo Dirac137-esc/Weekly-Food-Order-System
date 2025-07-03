@@ -44,7 +44,7 @@ function toStatus()
 
                 <v-divider class="mb-4" />
 
-                <div v-for="[item, freq] in cartStore.cart" :key="item.id" class="mb-5 pa-3 rounded-lg food-item-card">
+                <div v-for="[_id, {item, quantity}] in cartStore.cart" :key="_id" class="mb-5 pa-3 rounded-lg food-item-card">
                   <v-row align="center" class="gy-2">
                     <v-col cols="3">
                       <v-img :src="item.imageUrl" height="70" class="rounded-lg" cover />
@@ -55,21 +55,21 @@ function toStatus()
                       <div class="text-sm text-grey-darken-1 mb-1">
                         Орц: {{ item.ingredients?.join(", ") }}
                       </div>
-                      <div class="text-sm text-grey-darken-1">Ширхэг: {{ freq }}</div>
+                      <div class="text-sm text-grey-darken-1">Ширхэг: {{ quantity }}</div>
                     </v-col>
 
                     <v-col cols="3" class="d-flex flex-column align-end">
                       <div class="d-flex align-center mb-2">
-                        <v-btn icon color="grey-darken-1" size="x-small" @click="cartStore.minus(item)">
+                        <v-btn icon color="grey-darken-1" size="x-small" @click="cartStore.decreaseItem(_id)">
                           <v-icon size="16">mdi-minus</v-icon>
                         </v-btn>
-                        <span class="mx-2 text-sm font-weight-medium">{{ freq }}</span>
-                        <v-btn icon color="green" size="x-small" @click="cartStore.plus(item)">
+                        <span class="mx-2 text-sm font-weight-medium">{{ quantity }}</span>
+                        <v-btn icon color="green" size="x-small" @click="cartStore.addItem(_id, item)">
                           <v-icon size="16">mdi-plus</v-icon>
                         </v-btn>
                       </div>
-                      <div class="font-weight-bold mb-1">{{ item.price * freq }}₮</div>
-                      <v-btn icon color="red-darken-2" size="x-small" variant="text" @click="cartStore.removeItem(item)">
+                      <div class="font-weight-bold mb-1">{{ item.price * quantity }}₮</div>
+                      <v-btn icon color="red-darken-2" size="x-small" variant="text" @click="cartStore.removeItem(_id)">
                         <v-icon size="16">mdi-close</v-icon>
                       </v-btn>
                     </v-col>

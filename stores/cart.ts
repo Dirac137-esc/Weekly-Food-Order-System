@@ -1,30 +1,59 @@
 import { defineStore } from "pinia";
+import { ref, computed, reactive } from "vue";
+
 export const useCartStore = defineStore("cart", () => {
-  const cart = ref(new Map());
+  const cart = ref(new Map<string, { item: any; quantity: number }>());
 
-  function removeItem(item: any) {
-    cart.value.delete(item);
+  function removeItem(id: string) {
+    cart.value.delete(id);
   }
-  function plus(item: any) {
-    if (!cart.value.has(item)) {
-      cart.value.set(item, 0);
-    }
-    cart.value.set(item, cart.value.get(item) + 1);
-  }
-  function minus(item: any) {
-    if (cart.value.get(item)) {
-      cart.value.set(item, cart.value.get(item) - 1);
-    }
-    if (cart.value.get(item) === 0) {
-      cart.value.delete(item);
+
+  function addItem(id: string, item: any) {
+    console.log(id);
+    const entry = cart.value.get(id);
+    if (entry) {
+      entry.quantity += 1;
+    } else {
+      cart.value.set(id, { item, quantity: 1 });
     }
   }
-  const total = computed(() =>
-    Array.from(cart.value).reduce(
-      (sum, [item, qty]) => sum + item.price * qty,
+
+  function decreaseItem(id: string) {
+    const entry = cart.value.get(id);
+    if (!entry) return;
+
+    if (entry.quantity > 1) {
+      entry.quantity--;
+    } else {
+      cart.value.delete(id);
+    }
+  }
+
+  const total = computed(() => {
+    return Array.from(cart.value.values()).reduce(
+      (sum, { item, quantity }) => sum + item.price * quantity,
       0
-    )
-  );
+    );
+  });
 
-  return { cart , plus, minus,removeItem,  total };
+  const itemCount = computed(() => {
+    return Array.from(cart.value.values()).reduce(
+      (total, { quantity }) => total + quantity,
+      0
+    );
+  });
+
+  function clearCart() {
+    cart.value.clear();
+  }
+
+  return {
+    cart: computed(() => cart.value),
+    addItem,
+    decreaseItem,
+    removeItem,
+    total,
+    itemCount,
+    clearCart,
+  };
 });

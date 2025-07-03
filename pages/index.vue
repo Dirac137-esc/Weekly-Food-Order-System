@@ -19,15 +19,16 @@
     </v-slider>
 
     <v-row>
-      <v-col v-for="item in menu" :key="item.id" cols="12" md="4">
+      <v-col v-for="item in menu" :key="item._id" cols="12" md="4">
         <!-- Тухайн ямарваа нэгэн барааг тодосгохыг хүсвэл v-card дээр нэмэх css -->
         <!-- :style="sliderday === today ? 'box-shadow: 0px 0px 10px rgba(10, 255, 10, 0.5);' : ''" -->
         <v-card>
           <v-img :src="item.imageUrl" height="200px" cover></v-img>
           <v-card-title>
-            <v-icon :color="today === sliderday ? `green`: `gray`" size="20">
-              
-            </v-icon>
+            <v-icon
+              :color="today === sliderday ? `green` : `gray`"
+              size="20"
+            ></v-icon>
             {{ item.name }}</v-card-title
           >
           <v-card-subtitle>
@@ -39,7 +40,7 @@
               :disabled="sliderday < today"
               color="white"
               class="bg-success"
-              @click="cartStore.plus(item)"
+              @click="cartStore.addItem(item._id, item)"
             >
               <v-icon icon="mdi-plus"></v-icon>
             </v-btn>
@@ -47,7 +48,7 @@
               class="bg-red"
               :disabled="sliderday < today"
               color="white"
-              @click="cartStore.minus(item)"
+              @click="cartStore.decreaseItem(item._id)"
             >
               <v-icon icon="mdi-minus"></v-icon>
             </v-btn>
@@ -75,7 +76,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="[id, {item , quantity}] in cartStore.cart">
+        <tr v-for="[_id, { item, quantity }] in cartStore.cart" :key="_id">
           <td class="text-center">
             {{ item?.name.charAt(0).toUpperCase() + item?.name.slice(1) }}
           </td>
@@ -83,9 +84,7 @@
           <td class="text-center">{{ quantity }}</td>
           <td class="text-center">{{ item?.price * quantity }}</td>
           <td class="text-center">
-            <v-btn color="red" @click="cartStore.removeItem(item)"
-              >Устгах</v-btn
-            >
+            <v-btn color="red" @click="cartStore.removeItem(_id)">Устгах</v-btn>
           </td>
         </tr>
       </tbody>
@@ -103,8 +102,7 @@
 <script setup>
 import { useCartStore } from "../stores/cart.ts";
 import { onMounted, ref } from "vue";
-import { useRouter, useRuntimeConfig } from "#imports";
-
+import { useRouter } from "#imports";
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -123,31 +121,31 @@ let menu = ref([]);
 
 async function fetchData() {
   // console.log(`Bearer ${localStorage.getItem("token")}`);
-  try{
-    const res = await fetch("https://backend-production-88df.up.railway.app/foods" , {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  try {
+    const res = await fetch(
+      "https://backend-production-88df.up.railway.app/foods",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     menu.value = await res.json();
-  }
-  catch(e){
+    console.log(menu.value);
+  } catch (e) {
     console.log(e);
   }
 }
 
-
-onMounted(()=>{
+onMounted(() => {
   fetchData();
-})
-
+});
 
 function goCart() {
   router.push("/cart");
 }
-
 </script>
 
 <style>
