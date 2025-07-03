@@ -4,7 +4,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <h1 class="py-3">Өнөөдөр : {{ days[today] }}</h1>
+    <h1 class="py-3">Өнөөдөр : {{ days[sliderday].charAt(0).toUpperCase() + days[sliderday].slice(1) }}</h1>
 
     <v-slider
       v-model="sliderday"
@@ -19,16 +19,16 @@
     </v-slider>
 
     <v-row>
-      <v-col v-for="item in menu" :key="item._id" cols="12" md="4">
+      <v-col v-for="item in menu[days[sliderday]]" :key="item._id" cols="12" md="4">
         <!-- Тухайн ямарваа нэгэн барааг тодосгохыг хүсвэл v-card дээр нэмэх css -->
         <!-- :style="sliderday === today ? 'box-shadow: 0px 0px 10px rgba(10, 255, 10, 0.5);' : ''" -->
         <v-card>
           <v-img :src="item.imageUrl" height="200px" cover></v-img>
           <v-card-title>
             <v-icon
-              :color="today === sliderday ? `green` : `gray`"
+              :color="today === sliderday ? `green` : `primary`"
               size="20"
-            ></v-icon>
+            >mdi-food</v-icon>
             {{ item.name }}</v-card-title
           >
           <v-card-subtitle>
@@ -109,13 +109,13 @@ const router = useRouter();
 const sliderday = ref((new Date().getDay() + 6) % 7);
 const today = ref((new Date().getDay() + 6) % 7);
 const days = {
-  0: "MON",
-  1: "TUE",
-  2: "WED",
-  3: "THU",
-  4: "FRI",
-  5: "SAT",
-  6: "SUN",
+  0: "monday",
+  1: "tuesday",
+  2: "wednesday",
+  3: "thursday",
+  4: "friday",
+  5: "saturday",
+  6: "sunday",
 };
 let menu = ref([]);
 
@@ -123,7 +123,7 @@ async function fetchData() {
   // console.log(`Bearer ${localStorage.getItem("token")}`);
   try {
     const res = await fetch(
-      "https://backend-production-88df.up.railway.app/foods",
+      "https://backend-production-88df.up.railway.app/menus",
       {
         method: "GET",
         headers: {
@@ -132,8 +132,9 @@ async function fetchData() {
         },
       }
     );
-    menu.value = await res.json();
-    console.log(menu.value);
+    const json = await res.json();
+    menu.value = json[0].days;
+
   } catch (e) {
     console.log(e);
   }
