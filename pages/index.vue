@@ -10,12 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <h1 class="py-5 text-center "  >
+    <h1 class="py-5 text-center">
       Таны сонгосон өдөр :
       {{ daysMn[sliderday] }}
     </h1>
 
-    <v-carousel hide-delimiters >
+    <v-carousel hide-delimiters>
       <v-carousel-item v-for="item in menu[days[sliderday]]" :key="item._id">
         <v-img :src="item.imageUrl" cover></v-img>
       </v-carousel-item>
@@ -30,8 +30,8 @@
       density="compact"
       show-ticks="always"
       thumb-size="15"
-    >
-
+      class="my-5"
+      >
     </v-slider>
 
     <v-row>
@@ -52,7 +52,9 @@
             {{ item.name }}</v-card-title
           >
           <v-card-subtitle>
-            {{ item.ingredients?.join(", ") }}
+            <div class="d-flex">
+              <v-chip v-for="ingredient in item.ingredients" class="rounded-xl">{{ ingredient }}</v-chip>
+            </div>
           </v-card-subtitle>
           <v-card-text>Үнэ: {{ item?.price }}₮</v-card-text>
           <v-card-actions class="justify-center">
@@ -88,11 +90,11 @@
     <v-table>
       <thead>
         <tr class="bg-primary">
-          <th class="text-center">Нэр</th>
-          <th class="text-center">Үнэ</th>
-          <th class="text-center">Ширхэг</th>
-          <th class="text-center">Тус хоолны нийт үнийн дүн</th>
-          <th class="text-center">Устгах уу ?</th>
+          <th class="text-center" style="font-size:17px">Нэр</th>
+          <th class="text-center" style="font-size:17px">Үнэ</th>
+          <th class="text-center" style="font-size:17px">Ширхэг</th>
+          <th class="text-center" style="font-size:17px">Тус хоолны нийт үнийн дүн</th>
+          <th class="text-center" style="font-size:17px">Устгах уу ?</th>
         </tr>
       </thead>
       <tbody>
@@ -139,14 +141,14 @@ const days = {
 };
 
 const daysMn = {
-    0 : "Даваа ",
-    1 : "Мягмар",
-    2 : "Лхагва",
-    3 : "Пүрэв",
-    4 : "Баасан",
-    5 : "Бямба",
-    6 : "Ням"
-}
+  0: "Даваа ",
+  1: "Мягмар",
+  2: "Лхагва",
+  3: "Пүрэв",
+  4: "Баасан",
+  5: "Бямба",
+  6: "Ням",
+};
 let menu = ref([]);
 
 async function fetchData() {
@@ -180,7 +182,7 @@ function goCart() {
 
 <style>
 * {
-  font-family: 'Jet Brains', sans-serif ;
+  font-family: "Jet Brains", sans-serif;
 }
 
 .v-slider-thumb {
@@ -192,4 +194,4 @@ function goCart() {
   transition: 0.5s ease !important;
   transition-property: width, transform !important;
 }
-</style> 
+</style>
