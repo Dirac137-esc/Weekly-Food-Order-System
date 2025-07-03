@@ -1,16 +1,9 @@
 <template>
   <v-container class="pt-16">
-<<<<<<< HEAD
-=======
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
->>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <h1 class="py-5 text-center "  >
@@ -44,22 +37,15 @@
         cols="12"
         md="4"
       >
->>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
         <!-- Тухайн ямарваа нэгэн барааг тодосгохыг хүсвэл v-card дээр нэмэх css -->
         <!-- :style="sliderday === today ? 'box-shadow: 0px 0px 10px rgba(10, 255, 10, 0.5);' : ''" -->
         <v-card>
           <v-img :src="item.imageUrl" height="200px" cover></v-img>
           <v-card-title>
-<<<<<<< HEAD
             <v-icon
               :color="today === sliderday ? `green` : `primary`"
               size="20"
             >mdi-food</v-icon>
-=======
-            <v-icon :color="today === sliderday ? `green` : `primary`" size="20"
-              >mdi-food</v-icon
-            >
->>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
             {{ item.name }}</v-card-title
           >
           <v-card-subtitle>
@@ -67,11 +53,7 @@
               <v-chip v-for="ingredient in item.ingredients" class="rounded-xl">{{ ingredient }}</v-chip>
             </div>
           </v-card-subtitle>
-<<<<<<< HEAD
-          <v-card-text>Үнэ: {{ item.price }}₮</v-card-text>
-=======
           <v-card-text>Үнэ: {{ item?.price }}₮</v-card-text>
->>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
           <v-card-actions class="justify-center">
             <v-btn
               :disabled="sliderday < today"
@@ -197,13 +179,10 @@ function goCart() {
 </script>
 
 <style>
-<<<<<<< HEAD
-=======
 * {
-  font-family: "Jet Brains", sans-serif;
+  font-family: "JetBrains Mono", sans-serif;
 }
 
->>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
 .v-slider-thumb {
   transition: 0.5s ease !important;
   transition-property: left, transform !important;
