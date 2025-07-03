@@ -5,7 +5,7 @@
     <v-btn icon to="/">
       <v-icon>mdi-home</v-icon>
     </v-btn>
-    <v-btn icon to="/cart">
+    <v-btn icon @click="toCart">
       <v-icon>mdi-cart</v-icon>
     </v-btn>
     <v-btn icon to="/profile">
@@ -15,7 +15,7 @@
     <v-btn v-if="isAdmin" icon to="/admin" title="Админ">
       <v-icon>mdi-pencil-circle</v-icon>
     </v-btn>
-  </v-app-bar>
+  </v-app-bar>  
 </template>
 
 <script setup>
@@ -25,6 +25,12 @@ import { useRouter, useRoute } from 'vue-router'
 const user = ref(null)
 const router = useRouter()
 const route = useRoute()
+
+function toCart()
+{   
+    router.push('/cart')
+}
+
 
 function updateUser() {
   try {

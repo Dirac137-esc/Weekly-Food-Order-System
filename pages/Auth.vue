@@ -195,8 +195,9 @@ async function login() {
     const result = await response.json()
     if (response.ok) {
       loginResult.value = 'Амжилттай нэвтэрлээ!'
-      // Store user info (role) in localStorage
       localStorage.setItem('user', JSON.stringify(result.user))
+      localStorage.setItem('token', result.token)
+      console.log("in Auth.vue  "+ result.token);
     } else {
       loginResult.value = 'Алдаа: ' + (result.message || 'Нэвтрэхэд амжилтгүй')
     }

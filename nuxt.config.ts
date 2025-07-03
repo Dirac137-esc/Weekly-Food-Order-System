@@ -1,6 +1,11 @@
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 export default defineNuxtConfig({
+  runtimeConfig :{
+    public  :{
+        apiBase : "https://backend-production-88df.up.railway.app"
+    }
+  },
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
   build: {

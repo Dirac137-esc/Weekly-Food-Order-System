@@ -47,13 +47,13 @@ function toStatus()
                 <div v-for="[item, freq] in cartStore.cart" :key="item.id" class="mb-5 pa-3 rounded-lg food-item-card">
                   <v-row align="center" class="gy-2">
                     <v-col cols="3">
-                      <v-img :src="item.photo" height="70" class="rounded-lg" cover />
+                      <v-img :src="item.imageUrl" height="70" class="rounded-lg" cover />
                     </v-col>
 
                     <v-col cols="6">
                       <div class="text-base font-weight-bold mb-1">{{ item.name }}</div>
                       <div class="text-sm text-grey-darken-1 mb-1">
-                        Орц: {{ item.recipe.join(", ") }}
+                        Орц: {{ item.ingredients?.join(", ") }}
                       </div>
                       <div class="text-sm text-grey-darken-1">Ширхэг: {{ freq }}</div>
                     </v-col>
