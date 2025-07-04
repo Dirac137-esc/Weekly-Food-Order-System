@@ -23,11 +23,11 @@
         <v-card-text class="text-center pa-4">
           <v-avatar size="80" class="mb-3 profile-avatar">
             <v-img 
-              :src="user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+              :src="user?.avatar || 'https://avatar.iran.liara.run/public/23'" 
               alt="User Avatar"
-            />
+            />  
           </v-avatar>
-          <p class="text-body-1 mb-2 phone-number">{{ user?.phone || '+976 9444 7509' }}</p>
+          <p class="text-body-1 mb-2 phone-number">{{ user?.name || 'Username' }}</p>
           
           <!-- Quick Actions -->
           <div class="quick-actions mb-3">

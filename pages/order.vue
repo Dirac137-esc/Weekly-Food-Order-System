@@ -1,362 +1,371 @@
 <template>
   <v-app>
-    <Navbar />
     <v-main>
-      <v-container class="pt-10 py-6" style="max-width: 600px">
-        <v-btn-toggle v-model="orderType" class="mb-4" rounded group>
-          <v-btn value="delivery">Хүргэлтээр</v-btn>
-          <v-btn value="pickup">Очиж авах</v-btn>
-        </v-btn-toggle>
+      <v-container class="pt-10" style="max-width:1200px;">
+        <v-row dense>
+          <!-- ЗАХИАЛГЫН ТАЛ -->
+          <v-col cols="12" md="7">
+            <!-- Захиалгын төрөл -->
+            <v-btn-toggle v-model="orderType" class="mb-4" rounded group>
+              <v-btn value="delivery">Хүргэлтээр</v-btn>
+              <v-btn value="pickup">Очиж авах</v-btn>
+            </v-btn-toggle>
 
-        <v-card class="pa-3 mb-4" outlined>
-          <v-row>
-            <v-col>
-              <div class="text-subtitle-1">
-                <strong>{{ address.name }}</strong>
-              </div>
-              <div class="text-caption grey--text">Хаяг: {{ address.details }}</div>
-            </v-col>
-          </v-row>
-        </v-card>
-
-        <v-btn-toggle v-model="orderTime" class="mb-4" rounded group>
-          <v-btn value="now">Яг одоо</v-btn>
-          <v-btn value="schedule">Урьдчилж захиалах</v-btn>
-        </v-btn-toggle>
-
-        <v-card class="pa-4 mb-4" outlined elevation="2">
-          <div class="mb-3 d-flex align-center">
-            <v-icon color="primary" class="mr-2">mdi-cart</v-icon>
-            <span class="font-weight-bold text-h6">Миний сагс</span>
-            <v-chip color="primary" size="small" class="ml-2">{{ item.qty }} ширхэг</v-chip>
-          </div>
-
-          <v-row align="center" no-gutters class="cart-item">
-            <v-col cols="auto" class="mr-4">
-              <div class="item-image-container">
-                <v-img 
-                  :src="item.photo" 
-                  max-width="80" 
-                  max-height="80" 
-                  class="rounded-lg elevation-2"
-                  cover
-                  :alt="item.name"
-                >
-                  <template v-slot:error>
-                    <div class="image-placeholder d-flex align-center justify-center">
-                      <v-icon size="40" color="grey-lighten-1">mdi-food</v-icon>
+            <!-- Хаяг сонгох газар -->
+            <v-card class="pa-4 mb-4" outlined>
+              <div class="text-subtitle-1 font-weight-bold mb-2">Байршлаа сонгох</div>
+              <div ref="mapRef" id="map" style="width:100%; height:300px; border-radius:10px;"></div>
+              <div class="mt-3">
+                <div class="d-flex align-center">
+                  <v-icon color="success" class="mr-2"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" /></svg></v-icon>
+                  <div>
+                    <div v-if="address.loading" class="d-flex align-center">
+                      <v-progress-circular size="16" indeterminate color="primary" class="mr-2" />
+                      <span class="text-body-2">Байршил тодорхойлж байна...</span>
                     </div>
-                  </template>
-                  <template v-slot:placeholder>
-                    <div class="image-placeholder d-flex align-center justify-center">
-                      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                    <div v-else-if="address.name" class="text-body-2 font-weight-medium">
+                      {{ address.name }}
+                    </div>  
+                    <div v-else class="text-body-2 grey--text">
+                      Газрын зураг дээр дарж байршлаа сонгоно уу
                     </div>
-                  </template>
-                </v-img>
-              </div>
-            </v-col>
-
-            <v-col>
-              <div class="mb-2">
-                <div class="font-weight-bold text-subtitle-1 mb-1">{{ item.name }}</div>
-                <div class="text-caption text-medium-emphasis">Нэгж үнэ: {{ item.price.toLocaleString() }}₮</div>
-              </div>
-              
-              <div class="quantity-controls d-flex align-center">
-                <v-btn 
-                  icon 
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  :disabled="item.qty <= 1"
-                  @click="decrement"
-                  class="quantity-btn"
-                >
-                  <v-icon size="18">mdi-minus</v-icon>
-                </v-btn>
-                
-                <div class="quantity-display mx-3 px-3 py-1 text-center font-weight-bold">
-                  {{ item.qty }}
+                  </div>
                 </div>
-                
-                <v-btn 
-                  icon 
-                  size="small"
-                  variant="outlined"
-                  style="color: #325EAF"
-                  @click="increment"
-                  class="quantity-btn"
-                >
-                  <v-icon size="18">mdi-plus</v-icon>
-                </v-btn>
-              </div>
-            </v-col>
-
-            <v-col cols="auto" class="text-right">
-              <div class="item-total">
-                <div class="text-caption text-medium-emphasis mb-1">Нийт дүн</div>
-                <div class="font-weight-bold text-h6 text-primary">
-                  {{ (item.price * item.qty).toLocaleString() }}₮
+                <div class="text-body-2 font-weight-medium">
+                  <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" /></svg> Координат: {{ address.lat.toFixed(5) }}, {{ address.lng.toFixed(5) }}
                 </div>
               </div>
-            </v-col>
-          </v-row>
-        </v-card>
+            </v-card>
 
-        <v-card class="pa-4 mb-4" outlined>
-          <div class="mb-3 d-flex align-center">
-            <v-icon color="orange" class="mr-2">mdi-gift</v-icon>
-            <span class="font-weight-bold text-h6">Хөнгөлөлт сонгох</span>
-            <v-chip 
-              v-if="selectedCoupons.length > 0" 
-              style="color: #325EAF"
-              size="small" 
-              class="ml-2"
-            >
-              {{ selectedCoupons.length }} сонгосон
-            </v-chip>
-          </div>
+            <!-- Захиалах цаг -->
+            <v-btn-toggle v-model="orderTime" class="mb-4" rounded group>
+              <v-btn value="now">Яг одоо</v-btn>
+              <v-btn value="schedule">Урьдчилж</v-btn>
+            </v-btn-toggle>
 
-          <div class="coupon-list">
-            <v-card
-              v-for="coupon in coupons"
-              :key="coupon.id"
-              class="mb-3 coupon-card"
-              :class="{ 'coupon-selected': selectedCoupons.includes(coupon.id) }"
-              :color="selectedCoupons.includes(coupon.id) ? 'success' : 'default'"
-              :variant="selectedCoupons.includes(coupon.id) ? 'tonal' : 'outlined'"
-              @click="toggleCoupon(coupon.id)"
-              style="cursor: pointer; transition: all 0.3s ease;"
-            >
-              <v-card-text class="py-3">
-                <v-row align="center" no-gutters>
-                  <v-col cols="auto" class="mr-3">
-                    <v-icon 
-                      :color="selectedCoupons.includes(coupon.id) ? 'success' : '#325EAF'" 
-                      size="24"
-                    >
-                      {{ selectedCoupons.includes(coupon.id) ? 'mdi-check-circle' : 'mdi-circle-outline' }}
-                    </v-icon>
-                  </v-col>
-                  
-                  <v-col>
-                    <div class="font-weight-bold mb-1">{{ coupon.label }}</div>
-                    <div class="text-caption text-medium-emphasis mb-1">{{ coupon.description }}</div>
-                    <v-chip 
-                      color="error" 
-                      size="small" 
-                      variant="tonal"
-                      prepend-icon="mdi-tag"
-                    >
+            <!-- Сагс -->
+            <v-card class="pa-4 mb-4" outlined>
+              <div class="d-flex align-center mb-3">
+                <v-icon color="primary" class="mr-2">mdi-cart</v-icon>
+                <span class="font-weight-bold text-h6">Миний сагс</span>
+                <v-chip color="primary" small class="ml-2">{{ cartItemCount }} ширхэг</v-chip>
+              </div>
+              <div v-if="cartStore.cart.size === 0" class="text-center py-4">
+                <v-icon size="48" color="grey-lighten-2">mdi-cart-off</v-icon>
+                <div class="text-subtitle-1 grey--text mt-2">Сагс хоосон байна</div>
+              </div>
+              <div v-else>
+                <div
+                  v-for="([id, { item, quantity }]) in Array.from(cartStore.cart.entries())"
+                  :key="id"
+                  class="food-item-card mb-4 pa-3"
+                >
+                  <v-row align="center" no-gutters class="cart-item">
+                    <v-col cols="3">
+                      <v-img
+                        :src="item.imageUrl"
+                        height="70"
+                        class="rounded-lg"
+                        cover
+                      >
+                        <template #error>
+                          <div class="image-placeholder d-flex align-center justify-center">
+                            <v-icon size="40" color="grey-lighten-1">mdi-food</v-icon>
+                          </div>
+                        </template>
+                        <template #placeholder>
+                          <div class="image-placeholder d-flex align-center justify-center">
+                            <v-progress-circular indeterminate color="primary" />
+                          </div>
+                        </template>
+                      </v-img>
+                    </v-col>
+                    <v-col cols="6">
+                      <div class="font-weight-bold">{{ item.name }}</div>
+                      <div class="text-caption">{{ item.ingredients.join(', ') }}</div>
+                      <div class="text-caption">Ширхэг: {{ quantity }}</div>
+                    </v-col>
+                    <v-col cols="3" class="text-right">
+                      <div class="d-flex align-center mb-2">
+                        <v-btn icon small color="grey-darken-1" @click="cartStore.decreaseItem(id)">
+                          <v-icon small>mdi-minus</v-icon>
+                        </v-btn>
+                        <span class="mx-2">{{ quantity }}</span>
+                        <v-btn icon small color="green" @click="cartStore.addItem(id, item)">
+                          <v-icon small>mdi-plus</v-icon>
+                        </v-btn>
+                      </div>
+                      <div class="font-weight-bold">{{ (item.price * quantity).toLocaleString() }}₮</div>
+                      <v-btn icon small variant="text" color="red-darken-2" @click="cartStore.removeItem(id)">
+                        <v-icon small>mdi-close</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </div>
+              </div>
+            </v-card>
+
+            <!-- Купон -->
+            <v-card class="pa-4 mb-4" outlined>
+              <div class="font-weight-bold mb-2">Хөнгөлөлт</div>
+              <div v-for="coupon in coupons" :key="coupon.id" class="mb-3">
+                <v-card
+                  outlined
+                  class="coupon-card"
+                  :class="{ 'coupon-selected': selectedCoupons.includes(coupon.id) }"
+                  @click="toggleCoupon(coupon.id)"
+                >
+                  <v-card-text class="d-flex align-center">
+                    <v-icon v-if="selectedCoupons.includes(coupon.id)" color="error" class="mr-2"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-square-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.333 2c1.96 0 3.56 1.537 3.662 3.472l.005 .195v12.666c0 1.96 -1.537 3.56 -3.472 3.662l-.195 .005h-12.666a3.667 3.667 0 0 1 -3.662 -3.472l-.005 -.195v-12.666c0 -1.96 1.537 -3.56 3.472 -3.662l.195 -.005h12.666zm-2.626 7.293a1 1 0 0 0 -1.414 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" /></svg></v-icon>
+                   <v-icon v-else><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-square"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /></svg></v-icon>
+                    <div>
+                      <div class="font-weight-bold" style="padding-left: 6px;">{{ coupon.label }}</div>
+                      <div class="text-caption" style="padding-left: 6px;">{{ coupon.description }}</div>
+                    </div>
+                    <v-spacer />
+                    <v-chip small color="error" variant="tonal" prepend-icon="mdi-tag">
                       -{{ coupon.amount.toLocaleString() }}₮
                     </v-chip>
-                  </v-col>
-                </v-row>
-              </v-card-text>
+                  </v-card-text>
+                </v-card>
+              </div>
+              <v-divider v-if="totalDiscount > 0" class="my-3" />
+              <v-row v-if="totalDiscount > 0" justify="space-between">
+                <span class="font-weight-medium">Нийт хөнгөлөлт</span>
+                <span class="font-weight-bold text-primary">-{{ totalDiscount.toLocaleString() }}₮</span>
+              </v-row>
             </v-card>
-          </div>
 
-          <v-divider v-if="totalDiscount > 0" class="my-3"></v-divider>
-          <v-row v-if="totalDiscount > 0" justify="space-between" align="center">
-            <v-col>
-              <span class="font-weight-medium" style="color: #325EAF">
-                <v-icon style="color: #325EAF" size="small" class="mr-1">mdi-tag-check</v-icon>
-                Нийт хөнгөлөлт
-              </span>
-            </v-col>
-            <v-col cols="auto">
-              <span class="font-weight-bold" style="color: #325EAF" text-h6>
-                -{{ totalDiscount.toLocaleString() }}₮
-              </span>
-            </v-col>
-          </v-row>
-        </v-card>
+            <!-- НӨАТ төрөл -->
+            <v-radio-group v-model="vatType" class="mb-4">
+              <v-radio label="Хувь хүн" value="person" />
+              <v-radio label="Байгууллага" value="company" />
+            </v-radio-group>
 
-        <v-radio-group v-model="vatType" class="mb-4">
-          <v-radio label="Хувь хүн" value="person" />
-          <v-radio label="Байгууллага" value="company" />
-        </v-radio-group>
+            <!-- Нэмэлт тэмдэглэл -->
+            <v-textarea v-model="orderNotes" label="Нэмэлт тэмдэглэл" rows="2" outlined class="mb-4" />
 
-        <v-textarea label="Захиалгатай холбоотой нэмэлт тэмдэглэл бичих" variant="outlined" rows="2" class="mb-4" />
+            <!-- Төлбөрийн Дүн -->
+            <v-card class="pa-4 mb-4" outlined>
+              <v-row v-for="(t, k) in totals" :key="k" justify="space-between">
+                <span>{{ t.label }}</span>
+                <span><strong>{{ t.amount.toLocaleString() }}₮</strong></span>
+              </v-row>
+              <v-divider class="my-2" />
+              <v-row justify="space-between">
+                <span class="font-weight-bold">ТӨЛӨХ НИЙТ ДҮН</span>
+                <span class="font-weight-bold">{{ totalAmount.toLocaleString() }}₮</span>
+              </v-row>
+            </v-card>
+          </v-col>
 
-        <v-card class="pa-4 mb-4" outlined>
-          <v-row v-for="(label, key) in totals" :key="key" justify="space-between" class="mb-1">
-            <span>{{ label.label }}</span>
-            <span><strong>{{ label.amount.toLocaleString() }} ₮</strong></span>
-          </v-row>
-
-          <v-divider class="my-2"></v-divider>
-
-          <v-row justify="space-between">
-            <span class="font-weight-bold">ТӨЛӨХ НИЙТ ДҮН</span>
-            <span class="font-weight-bold">{{ totalAmount.toLocaleString() }} ₮</span>
-          </v-row>
-        </v-card>
-
-        <v-btn color="primary" block large>Төлбөр төлөх</v-btn>
+          <!-- ТӨЛБӨРИЙН ТАЛ -->
+          <v-col cols="12" md="5" class="sticky-payment">
+            <v-card class="pa-6" outlined>
+              <div class="font-weight-bold mb-4">Төлбөр төлөх</div>
+              <div class="d-flex align-center mb-4">
+                <v-img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" height="28" width="45" class="mr-2" />
+                <v-img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" height="28" width="45" class="mr-2" />
+                <v-img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" height="28" width="45" />
+              </div>
+              <v-text-field label="Карт эзэмшигчийн нэр" outlined class="mb-3" />
+              <v-text-field label="Картын дугаар" outlined class="mb-3" />
+              <v-row>
+                <v-col cols="6"><v-text-field label="Дуусах огноо" outlined /></v-col>
+                <v-col cols="6"><v-text-field label="CVC" outlined /></v-col>
+              </v-row>
+              <v-btn block color="primary" class="mt-4" :disabled="cartStore.cart.size === 0" @click="toStatus">
+                Төлбөр төлөх
+              </v-btn>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import Navbar from '@/components/navbar.vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useCartStore } from "@/stores/cart";
+import { useRouter } from "vue-router";
+import L from 'leaflet';
 
-const orderType = ref('delivery')
-const orderTime = ref('now')
-const vatType = ref('person')
+const cartStore = useCartStore();
+const router = useRouter();
+const step = ref(1);
 
-const item = ref({
-  name: 'Бекон криспи чикен',
-  qty: 1,
-  price: 11900,
-  photo: '/zurag/1.jpg'
-})
+// Хувируулах утгууд
+const orderType = ref<'delivery' | 'pickup'>('delivery');
+const orderTime = ref<'now' | 'schedule'>('now');
+const vatType = ref<'person' | 'company'>('person');
 
-const increment = () => item.value.qty++
-const decrement = () => {
-  if (item.value.qty > 1) item.value.qty--
-}
-
+// Байршлын мэдээлэл
 const address = ref({
-  name: 'БЗД, 1-р хороо, Оршил лаунж',
-  details: 'Нэмэлт мэдээлэл: -'
-})
+  lat: 47.9185,
+  lng: 106.9170,
+  name: "",
+  details: "",
+  loading: false
+});
 
+const mapRef = ref<HTMLDivElement | null>(null);
+
+// Купон болон захиалгын мэдээлэл
 const coupons = ref([
-  { 
-    id: 'coupon1', 
-    label: 'Шинэ хэрэглэгчийн купон', 
-    description: 'Анхны захиалгад зориулсан тусгай хөнгөлөлт',
-    amount: 5000 
-  },
-  { 
-    id: 'coupon2', 
-    label: 'Амралтын өдрийн хөнгөлөлт', 
-    description: 'Бямба, ням гарагт хүчинтэй',
-    amount: 3000 
-  },
-  { 
-    id: 'coupon3', 
-    label: 'Төрсөн өдрийн урамшуулал', 
-    description: 'Төрсөн өдөр хүчинтэй',
-    amount: 7000 
-  }
-])
+  { id: 'coupon1', label: 'Шинэ хэрэглэгчийн купон', description: 'Анхны захиалгад зориулсан гавьяа', amount: 5000 },
+  { id: 'coupon2', label: 'Амралтын өдрийн хөнгөлөлт', description: 'Бямба, ням', amount: 3000 },
+  { id: 'coupon3', label: 'Төрсөн өдрийн урамшуулал', description: 'Төрсөн өдөр', amount: 7000 }
+]);
+const selectedCoupons = ref<string[]>([]);
+const orderNotes = ref("");
 
-const selectedCoupons = ref([]) 
-
-const toggleCoupon = (couponId) => {
-  const index = selectedCoupons.value.indexOf(couponId)
-  if (index > -1) {
-    selectedCoupons.value.splice(index, 1)
-  } else {
-    selectedCoupons.value.push(couponId)
+// Байршлын нэрийг авах функц
+async function getLocationName(lat: number, lng: number) {
+  try {
+    address.value.loading = true;
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch location data');
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.display_name) {
+      address.value.name = data.display_name;
+      address.value.details = `${data.address?.road || ''} ${data.address?.house_number || ''}`.trim();
+    } else {
+      address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  } finally {
+    address.value.loading = false;
   }
 }
 
-const totalDiscount = computed(() => {
-  return coupons.value
-    .filter(coupon => selectedCoupons.value.includes(coupon.id))
-    .reduce((acc, cur) => acc + cur.amount, 0)
-})
+// Газрын зурагтай ажиллах функц
+async function initializeMap() {
+  if (!mapRef.value) return;
 
-const totals = computed(() => ({
-  subtotal: {
-    label: 'Захиалгын дүн',
-    amount: item.value.price * item.value.qty
-  },
-  minfee: {
-    label: 'Бага үнийн дүнтэй захиалгын төлбөр',
-    amount: 1500
-  },
-  delivery: {
-    label: 'Хүргэлтийн төлбөр',
-    amount: 1100
-  },
-  discount: {
-    label: 'Хөнгөлөлтийн дүн',
-    amount: -totalDiscount.value
-  },
-  vat: {
-    label: 'НӨАТ',
-    amount: 0
+  const map = L.map(mapRef.value).setView([address.value.lat, address.value.lng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const marker = L.marker([address.value.lat, address.value.lng], { draggable: true }).addTo(map);
+  marker.bindPopup("Хүргэлтийн байршил").openPopup();
+
+  // Анхны байршлын нэрийг авах
+  await getLocationName(address.value.lat, address.value.lng);
+
+  marker.on('moveend', async (e: any) => {
+    const { lat, lng } = e.target.getLatLng();
+    address.value.lat = lat;
+    address.value.lng = lng;
+    await getLocationName(lat, lng);
+  });
+
+  map.on('click', async (e) => {
+    const { lat, lng } = e.latlng;
+    marker.setLatLng([lat, lng]);
+    address.value.lat = lat;
+    address.value.lng = lng;
+    await getLocationName(lat, lng);
+  });
+}
+
+// Купон тогтоох функц
+function toggleCoupon(id: string) {
+  const index = selectedCoupons.value.indexOf(id);
+  if (index >= 0) {
+    selectedCoupons.value.splice(index, 1);
+  } else {
+    selectedCoupons.value.push(id);
   }
-}))
+}
 
-const totalAmount = computed(() => {
-  return Object.values(totals.value).reduce((acc, cur) => acc + cur.amount, 0)
-})
+// Захиалгын төлөв рүү шилжих функц
+function toStatus() {
+  router.push('/status');
+}
+
+// Computed утгууд
+const totalDiscount = computed(() =>
+  coupons.value
+    .filter(c => selectedCoupons.value.includes(c.id))
+    .reduce((sum, c) => sum + c.amount, 0)
+);
+
+const cartItemCount = computed(() =>
+  Array.from(cartStore.cart.values()).reduce((sum, v) => sum + v.quantity, 0)
+);
+
+const totals = computed(() => {
+  const subtotal = cartStore.total;
+  const minFee = subtotal < 15000 ? 1500 : 0;
+  const deliveryFee = orderType.value === 'delivery' ? 1100 : 0;
+  const discount = totalDiscount.value;
+  const vat = vatType.value === 'company' ? Math.round(subtotal * 0.1) : 0;
+
+  return {
+    subtotal: { label: 'Захиалгын дүн', amount: subtotal },
+    minfee: { label: 'Бага үнэтэй', amount: minFee },
+    delivery: { label: 'Хүргэлтийн үнэ', amount: deliveryFee },
+    discount: { label: 'Хөнгөлөлт', amount: -discount },
+    vat: { label: 'НӨАТ', amount: vat }
+  };
+});
+
+const totalAmount = computed(() =>
+  Object.values(totals.value).reduce((sum, t) => sum + t.amount, 0)
+);
+
+// Компонент ачаалагдахад
+onMounted(async () => {
+  await initializeMap();
+});
 </script>
 
 <style scoped>
-.coupon-card {
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+.cart-item { 
+  padding: 8px 0; 
+  border-bottom: 1px solid #eee; 
+}
+
+.cart-item:last-child { 
+  border-bottom: none; 
+}
+
+.image-placeholder {
+  width: 80px; 
+  height: 80px; 
+  background: #f5f5f5; 
+  border-radius: 8px;
+}
+
+.coupon-card { 
+  border: 1px solid #e3e7ee; 
+  border-radius: 1rem; 
+  cursor: pointer; 
+  transition: all 0.2s;
 }
 
 .coupon-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.coupon-selected {
-  border-color: #325EAF !important;
+.coupon-selected { 
+  background: #e8f0ff; 
+  border-color: #325EAF !important; 
 }
 
-.coupon-list {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.cart-item {
-  padding: 8px 0;
-}
-
-.item-image-container {
-  position: relative;
-}
-
-.image-placeholder {
-  width: 80px;
-  height: 80px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-}
-
-.quantity-controls {
-  background-color: #fafafa;
-  border-radius: 25px;
-  padding: 4px;
-  width: fit-content;
-}
-
-.quantity-btn {
-  transition: all 0.2s ease;
-}
-
-.quantity-btn:hover {
-  transform: scale(1.1);
-}
-
-.quantity-display {
-  background-color: white;
-  border-radius: 15px;
-  min-width: 40px;
-  border: 1px solid #e0e0e0;
-  font-size: 16px;
-}
-
-.item-total {
-  text-align: right;
-  min-width: 100px;
-}
-
-.delivery-info {
-  background-color: #f8fffe;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin: 0 -4px;
+.sticky-payment { 
+  position: sticky; 
+  top: 40px; 
+  z-index: 10; 
 }
 </style>
