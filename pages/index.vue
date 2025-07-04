@@ -27,7 +27,12 @@
     </v-slider>
 
     <v-row>
-      <v-col v-for="item in menu[days[sliderday]]" :key="item._id" cols="12" md="4">
+      <v-col
+  v-for="item in menu[days[sliderday]]"
+  :key="item._id"
+  cols="12"
+  md="4"
+>
 =======
     <h1 class="py-5 text-center "  >
       Таны сонгосон өдөр :
@@ -52,7 +57,8 @@
       class="my-5"
       >
     </v-slider>
-
+    </v-col>
+    </v-row>
     <v-row>
       <v-col
         v-for="item in menu[days[sliderday]]"
