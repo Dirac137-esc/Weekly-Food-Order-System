@@ -6,6 +6,34 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
+>>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+<<<<<<< HEAD
+    <h1 class="py-3">Өнөөдөр : {{ days[sliderday].charAt(0).toUpperCase() + days[sliderday].slice(1) }}</h1>
+
+    <v-slider
+      v-model="sliderday"
+      :max="6"
+      :step="1"
+      :ticks="days"
+      :color="sliderday == today ? 'success' : 'primary'"
+      density="compact"
+      show-ticks="always"
+      thumb-size="15"
+    >
+    </v-slider>
+
+    <v-row>
+      <v-col
+  v-for="item in menu[days[sliderday]]"
+  :key="item._id"
+  cols="12"
+  md="4"
+>
+=======
     <h1 class="py-5 text-center "  >
       Таны сонгосон өдөр :
       {{ daysMn[sliderday] }}
@@ -29,7 +57,8 @@
       class="my-5"
       >
     </v-slider>
-
+    </v-col>
+    </v-row>
     <v-row>
       <v-col
         v-for="item in menu[days[sliderday]]"
@@ -42,10 +71,16 @@
         <v-card>
           <v-img :src="item.imageUrl" height="200px" cover></v-img>
           <v-card-title>
+<<<<<<< HEAD
             <v-icon
               :color="today === sliderday ? `green` : `primary`"
               size="20"
             >mdi-food</v-icon>
+=======
+            <v-icon :color="today === sliderday ? `green` : `primary`" size="20"
+              >mdi-food</v-icon
+            >
+>>>>>>> 28a0df97d816541f72ae7c1dd9cb93b798d6b6a9
             {{ item.name }}</v-card-title
           >
           <v-card-subtitle>
@@ -163,7 +198,6 @@ async function fetchData() {
     );
     const json = await res.json();
     menu.value = json[0].days;
-
   } catch (e) {
     console.log(e);
   }
