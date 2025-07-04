@@ -17,17 +17,17 @@
     </div>
 
     <!-- Profile Content -->
-    <div v-if="user && !editing" class="profile-content">
+    <div v-if="userStore.user && !editing" class="profile-content">
       <!-- Avatar and Phone Section -->
       <v-card class="profile-card mb-3" elevation="0">
         <v-card-text class="text-center pa-4">
           <v-avatar size="80" class="mb-3 profile-avatar">
             <v-img 
-              :src="user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+              :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
               alt="User Avatar"
             />
           </v-avatar>
-          <p class="text-body-1 mb-2 phone-number">{{ user?.phone || '+976 9444 7509' }}</p>
+          <p class="text-body-1 mb-2 phone-number">{{ userStore.user?.phone || '+976 9444 7509' }}</p>
           
           <!-- Quick Actions -->
           <div class="quick-actions mb-3">
@@ -70,7 +70,7 @@
             <template v-slot:prepend>
               <v-icon class="menu-icon" size="small">mdi-phone</v-icon>
             </template>
-            <v-list-item-title class="menu-title text-body-2">{{ user?.phone || '94447509' }}</v-list-item-title>
+            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.phone || '94447509' }}</v-list-item-title>
             <template v-slot:append>
 
             </template>
@@ -83,7 +83,7 @@
             <template v-slot:prepend>
               <v-icon class="menu-icon" size="small">mdi-account</v-icon>
             </template>
-            <v-list-item-title class="menu-title text-body-2">{{ user?.name || 'Нэр нэмэх' }}</v-list-item-title>
+            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.name || 'Нэр нэмэх' }}</v-list-item-title>
             <template v-slot:append>
              
             </template>
@@ -96,7 +96,7 @@
             <template v-slot:prepend>
               <v-icon class="menu-icon" size="small">mdi-email</v-icon>
             </template>
-            <v-list-item-title class="menu-title text-body-2">{{ user?.email || 'И-мэйл хаяг' }}</v-list-item-title>
+            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.email || 'И-мэйл хаяг' }}</v-list-item-title>
             <template v-slot:append>
   
             </template>
@@ -125,7 +125,7 @@
     </div>
 
     <!-- Edit Form -->
-    <div v-else-if="user && editing" class="edit-form">
+    <div v-else-if="userStore.user && editing" class="edit-form">
       <v-card class="edit-card" elevation="0">
         <v-card-text class="pa-6">
           <v-form @submit.prevent="saveProfile">
@@ -133,7 +133,7 @@
             <div class="text-center mb-6">
               <v-avatar size="100" class="mb-4">
                 <v-img 
-                  :src="user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+                  :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
                   alt="User Avatar"
                 />
               </v-avatar>
@@ -276,8 +276,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
-const user = ref({})
+const userStore = useUserStore();
 const router = useRouter()
 
 // State variables
@@ -293,43 +294,17 @@ const editAddress = ref('')
 const editResult = ref('')
 const editResultColor = ref('text-success')
 
-// Settings
-const notificationSettings = ref({
-  email: true,
-  sms: false,
-  push: true
-})
-
-const privacySettings = ref({
-  showProfile: true,
-  showActivity: true
-})
-
-const activities = ref([])
 
 onMounted(() => {
-  loadUserData()
-  loadUserActivities()
+    userStore.loadUser();
 })
-
-function loadUserData() {
-  const userStr = localStorage.getItem('user')
-  user.value = userStr ? JSON.parse(userStr) : null
-}
-
-function loadUserActivities() {
-  const savedActivities = localStorage.getItem('userActivities')
-  if (savedActivities) {
-    activities.value = JSON.parse(savedActivities)
-  }
-}
 
 function editProfile() {
   editing.value = true
-  editName.value = user.value.name || ''
-  editEmail.value = user.value.email || ''
-  editPhone.value = user.value.phone || ''
-  editAddress.value = user.value.address || ''
+  editName.value = userStore.user.value.name || ''
+  editEmail.value = userStore.user.value.email || ''
+  editPhone.value = userStore.user.value.phone || ''
+  editAddress.value = userStore.user.value.address || ''
   editResult.value = ''
 }
 
@@ -361,18 +336,12 @@ async function saveProfile() {
     const data = await response.json()
     
     if (response.ok) {
-      user.value.name = editName.value
-      user.value.phone = editPhone.value
-      user.value.address = editAddress.value
-      user.value.email = editEmail.value
-      localStorage.setItem('user', JSON.stringify(user.value))
-      
-      // Add activity
-      addActivity('Профайл засварлав', 'Хувийн мэдээллээ шинэчлэв', 'mdi-account-edit', 'primary')
-      
-      editResultColor.value = 'text-success'
-      editResult.value = 'Амжилттай хадгалагдлаа.'
-      
+      userStore.user.value.name = editName.value
+      userStore.user.value.phone = editPhone.value
+      userStore.user.value.address = editAddress.value
+      userStore.user.value.email = editEmail.value
+      localStorage.setItem('user', JSON.stringify(userStore.user.value))
+            
       setTimeout(() => {
         editing.value = false
         editResult.value = ''
@@ -389,173 +358,11 @@ async function saveProfile() {
   }
 }
 
-function addActivity(title, description, icon, color) {
-  const newActivity = {
-    id: Date.now(),
-    title,
-    description,
-    date: new Date().toISOString(),
-    icon,
-    color
-  }
-  activities.value.unshift(newActivity)
-  localStorage.setItem('userActivities', JSON.stringify(activities.value))
-}
-
 function logout() {
-  localStorage.removeItem('user')
   localStorage.removeItem('token')
-  user.value = null
-  showLogoutDialog.value = false
+  userStore.logOut();
+  showLogoutDialog.value = false;
   router.push('/auth')
 }
 
-function formatDate(dateString) {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('mn-MN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
 </script>
-
-<style scoped>
-.profile-container {
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  padding: 12px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.header-section {
-  padding: 8px 0;
-}
-
-.profile-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.profile-avatar {
-  border: 3px solid #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.phone-number {
-  color: #666;
-  font-weight: 500;
-}
-
-.quick-actions {
-  display: flex;
-  justify-content: space-around;
-  margin: 16px 0;
-}
-
-.action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex: 1;
-}
-
-.action-icon {
-  background: #fff3e0;
-  padding: 8px;
-  border-radius: 50%;
-  margin-bottom: 6px;
-}
-
-.action-text {
-  font-size: 11px;
-  color: #666;
-  font-weight: 500;
-}
-
-.info-banner {
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.info-banner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
-}
-
-.menu-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.menu-item {
-  transition: background-color 0.2s ease;
-  min-height: 40px;
-}
-
-.menu-item:hover {
-  background-color: #f8f9fa;
-}
-
-.menu-icon {
-  color: #666;
-  margin-right: 12px;
-}
-
-.menu-title {
-  font-weight: 500;
-  color: #333;
-}
-
-.menu-chevron {
-  color: #ccc;
-}
-
-.edit-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.form-fields {
-  margin-bottom: 20px;
-}
-
-.action-buttons {
-  margin-top: 20px;
-}
-
-.dialog-card {
-  border-radius: 12px;
-}
-
-.not-logged-in .v-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .profile-container {
-    padding: 8px;
-  }
-  
-  .quick-actions {
-    margin: 12px 0;
-  }
-  
-  .action-text {
-    font-size: 10px;
-  }
-  
-  .menu-item {
-    min-height: 36px;
-  }
-}
-</style>
