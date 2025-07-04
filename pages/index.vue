@@ -10,14 +10,17 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <h1 class="py-5 text-center "  >
+    <h1 class="py-5 text-center">
       Таны сонгосон өдөр :
       {{ daysMn[sliderday] }}
     </h1>
 
     <v-row>
       <v-col>
-        <v-carousel hide-delimiters>
+        <v-carousel
+          v-if="menu[days[sliderday]] && menu[days[sliderday]].length"  
+          hide-delimiters
+        >
           <v-carousel-item
             v-for="item in menu[days[sliderday]]"
             :key="item._id"
@@ -69,20 +72,21 @@
           <v-card-text>Үнэ: {{ item?.price }}₮</v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
-              :disabled="sliderday < today"
-              color="white"
-              class="bg-success"
-              @click="cartStore.addItem(item._id, item)"
-            >
-              <v-icon icon="mdi-plus"></v-icon>
-            </v-btn>
-            <v-btn
               class="bg-red"
               :disabled="sliderday < today"
               color="white"
               @click="cartStore.decreaseItem(item._id)"
             >
               <v-icon icon="mdi-minus"></v-icon>
+            </v-btn>
+
+            <v-btn
+              :disabled="sliderday < today"
+              color="white"
+              class="bg-success"
+              @click="cartStore.addItem(item._id, item)"
+            >
+              <v-icon icon="mdi-plus"></v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>

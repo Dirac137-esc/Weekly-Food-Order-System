@@ -22,8 +22,7 @@
           </h1>
           <p
             class="subtitle-1"
-            style="color: #fff; text-shadow: 1px 1px 6px #000"
-          >
+            style="color: #fff; text-shadow: 1px 1px 6px #000">
             Өдрийг сайхан өнгөрүүлээрэй!
           </p>
         </div>
