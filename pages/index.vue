@@ -180,7 +180,7 @@ function goCart() {
 
 <style>
 * {
-  font-family: "JetBrains Mono", sans-serif;
+  font-family: "JetBrains Mono", sans-serif; 
 }
 
 .v-slider-thumb {
