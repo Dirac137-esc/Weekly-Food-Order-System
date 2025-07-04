@@ -84,13 +84,22 @@
                     {{ loginResult }}
                   </v-alert>
                 </div>
+                <v-btn
+                  color="primary"
+                  type="submit"
+                  block
+                  class="main-action-btn"
+                  elevation="6"
+                >
+                  Нэвтрэх
+                </v-btn>
               </v-form>
               <!-- Register хэсэг -->
               <v-form v-else @submit.prevent="register">
                 <v-card-title class="justify-center pb-2 text-center">Бүртгүүлэх</v-card-title>
                 <v-text-field v-model="registerName" label="Нэр" prepend-inner-icon="mdi-account" autocomplete="name" required />
                 <v-text-field v-model="registerEmail" label="Имэйл" type="email" prepend-inner-icon="mdi-email" autocomplete="email" required />
-                <v-text-field v-model="phone" label="Хэрэглэгчийн утас" prepend-inner-icon="mdi-phone" type="number"  required />
+                <v-text-field v-model="phone" label="Хэрэглэгчийн утас" prepend-inner-icon="mdi-phone" type="number" required />
                 <v-text-field v-model="registerPassword" label="Нууц үг" type="password" prepend-inner-icon="mdi-lock" autocomplete="password" required />
                 <div class="d-flex align-center mb-3">
                   <v-checkbox
@@ -106,15 +115,24 @@
                     {{ registerResult }}
                   </v-alert>
                 </div>
+                <v-btn
+                  color="#4BB543"
+                  type="submit"
+                  block
+                  class="main-action-btn"
+                  elevation="6"
+                >
+                  Бүртгүүлэх
+                </v-btn>
               </v-form>
             </div>
           </transition>
         </v-card>
-        <!-- Хажуу хэсэг -->
-        <div class="action-section-outside mr-10">
-        <div class="text-center mb-4" style="color: #666; font-size: 0.9rem;">
-        Та мөн үүгээр нэвтрэх боломжтой
-        </div>
+        <!-- Хажуу хэсэг (Зөвхөн social login ) -->
+        <div class="action-section-outside mr-10 d-flex flex-column" style="height: 30%;">
+          <div class="text-center mb-4" style="color: #666; font-size: 0.9rem;">
+          Та мөн үүгээр нэвтрэх боломжтой
+          </div>
           <v-row no-gutters>
             <v-col cols="12">
               <v-btn color="red" class="social-btn" block @click="isLogin ? loginWithGoogle() : registerWithGoogle()">
@@ -122,31 +140,6 @@
               </v-btn>
               <v-btn color="blue darken-4" class="social-btn" block @click="isLogin ? loginWithFacebook() : registerWithFacebook()">
                 <v-icon left>mdi-facebook</v-icon> Facebook
-              </v-btn>
-            </v-col>
-            <v-col cols="12">
-              <v-divider class="my-2" />
-              <v-btn
-                v-if="isLogin"
-                color="primary"
-                type="submit"
-                block
-                class="main-action-btn"
-                elevation="6"
-                @click="login"
-              >
-                Нэвтрэх
-              </v-btn>
-              <v-btn
-                v-else
-                color="#4BB543"
-                type="submit"
-                block
-                class="main-action-btn"
-                elevation="6"
-                @click="register"
-              >
-                Бүртгүүлэх
               </v-btn>
             </v-col>
           </v-row>

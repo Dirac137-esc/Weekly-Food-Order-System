@@ -38,38 +38,42 @@
           </v-form>
           <v-alert v-if="foodMsg" :type="foodMsgType" class="mb-2">{{ foodMsg }}</v-alert>
           <!-- Food List -->
-          <v-table>
-            <thead>
-              <tr>
-                <th>Зураг</th>
-                <th>Нэр</th>
-                <th>Тайлбар</th>
-                <th>Үнэ</th>
-                <th>Үйлдэл</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="food in foods" :key="food._id">
-                <td>
-                  <v-img :src="food.imageUrl" height="40" width="40" cover></v-img>
-                </td>
-                <td>
-                  <v-text-field v-model="food.name" dense hide-details @blur="updateFood(food)" />
-                </td>
-                <td>
-                  <v-text-field v-model="food.desc" dense hide-details @blur="updateFood(food)" />
-                </td>
-                <td>
-                  <v-text-field v-model="food.price" dense hide-details type="number" @blur="updateFood(food)" style="max-width:90px"/>
-                </td>
-                <td>
+          <v-row>
+            <v-col
+              v-for="food in foods"
+              :key="food._id"
+              cols="12"
+              md="4"
+              class="mb-4"
+            >
+              <v-card>
+                <v-img :src="food.imageUrl" height="160px" cover></v-img>
+                <v-card-title class="font-weight-bold">{{ food.name }}</v-card-title>
+                <v-card-subtitle class="mb-1">{{ food.desc }}</v-card-subtitle>
+                <v-card-text>
+                  <div class="mb-2">Үнэ: <span class="font-weight-bold">{{ food.price }}₮</span></div>
+                </v-card-text>
+                <v-card-actions>
                   <v-btn icon color="error" @click="deleteFood(food._id)" :loading="deleteLoadingId===food._id">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+                  <v-btn icon color="primary" @click="food.editing = !food.editing">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-expand-transition>
+                  <div v-if="food.editing" class="pa-3">
+                    <v-text-field v-model="food.name" label="Нэр" dense class="mb-2"/>
+                    <v-text-field v-model="food.desc" label="Тайлбар" dense class="mb-2"/>
+                    <v-text-field v-model="food.price" label="Үнэ" dense type="number" class="mb-2"/>
+                    <v-text-field v-model="food.imageUrl" label="Зураг (URL)" dense class="mb-2"/>
+                    <v-btn color="success" size="small" @click="updateFood(food)">Хадгалах</v-btn>
+                    <v-btn color="grey" size="small" @click="food.editing = false">Болих</v-btn>
+                  </div>
+                </v-expand-transition>
+              </v-card>
+            </v-col>
+          </v-row>
         </div>
         <div v-else-if="selected === 'dashboard'">
           <v-alert type="info" border="start" class="mb-4">Админ самбар тавтай морил!</v-alert>
