@@ -27,7 +27,7 @@
               alt="User Avatar"
             />  
           </v-avatar>
-          <p class="text-body-1 mb-2 phone-number">{{ userStore.user?.phone || '+976 9444 7509' }}</p>
+          <p class="text-body-1 mb-2 phone-number">{{ userStore.user?.name || 'Username' }}</p>
           
           <!-- Quick Actions -->
           <div class="quick-actions mb-3">
