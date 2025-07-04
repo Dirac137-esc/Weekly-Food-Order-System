@@ -1,9 +1,8 @@
 import { defineStore } from "pinia";
-import { ref, computed, reactive } from "vue";
+import { ref, computed } from "vue";
 
 export const useCartStore = defineStore("cart", () => {
   const cart = ref(new Map<string, { item: any; quantity: number }>());
-
   function removeItem(id: string) {
     cart.value.delete(id);
   }
