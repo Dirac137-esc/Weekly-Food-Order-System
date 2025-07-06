@@ -97,7 +97,7 @@ watchEffect(() => {
   if (
     typeof window !== "undefined" &&
     window.location.pathname.startsWith("/admin") &&
-    !(userStore.user?.value && userStore.user?.value.role === "admin")
+    !(userStore.user && userStore.user?.role === "admin")
   ) {
     router.replace("/");
   }
