@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useCartStore } from "../stores/cart";
 import { useRouter } from "vue-router";
+import L from 'leaflet';
 
 const cartStore = useCartStore();
 const step = ref(1);
@@ -39,9 +40,14 @@ const onCardNumberInput = (event: Event) => {
   formData.value.cardNumber = target.value;
 };
 
-const addItem = (id: string, item: any) => {
-  cartStore.addItem(id, item);
-};
+// const addItem = (id: string, item: any) => {
+//   cartStore.addItem(id, item);
+//   // Анимаци хийх
+//   animateAdd.value = id;
+//   setTimeout(() => {
+//     animateAdd.value = null;
+//   }, 600);
+// };
 
 function toStatus() {
   showSuccess.value = true;
@@ -50,6 +56,87 @@ function toStatus() {
     router.push('./status');
   }, 1000);
 }
+
+// Байршлын мэдээлэл
+const address = ref({
+  lat: 47.9185,
+  lng: 106.9170,
+  name: "",
+  details: "",
+  loading: false
+});
+
+const mapRef = ref<HTMLDivElement | null>(null);
+
+// Байршлын нэрийг авах функц
+async function getLocationName(lat: number, lng: number) {
+  try {
+    address.value.loading = true;
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch location data');
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.display_name) {
+      address.value.name = data.display_name;
+      address.value.details = `${data.address?.road || ''} ${data.address?.house_number || ''}`.trim();
+    } else {
+      address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  } finally {
+    address.value.loading = false;
+  }
+}
+
+// Газрын зурагтай ажиллах функц
+async function initializeMap() {
+  if (!mapRef.value) return;
+
+  const map = L.map(mapRef.value).setView([address.value.lat, address.value.lng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const marker = L.marker([address.value.lat, address.value.lng], { draggable: true }).addTo(map);
+  marker.bindPopup("Хүргэлтийн байршил").openPopup();
+
+  // Анхны байршлын нэрийг авах
+  await getLocationName(address.value.lat, address.value.lng);
+
+  marker.on('moveend', async (e: any) => {
+    const { lat, lng } = e.target.getLatLng();
+    address.value.lat = lat;
+    address.value.lng = lng;
+    await getLocationName(lat, lng);
+  });
+
+  map.on('click', async (e) => {
+    const { lat, lng } = e.latlng;
+    marker.setLatLng([lat, lng]);
+    address.value.lat = lat;
+    address.value.lng = lng;
+    await getLocationName(lat, lng);
+  });
+}
+
+// Компонент ачаалагдахад
+onMounted(async () => {
+  await initializeMap();
+});
+// Купон болон захиалгын мэдээлэл
+const coupons = ref([
+  { id: 'coupon1', label: 'Шинэ хэрэглэгчийн купон', description: 'Анхны захиалгад зориулсан гавьяа', amount: 5000 },
+  { id: 'coupon2', label: 'Амралтын өдрийн хөнгөлөлт', description: 'Бямба, ням', amount: 3000 },
+  { id: 'coupon3', label: 'Төрсөн өдрийн урамшуулал', description: 'Төрсөн өдөр', amount: 7000 }
+]);
+const selectedCoupons = ref<string[]>([]);
+const orderNotes = ref("");
 </script>
 
 <template>
@@ -319,12 +406,43 @@ function toStatus() {
                                       />
                                     </div>
                                   </v-col>
+                                  
                                 </v-row>
                               </v-card-text>
                             </v-card>
                           </v-col>
                         </v-row>
                       </v-card-text>
+                    </v-card>
+            
+                    <!-- Хаяг сонгох газар -->
+                    <v-card class="pa-4 mb-4 elevation-8 rounded-xl mt-6" color="surface">
+                      <div class="text-h6 font-weight-bold mb-2 text-primary">
+                        <v-icon color="primary" class="me-2">mdi-map-marker</v-icon>
+                        Байршлаа сонгох
+                      </div>
+                      <div ref="mapRef" id="map" style="width:100%; height:300px; border-radius:10px;"></div>
+                      <div class="mt-3">
+                        <div class="d-flex align-center">
+                          <v-icon color="success" class="mr-2">mdi-map-marker</v-icon>
+                          <div>
+                            <div v-if="address.loading" class="d-flex align-center">
+                              <v-progress-circular size="16" indeterminate color="primary" class="mr-2" />
+                              <span class="text-body-2">Байршил тодорхойлж байна...</span>
+                            </div>
+                            <div v-else-if="address.name" class="text-body-2 font-weight-medium">
+                              {{ address.name }}
+                            </div>  
+                            <div v-else class="text-body-2 text-grey">
+                              Газрын зураг дээр дарж байршлаа сонгоно уу
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-caption text-grey mt-1">
+                          <v-icon size="small" class="me-1">mdi-crosshairs-gps</v-icon>
+                          Координат: {{ address.lat.toFixed(5) }}, {{ address.lng.toFixed(5) }}
+                        </div>
+                      </div>
                     </v-card>
 
                     <!-- Order Summary -->
@@ -583,4 +701,4 @@ function toStatus() {
     padding: 8px !important;
   }
 }
-</style>
+</style>  

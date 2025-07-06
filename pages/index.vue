@@ -192,7 +192,7 @@ onMounted(() => {
 });
 
 function goCart() {
-  router.push("/order");
+  router.push("/cart");
 }
 </script>
 
