@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app permanent width="220">
+    <v-navigation-drawer app permanent width="220" class="admin-sidebar">
       <v-list dense nav>
         <v-list-item>
           <v-list-item-title class="font-weight-bold text-h6"
@@ -24,8 +24,11 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-container>
-        <h2 class="mb-4">{{ menu.find((m) => m.key === selected)?.title }}</h2>
+      <v-container class="admin-bg py-8" fluid>
+        <h2 class="mb-6 font-weight-bold text-h5 admin-title">
+          <v-icon left color="primary" size="large">mdi-cog</v-icon>
+          {{ menu.find((m) => m.key === selected)?.title }}
+        </h2>
         <div v-if="selected === 'menu'">
           <v-alert type="info" border="start" class="mb-4"
             >Хоолны цэс засварлах</v-alert
@@ -33,7 +36,7 @@
           <!-- Add Food Form -->
           <v-form
             @submit.prevent="addFood"
-            class="mb-4 d-flex flex-wrap align-center gap-2"
+            class="mb-4 d-flex flex-wrap align-center gap-2 admin-form"
           >
             <v-text-field
               v-model="newFood.name"
@@ -77,7 +80,7 @@
               md="4"
               class="mb-4"
             >
-              <v-card>
+              <v-card class="admin-food-card">
                 <v-img :src="food.imageUrl" height="160px" cover></v-img>
                 <v-card-title class="font-weight-bold">{{
                   food.name
@@ -154,14 +157,13 @@
           <v-alert type="info" border="start" class="mb-4">
             Админ самбар тавтай морил!
           </v-alert>
-          <p>
-            Энд захиалгын статистик, хэрэглэгчийн тоо гэх мэт ерөнхий мэдээлэл
-            харуулна.
-          </p>
           <v-row>
             <v-col cols="12" md="6">
-              <v-card class="mb-4">
-                <v-card-title>Хоолны захиалгын тоо (ихээс бага)</v-card-title>
+              <v-card class="mb-4 admin-stats-card">
+                <v-card-title>
+                  <v-icon left color="primary">mdi-chart-bar</v-icon>
+                  Хоолны захиалгын тоо (ихээс бага)
+                </v-card-title>
                 <v-card-text>
                   <v-list>
                     <v-list-item
@@ -182,8 +184,11 @@
               </v-card>
             </v-col>
             <v-col cols="12" md="6">
-              <v-card class="mb-4">
-                <v-card-title>Захиалгын график</v-card-title>
+              <v-card class="mb-4 admin-stats-card">
+                <v-card-title>
+                  <v-icon left color="primary">mdi-chart-bar-stacked</v-icon>
+                  Захиалгын график
+                </v-card-title>
                 <v-card-text>
                   <canvas ref="foodChart" height="220"></canvas>
                 </v-card-text>
@@ -205,7 +210,7 @@
           <v-alert v-if="usersMsg" :type="usersMsgType" class="mb-2">{{
             usersMsg
           }}</v-alert>
-          <v-table>
+          <v-table class="admin-table">
             <thead>
               <tr>
                 <th>Нэр</th>
@@ -490,10 +495,48 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.admin-bg {
+  background: linear-gradient(135deg, #e3f0ff 0%, #f5faff 100%);
+  min-height: 100vh;
+}
+.admin-title {
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+}
+.admin-sidebar {
+  background: #e3f2fd !important;
+  border-right: 1px solid #bbdefb;
+}
 .sidebar-btn {
   cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  transition: background 0.2s;
 }
 .sidebar-btn.v-list-item--active {
-  background: #e3f2fd !important;
+  background: #bbdefb !important;
+}
+.admin-food-card {
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #1976d220;
+  background: #fff;
+  transition: box-shadow 0.2s;
+}
+.admin-food-card:hover {
+  box-shadow: 0 6px 24px #1976d240;
+}
+.admin-stats-card {
+  border-radius: 18px;
+  background: #f5faff;
+  box-shadow: 0 2px 12px #1976d220;
+}
+.admin-table {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #1976d220;
+}
+.admin-form .v-btn {
+  font-weight: 600;
 }
 </style>

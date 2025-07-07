@@ -647,6 +647,25 @@ const totalWithDiscount = computed(() => {
   font-family: "JetBrains Mono", sans-serif;
 }
 
+.v-main {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
+  min-height: 100vh;
+  position: relative;
+}
+.v-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/cubes.png');
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+.v-container {
+  position: relative;
+  z-index: 1;
+}
+
 .animate-pulse {
   animation: pulse 0.6s ease-in-out;
 }
@@ -749,5 +768,43 @@ const totalWithDiscount = computed(() => {
   .map-wrapper {
     height: 250px;
   }
+}
+
+.v-card.elevation-12 {
+  background: linear-gradient(120deg, #f5faff 60%, #e3f0ff 100%);
+  border-radius: 24px;
+  box-shadow: 0 6px 32px #1976d220;
+}
+
+.v-card.elevation-4 {
+  background: #fafdff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #1976d220;
+  border: 1px solid #e3e7ee;
+}
+.v-card.elevation-4:hover {
+  box-shadow: 0 6px 24px #1976d240;
+  border-color: #90caf9;
+}
+
+.v-btn.mt-6 {
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px #1976d220;
+}
+.v-btn.mt-6:hover {
+  box-shadow: 0 6px 24px #1976d240;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.v-btn[icon] {
+  transition: transform 0.1s;
+}
+.v-btn[icon]:active {
+  transform: scale(1.15);
+}
+
+.v-stepper-step .v-avatar {
+  box-shadow: 0 2px 8px #1976d220;
+  border: 2px solid #fff;
 }
 </style>
