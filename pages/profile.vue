@@ -1,7 +1,8 @@
 <template>
-  <v-container class="profile-container" fluid>
+  <v-container class="profile-container py-8" fluid>
+    <div class="profile-bg-overlay"></div>
     <!-- Header with back button -->
-    <div class="header-section mb-3">
+    <div class="header-section mb-5 profile-header">
       <div class="d-flex align-center">
         <v-btn 
           icon 
@@ -12,126 +13,84 @@
         >
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
-        <h1 class="text-h6 font-weight-medium">Профайл</h1>
+        <h1 class="text-h5 font-weight-bold">Профайл</h1>
       </div>  
     </div>
 
     <!-- Profile Content -->
-    <div v-if="userStore.user && !editing" class="profile-content">
-      <!-- Avatar and Phone Section -->
-      <v-card class="profile-card mb-3" elevation="0">
-        <v-card-text class="text-center pa-4">
-          <v-avatar size="80" class="mb-3 profile-avatar">
-            <v-img 
-              :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
-              alt="User Avatar"
-            />  
-          </v-avatar>
-          <p class="text-body-1 mb-2 phone-number">{{ userStore.user?.name || 'Username' }}</p>
-          
-          <!-- Quick Actions -->
-          <div class="quick-actions mb-3">
-            <div class="action-item">
-              <v-icon class="action-icon" color="orange" size="small">mdi-map-marker</v-icon>
-              <span class="action-text">Хадгалсан хаяг</span>
+    <div v-if="userStore.user && !editing" class="profile-content-boxed">
+      <v-row justify="center">
+        <v-col cols="12" md="7" lg="5">
+          <v-card class="profile-main-card pa-6" elevation="8">
+            <div class="d-flex flex-column align-center">
+              <!-- Avatar and Name -->
+              <v-avatar size="120" class="mb-3 profile-avatar elevation-4" color="grey-lighten-4">
+                <v-img 
+                  :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+                  alt="User Avatar"
+                />  
+              </v-avatar>
+              <h2 class="text-h6 font-weight-bold mb-1">{{ userStore.user?.name || 'Username' }}</h2>
+              <div class="text-grey-darken-1 mb-2">{{ userStore.user?.email }}</div>
+              <v-btn color="primary" variant="tonal" size="small" class="mb-4" @click="editProfile">
+                <v-icon left size="small">mdi-account-edit</v-icon> Хувийн мэдээлэл засах
+              </v-btn>
             </div>
-            <div class="action-item">
-              <v-icon class="action-icon" color="orange" size="small">mdi-cog</v-icon>
-              <span class="action-text">Хөнгөлөлт</span>
-            </div>
-            <div class="action-item">
-              <v-icon class="action-icon" color="orange" size="small">mdi-heart</v-icon>
-              <span class="action-text">Хадгалсан</span>
-            </div>
-          </div>
 
-          <!-- Personal Info Banner -->
-          <v-card 
-            class="info-banner" 
-            color="orange-lighten-4" 
-            @click="editProfile"
-            style="cursor: pointer;"
-          >
-            <v-card-text class="d-flex align-center justify-space-between pa-3">
-              <span class="text-body-2 font-weight-medium text-orange-darken-2">
-                Хувийн мэдээлэл
-              </span>
-              <v-icon color="orange-darken-2" size="small">mdi-chevron-right</v-icon>
-            </v-card-text>
+            <!-- Quick Actions -->
+            <v-row class="quick-actions mb-4" justify="center">
+              <v-col cols="4" class="text-center">
+                <v-btn icon color="orange" variant="text">
+                  <v-icon size="large">mdi-map-marker</v-icon>
+                </v-btn>
+                <div class="caption mt-1">Хаяг</div>
+              </v-col>
+              <v-col cols="4" class="text-center">
+                <v-btn icon color="pink" variant="text">
+                  <v-icon size="large">mdi-heart</v-icon>
+                </v-btn>
+                <div class="caption mt-1">Хадгалсан</div>
+              </v-col>
+              <v-col cols="4" class="text-center">
+                <v-btn icon color="blue" variant="text">
+                  <v-icon size="large">mdi-cog</v-icon>
+                </v-btn>
+                <div class="caption mt-1">Тохиргоо</div>
+              </v-col>
+            </v-row>
+
+            <!-- Personal Info Card -->
+            <v-card class="info-banner mb-4" color="orange-lighten-5" elevation="1">
+              <v-list>
+                <v-list-item>
+                  <v-list-item-icon><v-icon color="primary">mdi-phone</v-icon></v-list-item-icon>
+                  <v-list-item-title>{{ userStore.user?.phone || 'Утас оруулаагүй' }}</v-list-item-title>
+                </v-list-item>
+                <v-divider />
+                <v-list-item>
+                  <v-list-item-icon><v-icon color="primary">mdi-map-marker</v-icon></v-list-item-icon>
+                  <v-list-item-title>{{ userStore.user?.address || 'Хаяг оруулаагүй' }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-card>
+
+            <!-- Logout Button -->
+            <v-btn color="error" variant="outlined" block @click="showLogoutDialog = true">
+              <v-icon left size="small">mdi-logout</v-icon> Гарах
+            </v-btn>
           </v-card>
-        </v-card-text>
-      </v-card>
-
-      <!-- Menu Items -->
-      <v-card class="menu-card" elevation="0">
-        <v-list class="pa-0">
-          <v-list-item 
-          >
-            <template v-slot:prepend>
-              <v-icon class="menu-icon" size="small">mdi-phone</v-icon>
-            </template>
-            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.phone || '94447509' }}</v-list-item-title>
-            <template v-slot:append>
-
-            </template>
-          </v-list-item>
-
-          <v-divider class="mx-3"></v-divider>
-
-          <v-list-item 
-          >
-            <template v-slot:prepend>
-              <v-icon class="menu-icon" size="small">mdi-account</v-icon>
-            </template>
-            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.name || 'Нэр нэмэх' }}</v-list-item-title>
-            <template v-slot:append>
-             
-            </template>
-          </v-list-item>
-
-          <v-divider class="mx-3"></v-divider>
-
-          <v-list-item
-          >
-            <template v-slot:prepend>
-              <v-icon class="menu-icon" size="small">mdi-email</v-icon>
-            </template>
-            <v-list-item-title class="menu-title text-body-2">{{ userStore.user?.email || 'И-мэйл хаяг' }}</v-list-item-title>
-            <template v-slot:append>
-  
-            </template>
-          </v-list-item>
-
-          <v-divider class="mx-3"></v-divider>
-
-          
-        </v-list>
-      </v-card>
-
-      <!-- Logout Button -->
-      <v-card class="mt-3" elevation="0">
-        <v-list class="pa-0">
-          <v-list-item 
-            class="menu-item px-3 py-2"
-            @click="showLogoutDialog = true"
-          >
-            <template v-slot:prepend>
-              <v-icon class="menu-icon" color="error" size="small">mdi-logout</v-icon>
-            </template>
-            <v-list-item-title class="menu-title text-error text-body-2">Гарах</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card>
+        </v-col>
+      </v-row>
     </div>
 
     <!-- Edit Form -->
     <div v-else-if="userStore.user && editing" class="edit-form">
-      <v-card class="edit-card" elevation="0">
+      <v-card class="edit-card mx-auto" elevation="2" max-width="420">
         <v-card-text class="pa-6">
           <v-form @submit.prevent="saveProfile">
             <!-- Avatar Section -->
             <div class="text-center mb-6">
-              <v-avatar size="100" class="mb-4">
+              <v-avatar size="100" class="mb-4 elevation-2">
                 <v-img 
                   :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
                   alt="User Avatar"
@@ -414,3 +373,65 @@ function logout() {
 }
 
 </script>
+
+<style scoped>
+.profile-container {
+  position: relative;
+  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.profile-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+.v-container,
+.profile-content,
+.profile-content-boxed,
+.edit-form,
+.not-logged-in {
+  position: relative;
+  z-index: 1;
+}
+.profile-header {
+  position: relative;
+  z-index: 1;
+}
+.profile-content-boxed {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+}
+.profile-main-card {
+  background: linear-gradient(135deg, #e3f0ff 0%, #f5faff 100%);
+  border-radius: 22px;
+  box-shadow: 0 4px 32px #1976d220;
+}
+.profile-avatar {
+  border: 4px solid #fff;
+  box-shadow: 0 2px 12px #ff980033;
+}
+.info-banner {
+  border-radius: 16px;
+}
+.quick-actions .v-btn {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #ff980033;
+  margin-bottom: 4px;
+}
+.quick-actions .caption {
+  font-size: 0.85rem;
+  color: #888;
+}
+.edit-card {
+  border-radius: 18px;
+}
+.action-buttons .v-btn {
+  font-weight: 600;
+}
+</style>
