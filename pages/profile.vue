@@ -392,10 +392,7 @@ function logout() {
 .profile-content,
 .profile-content-boxed,
 .edit-form,
-.not-logged-in {
-  position: relative;
-  z-index: 1;
-}
+.not-logged-in,
 .profile-header {
   position: relative;
   z-index: 1;
@@ -415,23 +412,14 @@ function logout() {
   border: 4px solid #fff;
   box-shadow: 0 2px 12px #ff980033;
 }
-.info-banner {
-  border-radius: 16px;
-}
+.info-banner { border-radius: 16px; }
 .quick-actions .v-btn {
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 2px 8px #ff980033;
   margin-bottom: 4px;
 }
-.quick-actions .caption {
-  font-size: 0.85rem;
-  color: #888;
-}
-.edit-card {
-  border-radius: 18px;
-}
-.action-buttons .v-btn {
-  font-weight: 600;
-}
+.quick-actions .caption { font-size: 0.85rem; color: #888; }
+.edit-card { border-radius: 18px; }
+.action-buttons .v-btn { font-weight: 600; }
 </style>
