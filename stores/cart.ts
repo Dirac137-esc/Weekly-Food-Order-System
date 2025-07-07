@@ -3,18 +3,35 @@ import { ref, computed } from "vue";
 
 export const useCartStore = defineStore("cart", () => {
   const cart = ref(new Map<string, { item: any; quantity: number }>());
+
+  if (import.meta.client) {
+    const saved = localStorage.getItem("cart");
+    if (typeof saved === "string") {
+      const parsed: [string, { item: any; quantity: number }][] =
+        JSON.parse(saved);
+      cart.value = new Map(parsed);
+    }
+  }
+
   function removeItem(id: string) {
     cart.value.delete(id);
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(Array.from(cart.value.entries()))
+    );
   }
 
   function addItem(id: string, item: any) {
-    console.log(id);
     const entry = cart.value.get(id);
     if (entry) {
       entry.quantity += 1;
     } else {
       cart.value.set(id, { item, quantity: 1 });
     }
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(Array.from(cart.value.entries()))
+    );
   }
 
   function decreaseItem(id: string) {
@@ -26,6 +43,10 @@ export const useCartStore = defineStore("cart", () => {
     } else {
       cart.value.delete(id);
     }
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(Array.from(cart.value.entries()))
+    );
   }
 
   const total = computed(() => {
@@ -44,6 +65,10 @@ export const useCartStore = defineStore("cart", () => {
 
   function clearCart() {
     cart.value.clear();
+    localStorage.setItem(
+      "cart",
+      JSON.stringify(Array.from(cart.value.entries()))
+    );
   }
 
   return {

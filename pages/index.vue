@@ -18,7 +18,7 @@
     <v-row>
       <v-col>
         <v-carousel
-          v-if="menu[days[sliderday]] && menu[days[sliderday]].length"  
+          v-if="menu[days[sliderday]] && menu[days[sliderday]].length"
           hide-delimiters
         >
           <v-carousel-item
@@ -171,7 +171,7 @@ async function fetchData() {
   // console.log(`Bearer ${localStorage.getItem("token")}`);
   try {
     const res = await fetch(
-      "https://backend-production-88df.up.railway.app/menus",
+      "https://backend-production-88df.up.railway.app/menus/this-week",
       {
         method: "GET",
         headers: {
@@ -181,7 +181,7 @@ async function fetchData() {
       }
     );
     const json = await res.json();
-    menu.value = json[0].days;
+    menu.value = json.days;
   } catch (e) {
     console.log(e);
   }
