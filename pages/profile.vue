@@ -137,11 +137,20 @@
                   alt="User Avatar"
                 />
               </v-avatar>
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                style="display: none"
+                @change="onAvatarSelected"
+              />
               <v-btn 
                 variant="outlined" 
                 color="primary" 
                 size="small"
                 prepend-icon="mdi-camera"
+                @click="triggerFileInput"
+                :loading="avatarUploading"
               >
                 Зураг солих
               </v-btn>
@@ -285,6 +294,8 @@ const router = useRouter()
 const editing = ref(false)
 const saving = ref(false)
 const showLogoutDialog = ref(false)
+const fileInput = ref(null)
+const avatarUploading = ref(false)
 
 // Edit form data
 const editName = ref('')
@@ -356,6 +367,43 @@ async function saveProfile() {
   } finally {
     saving.value = false
   }
+}
+
+function triggerFileInput() {
+  fileInput.value && fileInput.value.click()
+}
+
+async function onAvatarSelected(event) {
+  const file = event.target.files[0]
+  if (!file) return
+  avatarUploading.value = true
+  try {
+    const token = localStorage.getItem('token')
+    const formData = new FormData()
+    formData.append('avatar', file)
+    // Change endpoint if your backend uses a different one
+    const response = await fetch(`https://backend-production-88df.up.railway.app/users/${userStore.user.value.id}/avatar`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    const data = await response.json()
+    if (response.ok && data.avatar) {
+      userStore.user.value.avatar = data.avatar
+      localStorage.setItem('user', JSON.stringify(userStore.user.value))
+      editResultColor.value = 'text-success'
+      editResult.value = 'Зураг амжилттай шинэчлэгдлээ!'
+    } else {
+      editResultColor.value = 'text-error'
+      editResult.value = data.message || 'Зураг шинэчлэхэд алдаа гарлаа'
+    }
+  } catch (e) {
+    editResultColor.value = 'text-error'
+    editResult.value = 'Сүлжээний алдаа'
+  }
+  avatarUploading.value = false
 }
 
 function logout() {
