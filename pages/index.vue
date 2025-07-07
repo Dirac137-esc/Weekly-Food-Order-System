@@ -189,6 +189,7 @@ async function fetchData() {
 
 onMounted(() => {
   fetchData();
+  console.log();
 });
 
 function goCart() {

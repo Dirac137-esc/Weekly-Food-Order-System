@@ -4,14 +4,13 @@ import { ref } from "vue";
 export const useUserStore = defineStore("user", () => {
   const user = ref<any | null>(null);
 
-    function saveUser(userData : any)
-    {
-        localStorage.setItem("user", JSON.stringify(userData));
-        user.value = userData;
-    }
+  function saveUser(userData: any) {
+    localStorage.setItem("user", JSON.stringify(userData));
+    user.value = userData;
+  }
 
   function loadUser() {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       try {
         user.value = JSON.parse(userData);
@@ -22,11 +21,11 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  function logOut()
-  {
+  function logOut() {
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
     user.value = null;
   }
 
-  return { user, loadUser , logOut , saveUser};
+  return { user, loadUser, logOut, saveUser };
 });

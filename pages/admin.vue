@@ -79,27 +79,71 @@
             >
               <v-card>
                 <v-img :src="food.imageUrl" height="160px" cover></v-img>
-                <v-card-title class="font-weight-bold">{{ food.name }}</v-card-title>
+                <v-card-title class="font-weight-bold">{{
+                  food.name
+                }}</v-card-title>
                 <v-card-subtitle class="mb-1">{{ food.desc }}</v-card-subtitle>
                 <v-card-text>
-                  <div class="mb-2">Үнэ: <span class="font-weight-bold">{{ food.price }}₮</span></div>
+                  <div class="mb-2">
+                    Үнэ: <span class="font-weight-bold">{{ food.price }}₮</span>
+                  </div>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn icon color="error" @click="deleteFood(food._id)" :loading="deleteLoadingId===food._id">
+                  <v-btn
+                    icon
+                    color="error"
+                    @click="deleteFood(food._id)"
+                    :loading="deleteLoadingId === food._id"
+                  >
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
-                  <v-btn icon color="primary" @click="food.editing = !food.editing">
+                  <v-btn
+                    icon
+                    color="primary"
+                    @click="food.editing = !food.editing"
+                  >
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
                 </v-card-actions>
                 <v-expand-transition>
                   <div v-if="food.editing" class="pa-3">
-                    <v-text-field v-model="food.name" label="Нэр" dense class="mb-2"/>
-                    <v-text-field v-model="food.desc" label="Тайлбар" dense class="mb-2"/>
-                    <v-text-field v-model="food.price" label="Үнэ" dense type="number" class="mb-2"/>
-                    <v-text-field v-model="food.imageUrl" label="Зураг (URL)" dense class="mb-2"/>
-                    <v-btn color="success" size="small" @click="updateFood(food)">Хадгалах</v-btn>
-                    <v-btn color="grey" size="small" @click="food.editing = false">Болих</v-btn>
+                    <v-text-field
+                      v-model="food.name"
+                      label="Нэр"
+                      dense
+                      class="mb-2"
+                    />
+                    <v-text-field
+                      v-model="food.desc"
+                      label="Тайлбар"
+                      dense
+                      class="mb-2"
+                    />
+                    <v-text-field
+                      v-model="food.price"
+                      label="Үнэ"
+                      dense
+                      type="number"
+                      class="mb-2"
+                    />
+                    <v-text-field
+                      v-model="food.imageUrl"
+                      label="Зураг (URL)"
+                      dense
+                      class="mb-2"
+                    />
+                    <v-btn
+                      color="success"
+                      size="small"
+                      @click="updateFood(food)"
+                      >Хадгалах</v-btn
+                    >
+                    <v-btn
+                      color="grey"
+                      size="small"
+                      @click="food.editing = false"
+                      >Болих</v-btn
+                    >
                   </div>
                 </v-expand-transition>
               </v-card>
@@ -110,18 +154,26 @@
           <v-alert type="info" border="start" class="mb-4">
             Админ самбар тавтай морил!
           </v-alert>
-          <p>Энд захиалгын статистик, хэрэглэгчийн тоо гэх мэт ерөнхий мэдээлэл харуулна.</p>
+          <p>
+            Энд захиалгын статистик, хэрэглэгчийн тоо гэх мэт ерөнхий мэдээлэл
+            харуулна.
+          </p>
           <v-row>
             <v-col cols="12" md="6">
               <v-card class="mb-4">
                 <v-card-title>Хоолны захиалгын тоо (ихээс бага)</v-card-title>
                 <v-card-text>
                   <v-list>
-                    <v-list-item v-for="stat in foodStatsSorted" :key="stat.foodId">
+                    <v-list-item
+                      v-for="stat in foodStatsSorted"
+                      :key="stat.foodId"
+                    >
                       <v-list-item-content>
                         <v-list-item-title>
                           {{ stat.name }}
-                          <v-chip color="primary" class="ml-2">{{ stat.count }} удаа</v-chip>
+                          <v-chip color="primary" class="ml-2"
+                            >{{ stat.count }} удаа</v-chip
+                          >
                         </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
@@ -367,11 +419,11 @@ async function fetchUsers() {
 onMounted(fetchUsers);
 
 // Food stats state
-const foodStats = ref([]) // [{foodId, name, count}]
-const foodStatsSorted = ref([])
+const foodStats = ref([]); // [{foodId, name, count}]
+const foodStatsSorted = ref([]);
 
-const foodChart = ref(null)
-let chartInstance = null
+const foodChart = ref(null);
+let chartInstance = null;
 
 // Fetch food stats from backend
 async function fetchFoodStats() {
@@ -403,7 +455,7 @@ async function drawChart() {
   if (!foodChart.value) return;
   if (!window.Chart) {
     // Lazy load Chart.js if not loaded
-    await import('chart.js/auto');
+    await import("chart.js/auto");
   }
   if (chartInstance) {
     chartInstance.destroy();

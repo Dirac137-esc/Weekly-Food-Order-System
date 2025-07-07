@@ -83,7 +83,7 @@
             <!-- Захиалах цаг -->
             <v-btn-toggle v-model="orderTime" class="mb-4" rounded group>
               <v-btn value="now">Яг одоо</v-btn>
-              <v-btn value="schedule">Урьдчилж</v-btn>
+              <v-btn value="schedule">Урьдчилж авах</v-btn>
             </v-btn-toggle>
 
             <!-- Сагс -->
@@ -345,7 +345,7 @@
                 color="primary"
                 class="mt-4"
                 :disabled="cartStore.cart.size === 0"
-                @click="toStatus"
+                @click="order"
               >
                 Төлбөр төлөх
               </v-btn>
@@ -371,6 +371,7 @@ const step = ref(1);
 const orderType = ref<"delivery" | "pickup">("delivery");
 const orderTime = ref<"now" | "schedule">("now");
 const vatType = ref<"person" | "company">("person");
+const additionalNote = ref();
 
 // Байршлын мэдээлэл
 const address = ref({
@@ -406,6 +407,41 @@ const coupons = ref([
 ]);
 const selectedCoupons = ref<string[]>([]);
 const orderNotes = ref("");
+
+function order() {
+  let ordered_foods = [];
+  for (const [key, value] of cartStore.cart) {
+    ordered_foods.push({
+      date: `${value.item}`,
+      food: key,
+      qty: value.quantity,
+    });
+  }
+  let date = new Date(
+    `${new Date().getFullYear()}-
+      ${new Date().getMonth() + 1}-
+      ${new Date().getDate()}`
+  );
+  console.log(date.toString());
+  console.log(date.toISOString());
+  fetch(`https://backend-production-88df.up.railway.app/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      date: ``,
+      items: ordered_foods,
+      totalCost: totalAmount,
+      location: {
+        longtitude: `${address.value.lng}`,
+        latitude: `${address.value.lat}`,
+        address: `${address.value.name} + " " +  {address.value.details} `,
+        additionalNote: `additionalNote`, // additionalNote is just placeholder
+      },
+    }),
+  });
+}
 
 // Байршлын нэрийг авах функц
 async function getLocationName(lat: number, lng: number) {
@@ -501,8 +537,8 @@ const cartItemCount = computed(() =>
 
 const totals = computed(() => {
   const subtotal = cartStore.total;
-  const minFee = subtotal < 15000 ? 1500 : 0;
-  const deliveryFee = orderType.value === "delivery" ? 1100 : 0;
+  const minFee = subtotal < 0 ? 0 : 0;
+  const deliveryFee = orderType.value === "delivery" ? 0 : 0;
   const discount = totalDiscount.value;
   const vat = vatType.value === "company" ? Math.round(subtotal * 0.1) : 0;
 
