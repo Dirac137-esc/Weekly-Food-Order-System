@@ -34,7 +34,7 @@
           :max="6"
           :step="1"
           :ticks="daysMn"
-          :color="sliderday == today ? 'success' : 'primary'"
+          :color="sliderday === today ? 'success' : 'primary'"
           density="compact"
           show-ticks="always"
           thumb-size="15"
@@ -202,13 +202,4 @@ function goCart() {
   font-family: "JetBrains Mono", sans-serif;
 }
 
-.v-slider-thumb {
-  transition: 0.5s ease !important;
-  transition-property: left, transform !important;
-}
-
-.v-slider-track__fill {
-  transition: 0.5s ease !important;
-  transition-property: width, transform !important;
-}
 </style>

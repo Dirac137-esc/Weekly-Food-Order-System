@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from "vue";
-import { useCartStore } from "../stores/cart";
+import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
 import L from 'leaflet';
 
@@ -78,9 +78,6 @@ async function getLocationName(lat: number, lng: number) {
     address.value.loading = true;
     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch location data');
-    }
 
     const data = await response.json();
 
@@ -217,7 +214,7 @@ const coupons = ref([
   { id: 'coupon3', label: 'Төрсөн өдрийн урамшуулал', description: 'Төрсөн өдөр', amount: 7000 }
 ]);
 const selectedCoupons = ref<string[]>([]);
-const orderNotes = ref("");
+
 
 function toggleCoupon(id: string) {
   const index = selectedCoupons.value.indexOf(id);
@@ -249,7 +246,7 @@ const totalWithDiscount = computed(() => {
 
                 <v-stepper v-model="step" class="mb-8 elevation-0 bg-transparent" hide-actions>
                   <v-stepper-header class="elevation-0 bg-transparent">
-                    <v-stepper-step :complete="step > 1" step="1" color="primary" class="pa-4">
+                    <v-stepper :complete="step > 1" step="1" color="primary" class="pa-4">
                       <template #icon>
                         <v-avatar :color="step >= 1 ? 'primary' : 'grey-lighten-2'" size="48" class="elevation-4">
                           <v-icon v-if="step > 1" color="white" size="20">
@@ -264,11 +261,11 @@ const totalWithDiscount = computed(() => {
                         <div class="text-subtitle-1 font-weight-bold">Захиалга</div>
                         <div class="text-caption text-grey">Order Items</div>
                       </div>
-                    </v-stepper-step>
+                    </v-stepper>
 
                     <v-divider class="mx-4"></v-divider>
 
-                    <v-stepper-step :complete="step > 2" step="2" color="primary" class="pa-4">
+                    <v-stepper :complete="step > 2" step="2" color="primary" class="pa-4">
                       <template #icon>
                         <v-avatar :color="step >= 2 ? 'primary' : 'grey-lighten-2'" size="48" class="elevation-4">
                           <v-icon v-if="step > 2" color="white" size="20">
@@ -283,11 +280,11 @@ const totalWithDiscount = computed(() => {
                         <div class="text-subtitle-1 font-weight-bold">Төлбөр</div>
                         <div class="text-caption text-grey">Payment</div>
                       </div>
-                    </v-stepper-step>
+                    </v-stepper>
 
                     <v-divider class="mx-4"></v-divider>
 
-                    <v-stepper-step step="3" color="primary" class="pa-4">
+                    <v-stepper step="3" color="primary" class="pa-4">
                       <template #icon>
                         <v-avatar :color="step >= 3 ? 'primary' : 'grey-lighten-2'" size="48" class="elevation-4">
                           <v-icon v-if="step > 3" color="white" size="20">
@@ -302,7 +299,7 @@ const totalWithDiscount = computed(() => {
                         <div class="text-subtitle-1 font-weight-bold">Хянах</div>
                         <div class="text-caption text-grey">Review</div>
                       </div>
-                    </v-stepper-step>
+                    </v-stepper>
                   </v-stepper-header>
                 </v-stepper>
 
@@ -647,24 +644,7 @@ const totalWithDiscount = computed(() => {
   font-family: "JetBrains Mono", sans-serif;
 }
 
-.v-main {
-  background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
-  min-height: 100vh;
-  position: relative;
-}
-.v-main::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url('https://www.transparenttextures.com/patterns/cubes.png');
-  opacity: 0.08;
-  z-index: 0;
-  pointer-events: none;
-}
-.v-container {
-  position: relative;
-  z-index: 1;
-}
+
 
 .animate-pulse {
   animation: pulse 0.6s ease-in-out;
@@ -692,18 +672,9 @@ const totalWithDiscount = computed(() => {
   transition-duration: 300ms;
 }
 
-.v-card:hover {
-  transform: translateY(-2px);
-}
 
-.v-btn:hover {
-  transform: translateY(-1px);
-}
 
 @media (max-width: 960px) {
-  .v-stepper-step {
-    padding: 8px !important;
-  }
 }
 
 .coupon-card {
@@ -748,21 +719,9 @@ const totalWithDiscount = computed(() => {
   background: #f5f5f5;
 }
 
-:deep(.leaflet-container) {
-  width: 100% !important;
-  height: 100% !important;
-  font-family: inherit;
-  border-radius: 10px;
-}
 
-:deep(.leaflet-control-container) {
-  font-family: inherit;
-}
 
-:deep(.leaflet-popup-content-wrapper) {
-  border-radius: 8px;
-  font-family: inherit;
-}
+
 
 @media (max-width: 768px) {
   .map-wrapper {
@@ -770,41 +729,5 @@ const totalWithDiscount = computed(() => {
   }
 }
 
-.v-card.elevation-12 {
-  background: linear-gradient(120deg, #f5faff 60%, #e3f0ff 100%);
-  border-radius: 24px;
-  box-shadow: 0 6px 32px #1976d220;
-}
 
-.v-card.elevation-4 {
-  background: #fafdff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px #1976d220;
-  border: 1px solid #e3e7ee;
-}
-.v-card.elevation-4:hover {
-  box-shadow: 0 6px 24px #1976d240;
-  border-color: #90caf9;
-}
-
-.v-btn.mt-6 {
-  transition: box-shadow 0.2s, transform 0.2s;
-  box-shadow: 0 2px 8px #1976d220;
-}
-.v-btn.mt-6:hover {
-  box-shadow: 0 6px 24px #1976d240;
-  transform: translateY(-2px) scale(1.03);
-}
-
-.v-btn[icon] {
-  transition: transform 0.1s;
-}
-.v-btn[icon]:active {
-  transform: scale(1.15);
-}
-
-.v-stepper-step .v-avatar {
-  box-shadow: 0 2px 8px #1976d220;
-  border: 2px solid #fff;
-}
 </style>

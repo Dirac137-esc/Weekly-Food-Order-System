@@ -200,7 +200,7 @@ function registerWithFacebook() { alert("Facebook-р бүртгүүлэх"); }
 
 <style scoped>
 html,body { overflow:hidden!important;height:100vh!important;margin:0;padding:0;}
-.v-container { min-height:100vh!important;height:100vh!important;overflow:hidden;padding-top:0!important;}
+
 .auth-bg {
   background-image:url("/zurag/back-zurag.jpg");
   background-size:cover;
@@ -217,20 +217,17 @@ html,body { overflow:hidden!important;height:100vh!important;margin:0;padding:0;
   background:rgba(0,0,0,0.45);z-index:1;pointer-events:none;
 }
 .left-side { max-width:500px;pointer-events:auto;}
-.slide-fade-enter-active,.slide-fade-leave-active{transition:all 0.4s cubic-bezier(0.55,0,0.1,1);}
-.slide-fade-enter-from{opacity:0;transform:translateX(40px);}
-.slide-fade-leave-to{opacity:0;transform:translateX(-40px);}
+
 body{font-family:"Noto Sans",sans-serif;}
 .quote-col{position:fixed;left:0;top:0;width:50vw;height:100vh;align-items:center;justify-content:center;display:flex;background:transparent;z-index:2;pointer-events:none;}
 .toggle-btn,.main-action-btn,.forgot-btn,.social-btn{text-transform:none!important;letter-spacing:normal!important;}
 .right-card,.auth-card{border-radius:2rem!important;overflow:hidden;}
 .auth-card{box-shadow:0 8px 32px 0 rgba(31,38,135,0.15);min-height:unset!important;width:100%;}
-.action-section{margin-top:32px;padding:24px 16px 8px 16px;background:rgba(255,255,255,0.85);border-radius:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);display:flex;flex-direction:column;gap:12px;}
+
 .action-section-outside{margin-top:48px;padding:24px 16px 16px 16px;background:rgba(255,255,255,0.85);border-radius:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);width:100%;max-width:600px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;gap:12px;}
 .social-btn{margin-bottom:10px;}
-.social-title{font-size:1.08rem;font-weight:600;color:#333;margin-bottom:12px;text-align:center;}
+
 @media (max-width:960px){
-  html,body,.auth-bg,.v-container{overflow:auto!important;height:auto!important;min-height:100vh!important;}
   .quote-col{display:none!important;}
   .right-card,.auth-card,.action-section-outside{max-width:98vw!important;margin:0 auto!important;border-radius:1rem!important;padding:12px 4px!important;min-height:unset!important;}
   .mr-5,.mr-10{margin-right:0!important;}
@@ -240,6 +237,5 @@ body{font-family:"Noto Sans",sans-serif;}
   [style*="margin-left: 50vw;"]{margin-left:0!important;}
 }
 @media (max-width:960px){
-  .action-section,.action-section-outside{padding:16px 4px 4px 4px;border-radius:1rem;max-width:98vw;}
 }
 </style>

@@ -365,13 +365,13 @@ import L from "leaflet";
 
 const cartStore = useCartStore();
 const router = useRouter();
-const step = ref(1);
+
 
 // Хувируулах утгууд
 const orderType = ref<"delivery" | "pickup">("delivery");
 const orderTime = ref<"now" | "schedule">("now");
 const vatType = ref<"person" | "company">("person");
-const additionalNote = ref();
+
 
 // Байршлын мэдээлэл
 const address = ref({
@@ -451,9 +451,6 @@ async function getLocationName(lat: number, lng: number) {
       `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch location data");
-    }
 
     const data = await response.json();
 
@@ -519,10 +516,6 @@ function toggleCoupon(id: string) {
   }
 }
 
-// Захиалгын төлөв рүү шилжих функц
-function toStatus() {
-  router.push("/status");
-}
 
 // Computed утгууд
 const totalDiscount = computed(() =>

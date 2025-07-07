@@ -21,14 +21,14 @@
                   </v-avatar>
                 </template>
 
-                <v-list-item-content>
+                <v-list-item>
                   <v-list-item-title class="text-subtitle-1 font-weight-medium">
                     {{ food.name }}
                   </v-list-item-title>
                   <v-list-item-subtitle class="text-grey-darken-1">
                     ₮{{ food.price.toLocaleString() }}
                   </v-list-item-subtitle>
-                </v-list-item-content>
+                </v-list-item>
 
                 <v-list-item-action>
                   <v-btn
@@ -236,11 +236,7 @@ export default {
 
   },
   methods: {
-    capitalize(s) {
-      return s.charAt(0).toUpperCase() + s.slice(1)
-    },
-
-    // --- FOOD CRUD ---
+// --- FOOD CRUD ---
     async fetchFoods() {
       try {
         const { data } = await axios.get(`${API_BASE}/foods`, { headers: this.headers })
@@ -306,7 +302,7 @@ export default {
         alert('Меню хадгалагдлаа')
         await this.loadMenuForWeek()
       } catch (err) {
-        // 3) Show the full error response in console
+
         console.error('❌ Хадгалахад алдаа гарлаа:', err.response || err)
         alert(
             'Хадгалалт Амжилтгүй.\n' +
@@ -345,7 +341,7 @@ export default {
       try {
         await axios.delete(`${API_BASE}/foods/${foodId}`, { headers: this.headers })
         await this.fetchFoods()
-        // also remove from UI if on calendar
+
         this.weekDays.forEach(d => {
           d.foods = d.foods.filter(f => f._id !== foodId)
         })
