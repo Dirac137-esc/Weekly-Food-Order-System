@@ -107,13 +107,37 @@
           </v-row>
         </div>
         <div v-else-if="selected === 'dashboard'">
-          <v-alert type="info" border="start" class="mb-4"
-            >Админ самбар тавтай морил!</v-alert
-          >
-          <p>
-            Энд захиалгын статистик, хэрэглэгчийн тоо гэх мэт ерөнхий мэдээлэл
-            харуулна.
-          </p>
+          <v-alert type="info" border="start" class="mb-4">
+            Админ самбар тавтай морил!
+          </v-alert>
+          <p>Энд захиалгын статистик, хэрэглэгчийн тоо гэх мэт ерөнхий мэдээлэл харуулна.</p>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-card class="mb-4">
+                <v-card-title>Хоолны захиалгын тоо (ихээс бага)</v-card-title>
+                <v-card-text>
+                  <v-list>
+                    <v-list-item v-for="stat in foodStatsSorted" :key="stat.foodId">
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          {{ stat.name }}
+                          <v-chip color="primary" class="ml-2">{{ stat.count }} удаа</v-chip>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-card class="mb-4">
+                <v-card-title>Захиалгын график</v-card-title>
+                <v-card-text>
+                  <canvas ref="foodChart" height="220"></canvas>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
         </div>
         <div v-else-if="selected === 'users'">
           <v-alert type="success" border="start" class="mb-4"
@@ -169,7 +193,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 
 const menu = [
   { key: "dashboard", title: "Самбар", icon: "mdi-view-dashboard" },
@@ -341,6 +365,76 @@ async function fetchUsers() {
 }
 // Автоматаар хэрэглэгчдийн жагсаалтыг ачааллах
 onMounted(fetchUsers);
+
+// Food stats state
+const foodStats = ref([]) // [{foodId, name, count}]
+const foodStatsSorted = ref([])
+
+const foodChart = ref(null)
+let chartInstance = null
+
+// Fetch food stats from backend
+async function fetchFoodStats() {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(
+      "https://backend-production-88df.up.railway.app/foods/stats",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await res.json();
+    if (res.ok && Array.isArray(data)) {
+      foodStats.value = data;
+      // Sort by count desc
+      foodStatsSorted.value = [...data].sort((a, b) => b.count - a.count);
+      await nextTick();
+      drawChart();
+    }
+  } catch (e) {
+    // ignore error for now
+  }
+}
+
+// Draw chart using Chart.js (add Chart.js to your project)
+async function drawChart() {
+  if (!foodChart.value) return;
+  if (!window.Chart) {
+    // Lazy load Chart.js if not loaded
+    await import('chart.js/auto');
+  }
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+  chartInstance = new window.Chart(foodChart.value.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: foodStatsSorted.value.map((f) => f.name),
+      datasets: [
+        {
+          label: "Захиалгын тоо",
+          data: foodStatsSorted.value.map((f) => f.count),
+          backgroundColor: "#1976d2",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+      },
+    },
+  });
+}
+
+onMounted(() => {
+  fetchFoodStats();
+});
 </script>
 
 <style scoped>

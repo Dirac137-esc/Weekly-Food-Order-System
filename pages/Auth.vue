@@ -205,7 +205,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "#imports";
 
@@ -229,6 +229,15 @@ const loginResult = ref("");
 
 const router = useRouter();
 
+// When mounting, auto-fill if remembered
+onMounted(() => {
+  const rememberedEmail = localStorage.getItem("rememberedEmail");
+  if (rememberedEmail) {
+    loginEmail.value = rememberedEmail;
+    loginRememberMe.value = true;
+  }
+});
+
 // Login
 async function login() {
   loginResult.value = "";
@@ -247,11 +256,15 @@ async function login() {
     const result = await response.json();
     if (response.ok) {
       loginResult.value = "Амжилттай нэвтэрлээ!";
-      // Store user info
       userStore.saveUser(result.user);
-      // Store token
       if (result.token) {
         localStorage.setItem("token", result.token);
+      }
+      // Remember me logic
+      if (loginRememberMe.value) {
+        localStorage.setItem("rememberedEmail", loginEmail.value);
+      } else {
+        localStorage.removeItem("rememberedEmail");
       }
     } else {
       loginResult.value = "Алдаа: " + (result.message || "Нэвтрэхэд амжилтгүй");
