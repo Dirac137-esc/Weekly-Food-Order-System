@@ -424,7 +424,7 @@ function order() {
   );
   console.log(date.toString());
   console.log(date.toISOString());
-  fetch(`https://backend-production-88df.up.railway.app/orders`, {
+  fetch(`https://backend-production-25f11.up.railway.app/orders`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -289,7 +289,7 @@ async function saveProfile() {
   
   try {
     const token = localStorage.getItem('token')
-    const response = await fetch(`https://backend-production-88df.up.railway.app/users/${user.value.id}`, {
+    const response = await fetch(`https://backend-production-25f11.up.railway.app/users/${user.value.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -341,7 +341,7 @@ async function onAvatarSelected(event) {
     const formData = new FormData()
     formData.append('avatar', file)
     // Change endpoint if your backend uses a different one
-    const response = await fetch(`https://backend-production-88df.up.railway.app/users/${userStore.user.value.id}/avatar`, {
+    const response = await fetch(`https://backend-production-25f11.up.railway.app/users/${userStore.user.value.id}/avatar`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`

@@ -171,7 +171,7 @@ async function fetchData() {
   // console.log(`Bearer ${localStorage.getItem("token")}`);
   try {
     const res = await fetch(
-      "https://backend-production-88df.up.railway.app/menus/this-week",
+      "https://backend-production-25f11.up.railway.app/menus/this-week",
       {
         method: "GET",
         headers: {

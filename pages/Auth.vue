@@ -243,7 +243,7 @@ async function login() {
   loginResult.value = "";
   try {
     const response = await fetch(
-      "https://backend-production-88df.up.railway.app/auth/login",
+      "https://backend-production-25f11.up.railway.app/auth/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -279,7 +279,7 @@ async function register() {
   registerResult.value = "";
   try {
     const response = await fetch(
-      "https://backend-production-88df.up.railway.app/auth/register",
+      "https://backend-production-25f11.up.railway.app/auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
