@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import AdminSidebar from '~/components/Admin/Sidebar.vue'
-import Dashboard from '~/components/Admin/Dashboard.vue'
+import Dashboard from '~/components/Admin/dashboard.vue'
 import Users from '~/components/Admin/Users.vue'
 import Orders from '~/components/Admin/Orders.vue'
 import Menu from '~/components/Admin/Menu.vue'

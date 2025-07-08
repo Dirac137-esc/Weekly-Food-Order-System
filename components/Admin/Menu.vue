@@ -205,8 +205,8 @@
 
 <script>
 import axios from "axios";
-const config = useRuntimeConfig();
-const API_BASE = config.public.apiBase;
+
+const API_BASE = "https://backend-production-25f11.up.railway.app"
 
 export default {
   data() {
@@ -248,6 +248,8 @@ export default {
     this.fetchFoods();
     this.setDefaultWeek();
     this.loadMenuForWeek();
+    const config = useRuntimeConfig();
+    this.API_BASE = config.public.apiBase;
   },
   methods: {
     // --- FOOD CRUD ---

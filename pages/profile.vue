@@ -63,12 +63,12 @@
             <v-card class="info-banner mb-4" color="orange-lighten-5" elevation="1">
               <v-list>
                 <v-list-item>
-                  <v-list-item-icon><v-icon color="primary">mdi-phone</v-icon></v-list-item-icon>
+                  <v-list-item><v-icon color="primary">mdi-phone</v-icon></v-list-item>
                   <v-list-item-title>{{ userStore.user?.phone || 'Утас оруулаагүй' }}</v-list-item-title>
                 </v-list-item>
                 <v-divider />
                 <v-list-item>
-                  <v-list-item-icon><v-icon color="primary">mdi-map-marker</v-icon></v-list-item-icon>
+                  <v-list-item><v-icon color="primary">mdi-map-marker</v-icon></v-list-item>
                   <v-list-item-title>{{ userStore.user?.address || 'Хаяг оруулаагүй' }}</v-list-item-title>
                 </v-list-item>
               </v-list>

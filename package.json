@@ -15,6 +15,7 @@
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.11.1",
     "@remotion/layout-utils": "^4.0.322",
+    "apexcharts": "^4.7.0",
     "axios": "^1.10.0",
     "chart.js": "^4.5.0",
     "dayjs": "^1.11.13",
@@ -28,6 +29,7 @@
     "vue": "^3.5.17",
     "vue-google-signin-button": "^1.0.4",
     "vue-router": "^4.5.1",
+    "vue3-apexcharts": "^1.8.0",
     "vue3-google-signin": "^2.1.1",
     "vuedraggable": "^2.24.3"
   },
