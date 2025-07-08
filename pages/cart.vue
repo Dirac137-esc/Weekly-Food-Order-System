@@ -3,11 +3,11 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
 
-declare global {
-  interface Window {
-    mapInstance?: L.Map;
-  }
-}
+// declare global {
+//   interface Window {
+//     mapInstance?: L.Map;
+//   }
+// }
 
 const cartStore = useCartStore();
 const step = ref(1);
@@ -137,11 +137,11 @@ async function initializeMap() {
     }
 
     // Өмнөх map instance устгах
-    if (window.mapInstance) {
-      console.log("Өмнөх map instance устгаж байна...");
-      window.mapInstance.remove();
-      window.mapInstance = undefined;
-    }
+    // if (window.mapInstance) {
+    //   console.log("Өмнөх map instance устгаж байна...");
+    //   window.mapInstance.remove();
+    //   window.mapInstance = undefined;
+    // }
 
     // Container бэлдэх
     const mapContainer = mapRef.value;
@@ -157,7 +157,7 @@ async function initializeMap() {
       attributionControl: true,
     });
 
-    window.mapInstance = map;
+    // window.mapInstance = map;
 
     LeafletLib.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors",
@@ -208,12 +208,12 @@ onMounted(async () => {
   }, 500);
 });
 
-onUnmounted(() => {
-  if (window.mapInstance) {
-    window.mapInstance.remove();
-    window.mapInstance = undefined;
-  }
-});
+// onUnmounted(() => {
+//   if (window.mapInstance) {
+//     window.mapInstance.remove();
+//     window.mapInstance = undefined;
+//   }
+// });
 
 const coupons = ref([
   {
