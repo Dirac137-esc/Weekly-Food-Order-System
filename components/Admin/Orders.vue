@@ -18,7 +18,7 @@
         </v-alert>
 
         <div class="d-flex justify-space-between align-center mb-4">
-          <h3 class="text-h6 my-3">Нийт захиалга: {{ orders.length }}</h3>
+          <h3 class="text-h6">Нийт захиалга: {{ orders.length }}</h3>
           <v-btn
             color="primary"
             @click="fetchOrders"
@@ -36,6 +36,7 @@
               <th>Долоо хоног</th>
               <th>Хэрэглэгч</th>
               <th>Нийт дүн</th>
+              <th>Захиалсан хоол</th>
               <th>Төлбөр</th>
               <th>Хүргэлт</th>
               <th>Хаяг</th>
@@ -44,11 +45,38 @@
           <tbody>
             <tr v-for="order in orders" :key="order._id">
               <td>{{ formatDate(order.date) }}</td>
-              <td>{{ order.weekday }}</td>
+              <td>{{ mongolianWeekdays[order.weekday] || "—" }}</td>
+
               <td>{{ order.user?.name || order.user?.email }}</td>
               <td>{{ order.totalCost.toLocaleString() }}₮</td>
 
-              <!-- Payment Status -->
+              <td>
+                <div v-if="order.items?.length">
+                  <div
+                    v-for="(item, index) in order.items"
+                    :key="index"
+                    class="d-flex align-center mb-1"
+                  >
+                    <v-chip
+                      class="me-2"
+                      color="primary"
+                      size="small"
+                      label
+                      text-color="white"
+                    >
+                      {{ item.food?.name || "—" }}
+                    </v-chip>
+                    <span
+                      class="ms-1 px-2 py-1 text-caption rounded bg-grey-lighten-3 text-grey-darken-3"
+                      style="font-weight: 500; line-height: 1"
+                    >
+                      ×{{ item.qty }}
+                    </span>
+                  </div>
+                </div>
+                <div v-else>—</div>
+              </td>
+
               <td style="max-width: 140px">
                 <v-select
                   v-model="order.paymentStatus"
@@ -100,6 +128,7 @@
                   </template>
                 </v-select>
               </td>
+
               <td>{{ order.location?.address || "—" }}</td>
             </tr>
           </tbody>
@@ -122,6 +151,15 @@ interface Order {
   deliveryStatus: string;
   location?: { address: string };
 }
+const mongolianWeekdays: Record<string, string> = {
+  monday: "Даваа",
+  tuesday: "Мягмар",
+  wednesday: "Лхагва",
+  thursday: "Пүрэв",
+  friday: "Баасан",
+  saturday: "Бямба",
+  sunday: "Ням",
+};
 
 const orders = ref<Order[]>([]);
 const loading = ref(false);
