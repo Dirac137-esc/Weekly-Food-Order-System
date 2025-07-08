@@ -22,11 +22,12 @@ const formData = ref({
 
 const animateAdd = ref<string | null>(null);
 const showSuccess = ref(false);
-
 const totalItems = computed(() => {
   let total = 0;
-  for (const [_, { quantity }] of cartStore.cart) {
-    total += quantity;
+  for (const dayItems of cartStore.cart.values()) {
+    for (const { quantity } of dayItems) {
+      total += quantity;
+    }
   }
   return total;
 });
@@ -49,13 +50,14 @@ const onCardNumberInput = (event: Event) => {
   formData.value.cardNumber = target.value;
 };
 
-const addItem = (id: string, item: any) => {
-  cartStore.addItem(id, item);
-  animateAdd.value = id;
-  setTimeout(() => {
-    animateAdd.value = null;
-  }, 600);
-};
+// const addItem = (id: string, item: any) => {
+//   cartStore.addItem(id, item); // Ямар өдөр хоол нэмэх вээ гэдэг аргумент дутуу байгаа
+//   // Тэрийг нь бараг menus/this-week-ээс fetch хийж байгаад хийчихэж болох байх аа гэж бодож байна .
+//   animateAdd.value = id;
+//   setTimeout(() => {
+//     animateAdd.value = null;
+//   }, 600);
+// };
 
 function toStatus() {
   showSuccess.value = true;
@@ -202,10 +204,10 @@ async function initializeMap() {
 onMounted(async () => {
   console.log("Component mount хийгдлээ");
 
-  await nextTick();
-  setTimeout(async () => {
-    await initializeMap();
-  }, 500);
+  //   await nextTick();
+  //   setTimeout(async () => {
+  //     await initializeMap();
+  //   }, 500);
 });
 
 // onUnmounted(() => {
@@ -405,130 +407,139 @@ const totalWithDiscount = computed(() => {
 
                       <v-card-text class="pa-6">
                         <v-row>
-                          <v-col
-                            v-for="[_id, { item, quantity }] in cartStore.cart"
-                            :key="_id"
-                            cols="12"
+                          <template
+                            v-for="[day, dayItems] in cartStore.cart"
+                            :key="day"
                           >
-                            <v-card
-                              class="elevation-4 rounded-lg transition-all duration-300"
-                              :class="{
-                                'animate-pulse bg-success-lighten-5':
-                                  animateAdd === _id,
-                              }"
-                              color="surface"
-                              hover
+                            <v-col
+                              v-for="({ item, quantity }, index) in dayItems"
+                              :key="item.id || index"
+                              cols="12"
                             >
-                              <v-card-text class="pa-4">
-                                <v-row align="center" no-gutters>
-                                  <v-col cols="12" sm="3" class="text-center">
-                                    <div
-                                      class="position-relative d-inline-block"
-                                    >
-                                      <v-img
-                                        :src="
-                                          item.imageUrl ||
-                                          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'
-                                        "
-                                        height="100"
-                                        width="100"
-                                        class="rounded-lg elevation-3"
-                                        cover
-                                      />
+                              <v-card
+                                class="elevation-4 rounded-lg transition-all duration-300"
+                                :class="{
+                                  'animate-pulse bg-success-lighten-5':
+                                    animateAdd === item.id,
+                                }"
+                                color="surface"
+                                hover
+                              >
+                                <v-card-text class="pa-4">
+                                  <v-row align="center" no-gutters>
+                                    <v-col cols="12" sm="3" class="text-center">
+                                      <div
+                                        class="position-relative d-inline-block"
+                                      >
+                                        <v-img
+                                          :src="
+                                            item.imageUrl ||
+                                            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'
+                                          "
+                                          height="100"
+                                          width="100"
+                                          class="rounded-lg elevation-3"
+                                          cover
+                                        />
+                                        <v-chip
+                                          color="amber"
+                                          size="small"
+                                          class="position-absolute"
+                                          style="top: -8px; right: -8px"
+                                          prepend-icon="mdi-star"
+                                        >
+                                          4.8
+                                        </v-chip>
+                                      </div>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="5" class="pa-4">
+                                      <div
+                                        class="text-h6 font-weight-bold mb-2"
+                                      >
+                                        {{ item.name }}
+                                      </div>
+                                      <div class="text-body-2 text-grey mb-2">
+                                        <v-icon size="small" class="me-1"
+                                          >mdi-leaf</v-icon
+                                        >
+                                        Орц:
+                                        {{
+                                          item.ingredients?.join(", ") ||
+                                          "Органик найрлага"
+                                        }}
+                                      </div>
                                       <v-chip
-                                        color="amber"
+                                        color="primary"
                                         size="small"
-                                        class="position-absolute"
-                                        style="top: -8px; right: -8px"
-                                        prepend-icon="mdi-star"
+                                        variant="outlined"
+                                        class="mt-1"
                                       >
-                                        4.8
+                                        {{ quantity }} ширхэг
                                       </v-chip>
-                                    </div>
-                                  </v-col>
+                                    </v-col>
 
-                                  <v-col cols="12" sm="5" class="pa-4">
-                                    <div class="text-h6 font-weight-bold mb-2">
-                                      {{ item.name }}
-                                    </div>
-                                    <div class="text-body-2 text-grey mb-2">
-                                      <v-icon size="small" class="me-1"
-                                        >mdi-leaf</v-icon
-                                      >
-                                      Орц:
-                                      {{
-                                        item.ingredients?.join(", ") ||
-                                        "Органик найрлага"
-                                      }}
-                                    </div>
-                                    <v-chip
-                                      color="primary"
-                                      size="small"
-                                      variant="outlined"
-                                      class="mt-1"
-                                    >
-                                      {{ quantity }} ширхэг
-                                    </v-chip>
-                                  </v-col>
-
-                                  <v-col cols="12" sm="4" class="pa-4">
-                                    <div class="d-flex flex-column align-end">
-                                      <v-card
-                                        class="d-flex align-center pa-2 mb-3 elevation-2"
-                                        color="grey-lighten-4"
-                                        rounded="xl"
-                                      >
-                                        <v-btn
+                                    <v-col cols="12" sm="4" class="pa-4">
+                                      <div class="d-flex flex-column align-end">
+                                        <v-card
+                                          class="d-flex align-center pa-2 mb-3 elevation-2"
+                                          color="grey-lighten-4"
+                                          rounded="xl"
+                                        >
+                                          <!-- <v-btn
                                           icon="mdi-minus"
                                           size="small"
                                           color="error"
                                           variant="text"
                                           @click="cartStore.decreaseItem(_id)"
-                                        />
-                                        <v-chip
-                                          class="mx-2 font-weight-bold"
-                                          color="primary"
-                                          size="small"
-                                        >
-                                          {{ quantity }}
-                                        </v-chip>
-                                        <v-btn
+                                        /> -->
+                                          <v-chip
+                                            class="mx-2 font-weight-bold"
+                                            color="primary"
+                                            size="small"
+                                          >
+                                            {{ quantity }}
+                                          </v-chip>
+                                          <!-- <v-btn
                                           icon="mdi-plus"
                                           size="small"
                                           color="success"
                                           variant="text"
                                           @click="addItem(_id, item)"
-                                        />
-                                      </v-card>
+                                        /> -->
+                                        </v-card>
 
-                                      <!-- Price -->
-                                      <div class="text-end mb-3">
-                                        <div
-                                          class="text-h6 font-weight-bold text-primary"
-                                        >
-                                          {{
-                                            formatPrice(item.price * quantity)
-                                          }}₮
+                                        <!-- Price -->
+                                        <div class="text-end mb-3">
+                                          <div
+                                            class="text-h6 font-weight-bold text-primary"
+                                          >
+                                            {{
+                                              formatPrice(
+                                                item.price * quantity
+                                              )
+                                            }}₮
+                                          </div>
+                                          <div class="text-caption text-grey">
+                                            {{ formatPrice(item.price) }}₮ each
+                                          </div>
                                         </div>
-                                        <div class="text-caption text-grey">
-                                          {{ formatPrice(item.price) }}₮ each
-                                        </div>
+
+                                        <!-- <v-btn
+                                          icon="mdi-close"
+                                          size="small"
+                                          color="error"
+                                          variant="text"
+                                          @click="cartStore.removeItem(item.id)"
+                                          class="elevation-2"
+                                        /> -->
                                       </div>
-
-                                      <v-btn
-                                        icon="mdi-close"
-                                        size="small"
-                                        color="error"
-                                        variant="text"
-                                        @click="cartStore.removeItem(_id)"
-                                        class="elevation-2"
-                                      />
-                                    </div>
-                                  </v-col>
-                                </v-row>
-                              </v-card-text>
-                            </v-card>
-                          </v-col>
+                                    </v-col>
+                                  </v-row>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+                          </template>
                         </v-row>
                       </v-card-text>
                     </v-card>
