@@ -362,6 +362,7 @@ import { ref, computed, onMounted } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
 import L from "leaflet";
+import axios, { Axios } from "axios";
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -406,38 +407,81 @@ const coupons = ref([
 const selectedCoupons = ref<string[]>([]);
 const orderNotes = ref("");
 
-function order() {
-  let ordered_foods = [];
-  for (const [key, value] of cartStore.cart) {
-    ordered_foods.push({
-      date: `${value.item}`,
-      food: key,
-      qty: value.quantity,
-    });
-  }
-  let date = new Date(
-    `${new Date().getFullYear()}-
-      ${new Date().getMonth() + 1}-
-      ${new Date().getDate()}`
-  );
-  console.log(date.toString());
-  console.log(date.toISOString());
-  fetch(`https://backend-production-25f11.up.railway.app/orders`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+let orderbyDays = new Map<string, any[]>();
+
+async function order() {
+  const token = localStorage.getItem("token");
+
+  /*
+        "weekDates": {
+        "monday": "2025-07-07",
+        "tuesday": "2025-07-08",
+        "wednesday": "2025-07-09",
+        "thursday": "2025-07-10",
+        "friday": "2025-07-11",
+        "saturday": "2025-07-12",
+        "sunday": "2025-07-13"
+             Date-ийг эндээс олж чадна гэхдээ тэр key-ийг олох шаардлагатай .
+
+
+        weekDates[days[new Date().getDay()]];
     },
-    body: JSON.stringify({
-      date: ``,
-      items: ordered_foods,
-      totalCost: totalAmount,
-      location: {
-        longtitude: `${address.value.lng}`,
-        latitude: `${address.value.lat}`,
-        address: `${address.value.name} + " " +  {address.value.details} `,
-        additionalNote: `additionalNote`, // additionalNote is just placeholder
+  */
+
+  const days = [
+    "monday", // 0 : sunday
+    "tuesday", // 1 : monday
+    "wednesday", // 2 : tuesday
+    "thursday", // 3 : wednesday
+    "friday", // 4 : thursday
+    "saturday", // 5 : friday
+    "sunday", // 6 : saturday
+  ];
+  const thisWeek = await useApi("/menus/this-week", "GET", "");
+  let day = new Date().getDay() - 1;
+  if (day === -1) {
+    day = 6;
+  }
+  const daysss = thisWeek.weekDates[days[day]];
+  console.log("Days : " + new Date(daysss).toISOString()); // Date is done
+
+  for (const [index, { item, quantity }] of cartStore.cart) {
+    for (const weekday of thisWeek.days) {
+      for (const food of weekday) {
+        if (food._id === index) {
+          let day = orderbyDays.get(`${weekday}`);
+          day?.push({ item, quantity });
+          orderbyDays.set(`${weekday}`, day);
+        }
+      }
+    }
+  }
+
+  // Миний олж авах ёстой зүйлс нь Date,  Items, totalCost , Location гэсэн зүйлс
+
+  const res = await fetch(
+    `https://backend-production-25f11.up.railway.app/orders`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    }),
+      body: JSON.stringify({
+        date: "2025-07-10T00:00:00.000Z",
+        items: [{ food: "6864a26e9b0b6c766082bbd0", qty: 2 }],
+        totalCost: 160,
+        location: {
+          latitude: 47.918,
+          longitude: 106.917,
+          address: "sav plaza",
+          additionalNote: "nemelt",
+        },
+      }),
+    }
+  );
+  res.json().then((ans) => {
+    console.log(ans);
   });
 }
 

@@ -100,7 +100,6 @@
                   </template>
                 </v-select>
               </td>
-
               <td>{{ order.location?.address || "—" }}</td>
             </tr>
           </tbody>
