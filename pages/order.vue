@@ -17,10 +17,23 @@
                 Байршлаа сонгох
               </div>
               <div
+                v-if="isMounted"
                 ref="mapRef"
                 id="map"
                 style="width: 100%; height: 300px; border-radius: 10px"
               ></div>
+              <div
+                v-else
+                class="map-loading d-flex align-center justify-center"
+                style="
+                  height: 300px;
+                  background-color: #f5f5f5;
+                  border-radius: 10px;
+                "
+              >
+                <v-progress-circular indeterminate color="primary" size="40" />
+                <span class="ml-2">Газрын зураг ачааллаж байна...</span>
+              </div>
               <div class="mt-3">
                 <div class="d-flex align-center">
                   <v-icon color="success" class="mr-2"
@@ -103,94 +116,72 @@
               </div>
               <div v-else>
                 <div
-                  v-for="[id, { item, quantity }] in Array.from(
-                    cartStore.cart.entries()
-                  )"
-                  :key="id"
-                  class="food-item-card mb-4 pa-3"
+                  v-for="[day, items] in Array.from(cartStore.cart.entries())"
+                  :key="day"
                 >
-                  <v-row
-                    no-gutters
-                    class="cart-item py-3 px-2 align-center hover:bg-grey-lighten-4 rounded-lg mb-2"
+                  <div
+                    v-for="({ item, quantity }, index) in items"
+                    :key="item.id || index"
+                    class="food-item-card mb-4 pa-3"
                   >
-                    <!-- Image -->
-                    <v-col cols="3">
-                      <v-img
-                        :src="item.imageUrl"
-                        height="70"
-                        class="rounded-lg"
-                        cover
-                      >
-                        <template #error>
-                          <div
-                            class="image-placeholder d-flex align-center justify-center grey-lighten-3 rounded-lg"
-                            style="height: 70px"
-                          >
-                            <v-icon size="40" color="grey-lighten-1"
-                              >mdi-food</v-icon
+                    <v-row
+                      no-gutters
+                      class="cart-item py-3 px-2 align-center hover:bg-grey-lighten-4 rounded-lg mb-2"
+                    >
+                      <!-- Image -->
+                      <v-col cols="3">
+                        <v-img
+                          :src="item.imageUrl"
+                          height="70"
+                          class="rounded-lg"
+                          cover
+                        >
+                          <template #error>
+                            <div
+                              class="image-placeholder d-flex align-center justify-center grey-lighten-3 rounded-lg"
+                              style="height: 70px"
                             >
-                          </div>
-                        </template>
-                        <template #placeholder>
-                          <div
-                            class="image-placeholder d-flex align-center justify-center"
-                            style="height: 70px"
-                          >
-                            <v-progress-circular
-                              indeterminate
-                              color="primary"
-                            />
-                          </div>
-                        </template>
-                      </v-img>
-                    </v-col>
+                              <v-icon size="40" color="grey-lighten-1"
+                                >mdi-food</v-icon
+                              >
+                            </div>
+                          </template>
+                          <template #placeholder>
+                            <div
+                              class="image-placeholder d-flex align-center justify-center"
+                              style="height: 70px"
+                            >
+                              <v-progress-circular
+                                indeterminate
+                                color="primary"
+                              />
+                            </div>
+                          </template>
+                        </v-img>
+                      </v-col>
 
-                    <!-- Info -->
-                    <v-col cols="6" class="pl-3">
-                      <div class="text-body-1 font-weight-bold">
-                        {{ item.name }}
-                      </div>
-                      <div class="text-caption text-grey-darken-1">
-                        {{ item.ingredients.join(", ") }}
-                      </div>
-                      <div class="text-caption">Ширхэг: {{ quantity }}</div>
-                    </v-col>
+                      <!-- Info -->
+                      <v-col cols="6" class="pl-3">
+                        <div class="text-body-1 font-weight-bold">
+                          {{ item.name }}
+                        </div>
+                        <div class="text-caption text-grey-darken-1">
+                          {{ item.ingredients?.join(", ") }}
+                        </div>
+                        <div class="text-caption">Ширхэг: {{ quantity }}</div>
+                      </v-col>
 
-                    <!-- Controls -->
-                    <v-col cols="3" class="text-right">
-                      <div class="d-flex justify-end align-center mb-1">
-                        <v-btn
-                          icon
-                          size="x-small"
-                          color="grey-darken-1"
-                          @click="cartStore.decreaseItem(id)"
-                        >
-                          <v-icon>mdi-minus</v-icon>
-                        </v-btn>
-                        <span class="mx-2 text-body-2">{{ quantity }}</span>
-                        <v-btn
-                          icon
-                          size="x-small"
-                          color="green"
-                          @click="cartStore.addItem(id, item)"
-                        >
-                          <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                      </div>
-                      <div class="font-weight-bold text-body-2 mb-1">
-                        {{ (item.price * quantity).toLocaleString() }}₮
-                      </div>
-                      <v-btn
-                        icon
-                        size="x-small"
-                        variant="text"
-                        color="red-darken-2"
-                        @click="cartStore.removeItem(id)"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
+                      <!-- Controls -->
+                      <v-col cols="3" class="text-right">
+                        <div class="d-flex justify-end align-center mb-1">
+                          <span class="mx-2 text-body-2">{{ quantity }}</span>
+                        </div>
+                        <div class="font-weight-bold text-body-2 mb-1">
+                          {{ (item.price * quantity).toLocaleString() }}₮
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </div>
                 </div>
               </div>
             </v-card>
@@ -358,14 +349,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
-import L from "leaflet";
-import axios, { Axios } from "axios";
 
 const cartStore = useCartStore();
 const router = useRouter();
+
+// Track if component is mounted (client-side only)
+const isMounted = ref(false);
 
 // Хувируулах утгууд
 const orderType = ref<"delivery" | "pickup">("delivery");
@@ -382,6 +374,34 @@ const address = ref({
 });
 
 const mapRef = ref<HTMLDivElement | null>(null);
+
+// Leaflet variables
+let L: any = null;
+let map: any = null;
+let marker: any = null;
+
+// Динамик Leaflet ачаалах функц
+async function loadLeaflet() {
+  if (typeof window === "undefined") return null;
+
+  try {
+    // Dynamic import for Leaflet
+    L = await import("leaflet");
+
+    // Import CSS if needed
+    if (!document.querySelector('link[href*="leaflet.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+
+    return L;
+  } catch (error) {
+    console.error("Failed to load Leaflet:", error);
+    return null;
+  }
+}
 
 // Купон болон захиалгын мэдээлэл
 const coupons = ref([
@@ -406,83 +426,123 @@ const coupons = ref([
 ]);
 const selectedCoupons = ref<string[]>([]);
 const orderNotes = ref("");
-
-let orderbyDays = new Map<string, any[]>();
-
 async function order() {
   const token = localStorage.getItem("token");
-
-  /*
-        "weekDates": {
-        "monday": "2025-07-07",
-        "tuesday": "2025-07-08",
-        "wednesday": "2025-07-09",
-        "thursday": "2025-07-10",
-        "friday": "2025-07-11",
-        "saturday": "2025-07-12",
-        "sunday": "2025-07-13"
-             Date-ийг эндээс олж чадна гэхдээ тэр key-ийг олох шаардлагатай .
-
-
-        weekDates[days[new Date().getDay()]];
-    },
-  */
-
-  const days = [
-    "monday", // 0 : sunday
-    "tuesday", // 1 : monday
-    "wednesday", // 2 : tuesday
-    "thursday", // 3 : wednesday
-    "friday", // 4 : thursday
-    "saturday", // 5 : friday
-    "sunday", // 6 : saturday
-  ];
-  const thisWeek = await useApi("/menus/this-week", "GET", "");
-  let day = new Date().getDay() - 1;
-  if (day === -1) {
-    day = 6;
+  if (!token) {
+    console.error("No authentication token found");
+    return;
   }
-  const daysss = thisWeek.weekDates[days[day]];
-  console.log("Days : " + new Date(daysss).toISOString()); // Date is done
 
-  for (const [index, { item, quantity }] of cartStore.cart) {
-    for (const weekday of thisWeek.days) {
-      for (const food of weekday) {
-        if (food._id === index) {
-          let day = orderbyDays.get(`${weekday}`);
-          day?.push({ item, quantity });
-          orderbyDays.set(`${weekday}`, day);
-        }
+  try {
+    const thisWeek = await useApi("/menus/this-week", "GET", "");
+
+    if (!thisWeek?.weekDates) {
+      throw new Error("Invalid week dates data from API");
+    }
+
+    const orderPromises = [];
+    const weekdays = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ];
+
+    for (const [weekday, cartItems] of cartStore.cart.entries()) {
+      // Validate weekday
+      console.log("weekday : " + weekday);
+      const dateStr = thisWeek.weekDates[weekdays[+weekday]];
+      console.log(dateStr);
+      // Parse and validate date
+      const dateObj = new Date(dateStr);
+      if (isNaN(dateObj.getTime())) {
+        console.error(`Invalid date for ${weekday}: ${dateStr}`);
+        continue;
       }
+
+      // Format date to YYYY-MM-DD (backend might expect this format)
+      const formattedDate = dateObj.toISOString();
+
+      const dayTotal = cartItems.reduce(
+        (sum, { item, quantity }) => sum + item.price * quantity,
+        0
+      );
+
+      const itemsPayload = cartItems.map(({ item, quantity }) => ({
+        food: item.id,
+        qty: quantity,
+      }));
+
+      const orderPromise = fetch(
+        `https://backend-production-25f11.up.railway.app/orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            date: formattedDate,
+            items: itemsPayload,
+            totalCost: dayTotal,
+            location: {
+              latitude: parseFloat(address.value.lat.toFixed(6)),
+              longitude: parseFloat(address.value.lng.toFixed(6)),
+              address: `${address.value.details || ""} ${
+                address.value.name || ""
+              }`.trim(),
+              additionalNote: orderNotes.value || "No additional notes",
+            },
+          }),
+        }
+      )
+        .then(async (res) => {
+          if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || "Failed to create order");
+          }
+          return res.json();
+        })
+        .then((data) => ({
+          weekday,
+          success: true,
+          data,
+        }))
+        .catch((error) => {
+          console.error(`Order failed for ${weekday}:`, error);
+          return {
+            weekday,
+            success: false,
+            error: error.message,
+          };
+        });
+
+      orderPromises.push(orderPromise);
     }
+
+    const results = await Promise.all(orderPromises);
+    const successful = results.filter((r) => r.success);
+    const failed = results.filter((r) => !r.success);
+
+    if (successful.length > 0) {
+      cartStore.clearCart();
+      console.log("BOlson shv bro");
+    }
+
+    if (failed.length > 0) {
+      // Show error notification
+      console.error("Some orders failed:", failed);
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Order processing error:", error);
+    // Show error notification to user
+    throw error;
   }
-
-  // Миний олж авах ёстой зүйлс нь Date,  Items, totalCost , Location гэсэн зүйлс
-
-  const res = await fetch(
-    `https://backend-production-25f11.up.railway.app/orders`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        date: "2025-07-10T00:00:00.000Z",
-        items: [{ food: "6864a26e9b0b6c766082bbd0", qty: 2 }],
-        totalCost: 160,
-        location: {
-          latitude: 47.918,
-          longitude: 106.917,
-          address: "sav plaza",
-          additionalNote: "nemelt",
-        },
-      }),
-    }
-  );
-  res.json().then((ans) => {
-    console.log(ans);
-  });
 }
 
 // Байршлын нэрийг авах функц
@@ -513,38 +573,44 @@ async function getLocationName(lat: number, lng: number) {
 
 // Газрын зурагтай ажиллах функц
 async function initializeMap() {
-  if (!mapRef.value) return;
+  if (!mapRef.value || !L) return;
 
-  const map = L.map(mapRef.value).setView(
-    [address.value.lat, address.value.lng],
-    13
-  );
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors",
-  }).addTo(map);
+  try {
+    map = L.map(mapRef.value).setView(
+      [address.value.lat, address.value.lng],
+      13
+    );
 
-  const marker = L.marker([address.value.lat, address.value.lng], {
-    draggable: true,
-  }).addTo(map);
-  marker.bindPopup("Хүргэлтийн байршил").openPopup();
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
 
-  // Анхны байршлын нэрийг авах
-  await getLocationName(address.value.lat, address.value.lng);
+    marker = L.marker([address.value.lat, address.value.lng], {
+      draggable: true,
+    }).addTo(map);
 
-  marker.on("moveend", async (e: any) => {
-    const { lat, lng } = e.target.getLatLng();
-    address.value.lat = lat;
-    address.value.lng = lng;
-    await getLocationName(lat, lng);
-  });
+    marker.bindPopup("Хүргэлтийн байршил").openPopup();
 
-  map.on("click", async (e) => {
-    const { lat, lng } = e.latlng;
-    marker.setLatLng([lat, lng]);
-    address.value.lat = lat;
-    address.value.lng = lng;
-    await getLocationName(lat, lng);
-  });
+    // Анхны байршлын нэрийг авах
+    await getLocationName(address.value.lat, address.value.lng);
+
+    marker.on("moveend", async (e: any) => {
+      const { lat, lng } = e.target.getLatLng();
+      address.value.lat = lat;
+      address.value.lng = lng;
+      await getLocationName(lat, lng);
+    });
+
+    map.on("click", async (e: any) => {
+      const { lat, lng } = e.latlng;
+      marker.setLatLng([lat, lng]);
+      address.value.lat = lat;
+      address.value.lng = lng;
+      await getLocationName(lat, lng);
+    });
+  } catch (error) {
+    console.error("Error initializing map:", error);
+  }
 }
 
 // Купон тогтоох функц
@@ -565,7 +631,10 @@ const totalDiscount = computed(() =>
 );
 
 const cartItemCount = computed(() =>
-  Array.from(cartStore.cart.values()).reduce((sum, v) => sum + v.quantity, 0)
+  Array.from(cartStore.cart.values()).reduce((sum, dayItems) => {
+    // dayItems is an array of {item, quantity}
+    return sum + dayItems.reduce((daySum, entry) => daySum + entry.quantity, 0);
+  }, 0)
 );
 
 const totals = computed(() => {
@@ -590,7 +659,19 @@ const totalAmount = computed(() =>
 
 // Компонент ачаалагдахад
 onMounted(async () => {
-  await initializeMap();
+  // Mark as mounted for client-side only rendering
+  isMounted.value = true;
+
+  // Wait for next tick to ensure DOM is ready
+  await nextTick();
+
+  // Load Leaflet dynamically
+  await loadLeaflet();
+
+  // Initialize map after Leaflet is loaded
+  if (L) {
+    await initializeMap();
+  }
 });
 </script>
 

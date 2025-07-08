@@ -75,7 +75,7 @@
               class="bg-red"
               :disabled="sliderday < today"
               color="white"
-              @click="cartStore.decreaseItem(item._id)"
+              @click="cartStore.decreaseItem(days[sliderday], item._id)"
             >
               <v-icon icon="mdi-minus"></v-icon>
             </v-btn>
@@ -84,7 +84,7 @@
               :disabled="sliderday < today"
               color="white"
               class="bg-success"
-              @click="cartStore.addItem(item._id, item)"
+              @click="cartStore.addItem(days[sliderday], item, sliderday)"
             >
               <v-icon icon="mdi-plus"></v-icon>
             </v-btn>
@@ -114,7 +114,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="[_id, { item, quantity }] in cartStore.cart" :key="_id">
+        <tr
+          v-for="{ day, item, quantity, sliderDay } in cartStore.cartItems"
+          :key="`${day}-${item.id}`"
+        >
           <td class="text-center">
             {{ item?.name.charAt(0).toUpperCase() + item?.name.slice(1) }}
           </td>
@@ -122,7 +125,9 @@
           <td class="text-center">{{ quantity }}</td>
           <td class="text-center">{{ item?.price * quantity }}</td>
           <td class="text-center">
-            <v-btn color="red" @click="cartStore.removeItem(_id)">Устгах</v-btn>
+            <v-btn color="red" @click="cartStore.removeItem(day, item.id)">
+              Устгах
+            </v-btn>
           </td>
         </tr>
       </tbody>
@@ -201,5 +206,4 @@ function goCart() {
 * {
   font-family: "JetBrains Mono", sans-serif;
 }
-
 </style>
