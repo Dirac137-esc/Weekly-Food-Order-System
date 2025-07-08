@@ -10,11 +10,11 @@
             <div style="max-height: 70vh; overflow-y: auto; padding: 16px;">
             <v-list class="pa-0">
               <v-list-item
-                  v-for="food in foods"
-                  :key="food._id"
-                  class="food-item elevation-1 rounded-lg mb-3"
-                  draggable="true"
-                  @dragstart="dragFood($event, food)"
+                v-for="food in foods"
+                :key="food._id"
+                class="food-item elevation-1 rounded-lg mb-3"
+                draggable="true"
+                @dragstart="dragFood($event, food)"
               >
                 <template #prepend>
                   <v-avatar size="56" rounded="lg" class="me-3">
@@ -130,26 +130,27 @@
 
                   <v-divider></v-divider>
                   <v-card-text
-                      class="day-drop-zone"
-                      @dragover.prevent="currentMenu && $event.preventDefault()"
-                      @drop="currentMenu && dropFood($event, day)"
+                    class="day-drop-zone"
+                    @dragover.prevent="currentMenu && $event.preventDefault()"
+                    @drop="currentMenu && dropFood($event, day)"
                   >
                     <div v-if="day.foods.length">
                       <v-chip
-                          v-for="food in day.foods"
-                          :key="food._id"
-                          closable
-                          size="small"
-                          variant="elevated"
-                          color="indigo-lighten-4"
-                          text-color="indigo-darken-3"
-                          class="ma-1 px-3 rounded-lg font-weight-medium text-sm"
-                          @click:close="removeFoodFromDay(day.name, food._id)"
+                        v-for="food in day.foods"
+                        :key="food._id"
+                        closable
+                        size="small"
+                        variant="elevated"
+                        color="indigo-lighten-4"
+                        text-color="indigo-darken-3"
+                        class="ma-1 px-3 rounded-lg font-weight-medium text-sm"
+                        @click:close="removeFoodFromDay(day.name, food._id)"
                       >
                         {{ food.name }}
                       </v-chip>
-
-
+                    </div>
+                    <div v-else class="text-center text-grey">
+                      Drop foods here
                     </div>
                     <div v-else class="text-center text-grey">Drop foods here</div>
                   </v-card-text>
@@ -166,16 +167,28 @@
       <v-card>
         <v-card-title>
           <span class="text-h6">
-            {{ editingFood ? 'Edit Food' : 'Add New Food' }}
+            {{ editingFood ? "Edit Food" : "Add New Food" }}
           </span>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-form @submit.prevent="submitFoodForm">
             <v-text-field label="Name" v-model="foodForm.name" required />
-            <v-text-field label="Price" type="number" v-model.number="foodForm.price" required />
-            <v-text-field label="Image URL" v-model="foodForm.imageUrl" required />
-            <v-textarea label="Ingredients (comma-separated)" v-model="foodForm.ingredients" />
+            <v-text-field
+              label="Price"
+              type="number"
+              v-model.number="foodForm.price"
+              required
+            />
+            <v-text-field
+              label="Image URL"
+              v-model="foodForm.imageUrl"
+              required
+            />
+            <v-textarea
+              label="Ingredients (comma-separated)"
+              v-model="foodForm.ingredients"
+            />
 
             <v-card-actions class="justify-end mt-2">
               <v-btn text @click="closeFoodModal">Cancel</v-btn>
