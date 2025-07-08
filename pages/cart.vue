@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
-import L from 'leaflet';
 
 declare global {
   interface Window {

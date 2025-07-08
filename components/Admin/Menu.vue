@@ -6,7 +6,8 @@
         <v-card elevation="2">
           <v-card-title class="bg-primary text-white">СОНГОЛТ</v-card-title>
           <v-divider></v-divider>
-          <v-card-text>
+          <v-card-text class="pa-0">
+            <div style="max-height: 70vh; overflow-y: auto; padding: 16px;">
             <v-list class="pa-0">
               <v-list-item
                   v-for="food in foods"
@@ -52,7 +53,8 @@
                 </v-list-item-action>
               </v-list-item>
             </v-list>
-
+            </div>
+            <v-divider class="my-2"></v-divider>
             <v-btn block class="mt-4" color="primary" @click="openAddFoodModal">
               <v-icon left>mdi-plus</v-icon>
               Шинэ Хоол Нэмэх
@@ -79,7 +81,7 @@
                 />
               </v-col>
               <v-col cols="12" md="6" class="text-end">
-                <v-btn color="primary" class="mr-2" @click="loadMenuForWeek">
+                <v-btn color="primary" class="mr-2" @click="goToThisWeek">
                   Энэ Долоо Хоног
                 </v-btn>
                 <v-btn
@@ -112,21 +114,21 @@
                   xl="2"
               >
 
-              <v-card :class="{ 'opacity-50': !currentMenu }" outlined>
-                <v-card-title
-                    class="d-flex flex-column align-center text-center pa-2"
-                    style="min-height: 60px;"
-                >
-  <span class="text-body-1 font-weight-medium">
+                <v-card :class="{ 'opacity-50': !currentMenu }" outlined>
+                  <v-card-title
+                      class="d-flex flex-column align-center text-center pa-2"
+                      style="min-height: 60px;"
+                  >
+   <span class="text-body-1 font-weight-medium">
     {{ getMongolianDayLabel(day.name) }}
   </span>
-                  <span class="text-caption text-grey">
+                    <span class="text-caption text-grey">
     {{ day.date }}
   </span>
-                </v-card-title>
+                  </v-card-title>
 
 
-                <v-divider></v-divider>
+                  <v-divider></v-divider>
                   <v-card-text
                       class="day-drop-zone"
                       @dragover.prevent="currentMenu && $event.preventDefault()"
@@ -190,8 +192,8 @@
 
 <script>
 import axios from 'axios'
-
-const API_BASE = 'https://backend-production-25f11.up.railway.app'
+const config = useRuntimeConfig();
+const API_BASE = config.public.apiBase;
 
 export default {
   data() {
@@ -310,7 +312,7 @@ export default {
         )
       }
     }
-, async submitFoodForm() {
+    , async submitFoodForm() {
       const payload = {
         name: this.foodForm.name,
         price: this.foodForm.price,
@@ -395,7 +397,11 @@ export default {
       })
     },
 
+    async goToThisWeek() {
 
+      this.setDefaultWeek()
+      await this.onWeekChange()
+    },
 //##########################-------------Меню ачаалалт, үүсгэлт ----------##############################
     async loadMenuForWeek() {
       try {

@@ -30,6 +30,7 @@
             <th>Долоо хоног</th>
             <th>Хэрэглэгч</th>
             <th>Нийт дүн</th>
+            <th>Захиалсан хоол</th>
             <th>Төлбөр</th>
             <th>Хүргэлт</th>
             <th>Хаяг</th>
@@ -38,11 +39,39 @@
           <tbody>
           <tr v-for="order in orders" :key="order._id">
             <td>{{ formatDate(order.date) }}</td>
-            <td>{{ order.weekday }}</td>
+            <td>{{ mongolianWeekdays[order.weekday] || '—' }}</td>
+
             <td>{{ order.user?.name || order.user?.email }}</td>
             <td>{{ order.totalCost.toLocaleString() }}₮</td>
 
-            <!-- Payment Status -->
+            <td>
+              <div v-if="order.items?.length">
+                <div
+                    v-for="(item, index) in order.items"
+                    :key="index"
+                    class="d-flex align-center mb-1"
+                >
+                  <v-chip
+                      class="me-2"
+                      color="primary"
+                      size="small"
+                      label
+                      text-color="white"
+                  >
+                    {{ item.food?.name || '—' }}
+                  </v-chip>
+                  <span
+                      class="ms-1 px-2 py-1 text-caption rounded bg-grey-lighten-3 text-grey-darken-3"
+                      style="font-weight: 500; line-height: 1;"
+                  >
+  ×{{ item.qty }}
+</span>
+
+                </div>
+              </div>
+              <div v-else>—</div>
+            </td>
+
             <td style="max-width: 140px">
               <v-select
                   v-model="order.paymentStatus"
@@ -113,6 +142,15 @@ interface Order {
   paymentStatus: string
   deliveryStatus: string
   location?: { address: string }
+}
+const mongolianWeekdays: Record<string, string> = {
+  monday: 'Даваа',
+  tuesday: 'Мягмар',
+  wednesday: 'Лхагва',
+  thursday: 'Пүрэв',
+  friday: 'Баасан',
+  saturday: 'Бямба',
+  sunday: 'Ням'
 }
 
 const orders = ref<Order[]>([])
