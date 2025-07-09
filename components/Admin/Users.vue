@@ -36,7 +36,7 @@
               <th>И-мэйл</th>
               <th>Утас</th>
               <th>Хаяг</th>
-              <th>Эрх</th>
+              <th>VIP status</th>
               <th>ID</th>
             </tr>
           </thead>
@@ -48,16 +48,17 @@
               <td>{{ user.address || "—" }}</td>
               <td>
                 <v-chip
-                  v-for="role in normalizeRoles(user.roles)"
-                  :key="role"
-                  color="indigo-lighten-4"
-                  text-color="indigo-darken-3"
-                  size="small"
-                  class="ma-1"
+                    :color="user.isVIP ? 'amber' : 'grey-lighten-1'"
+                    :text-color="user.isVIP ? 'white' : 'grey-darken-4'"
+                    size="small"
+                    class="ma-1 font-weight-bold"
+                    variant="elevated"
                 >
-                  {{ role }}
+                  {{ user.isVIP? '⭐ VIP' : 'Энгийн' }}
                 </v-chip>
               </td>
+
+
               <td class="text-truncate" style="max-width: 180px">
                 {{ user._id }}
               </td>
