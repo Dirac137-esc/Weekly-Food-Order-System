@@ -4,16 +4,16 @@
       <v-container class="pt-10" style="max-width: 1200px">
         <v-row dense>
           <v-col cols="12" md="7">
-            <Map />
+            <!-- <Map /> -->
             <Cart />
-            <v-radio-group v-model="vatType" class="mb-4">
+            <!-- <v-radio-group v-model="vatType" class="mb-4">
               <v-radio label="Хувь хүн" value="person" />
               <v-radio label="Байгууллага" value="company" />
-            </v-radio-group>
-            <Totals />
+            </v-radio-group> -->
           </v-col>
           <v-col cols="12" md="5">
-            <Payment />
+            <Totals />
+            <!-- <Payment /> -->
           </v-col>
         </v-row>
       </v-container>

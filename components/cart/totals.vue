@@ -3,14 +3,14 @@
     <v-btn value="delivery">Хүргэлтээр</v-btn>
     <v-btn value="pickup">Очиж авах</v-btn>
   </v-btn-toggle> -->
-  <v-card class="pa-4 mb-4" outlined>
+  <v-card class="pa-7 mb-4" outlined>
     <v-row v-for="(t, k) in totals" :key="k" justify="space-between">
-      <span>{{ t.label }}</span>
+      <span class="my-1">{{ t.label }}</span>
       <span
         ><strong>{{ t.amount.toLocaleString() }}₮</strong></span
       >
     </v-row>
-    <v-divider class="my-2" />
+    <v-divider class="my-5" />
     <v-row justify="space-between">
       <span class="font-weight-bold">ТӨЛӨХ НИЙТ ДҮН</span>
       <span class="font-weight-bold">{{ totalAmount.toLocaleString() }}₮</span>
@@ -32,7 +32,7 @@ const totals = computed(() => {
   return {
     subtotal: { label: "Захиалгын дүн", amount: subtotal },
     minfee: { label: "Бага үнэтэй", amount: minFee },
-    // delivery: { label: "Хүргэлтийн үнэ", amount: deliveryFee },
+    delivery: { label: "Хүргэлтийн үнэ", amount: deliveryFee },
     // vat: { label: "НӨАТ", amount: vat },
   };
 });
