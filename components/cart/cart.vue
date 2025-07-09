@@ -74,7 +74,7 @@
                       variant="outlined"
                       class="mt-1"
                     >
-                      <!-- {{ daysMn[day] }} : -->
+                      {{ days[day] }} :
 
                       {{ quantity }} ширхэг
                     </v-chip>
@@ -146,6 +146,7 @@ const days: { [key: string]: string } = {
   5: "Бямба",
   6: "Ням",
 };
+
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat("mn-MN").format(price);
 };

@@ -2,7 +2,9 @@
 import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
+import Map from "~/components/cart/map.vue";
 
+const locationStore = useLocationStore();
 const cartStore = useCartStore();
 const step = ref(1);
 const router = useRouter();
@@ -51,138 +53,6 @@ function toStatus() {
     router.push("./status");
   }, 1000);
 }
-
-const address = ref({
-  lat: 47.9185,
-  lng: 106.917,
-  name: "",
-  details: "",
-  loading: false,
-});
-
-const mapRef = ref<HTMLDivElement | null>(null);
-const mapLoaded = ref(false);
-
-async function getLocationName(lat: number, lng: number) {
-  try {
-    address.value.loading = true;
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-    );
-
-    const data = await response.json();
-
-    if (data && data.display_name) {
-      address.value.name = data.display_name;
-      address.value.details = `${data.address?.road || ""} ${
-        data.address?.house_number || ""
-      }`.trim();
-    } else {
-      address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    }
-  } catch (error) {
-    console.error("Error fetching location:", error);
-    address.value.name = `Координат: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  } finally {
-    address.value.loading = false;
-  }
-}
-
-async function loadLeaflet() {
-  if (typeof window !== "undefined" && window.L) {
-    return window.L;
-  }
-  const leaflet = await import("leaflet");
-  if (
-    typeof window !== "undefined" &&
-    !document.getElementById("leaflet-css")
-  ) {
-    const link = document.createElement("link");
-    link.id = "leaflet-css";
-    link.rel = "stylesheet";
-    link.href = "https://unpkg.com/leaflet/dist/leaflet.css";
-    document.head.appendChild(link);
-  }
-  return leaflet.default || leaflet;
-}
-
-// Map үүсгэх функц
-async function initializeMap() {
-  try {
-    console.log("Map initialization эхэллээ...");
-
-    if (!mapRef.value) {
-      console.error("Map container олдсонгүй");
-      return;
-    }
-
-    // Leaflet ачаалах
-    const LeafletLib = await loadLeaflet();
-    if (!LeafletLib) {
-      console.error("Leaflet ачаалагдсангүй");
-      return;
-    }
-
-    // Container бэлдэх
-    const mapContainer = mapRef.value;
-    mapContainer.innerHTML = "";
-    mapContainer.style.height = "300px";
-    mapContainer.style.width = "100%";
-    mapContainer.style.position = "relative";
-
-    const map = LeafletLib.map(mapContainer, {
-      center: [address.value.lat, address.value.lng],
-      zoom: 13,
-      zoomControl: true,
-      attributionControl: true,
-    });
-
-    // window.mapInstance = map;
-
-    LeafletLib.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors",
-      maxZoom: 18,
-    }).addTo(map);
-
-    const marker = LeafletLib.marker([address.value.lat, address.value.lng], {
-      draggable: true,
-    }).addTo(map);
-
-    marker.bindPopup("Хүргэлтийн байршил").openPopup();
-
-    setTimeout(() => {
-      map.invalidateSize();
-      console.log("Map амжилттай үүсгэгдлээ");
-    }, 100);
-
-    await getLocationName(address.value.lat, address.value.lng);
-
-    marker.on("moveend", async (e: any) => {
-      const { lat, lng } = e.target.getLatLng();
-      address.value.lat = lat;
-      address.value.lng = lng;
-      await getLocationName(lat, lng);
-    });
-
-    map.on("click", async (e: any) => {
-      const { lat, lng } = e.latlng;
-      marker.setLatLng([lat, lng]);
-      address.value.lat = lat;
-      address.value.lng = lng;
-      await getLocationName(lat, lng);
-    });
-
-    mapLoaded.value = true;
-  } catch (error) {
-    console.error("Map үүсгэхэд алдаа:", error);
-    mapLoaded.value = false;
-  }
-}
-
-onMounted(async () => {
-  console.log("Component mount хийгдлээ");
-});
-
 const coupons = ref([
   {
     id: "coupon1",
@@ -241,7 +111,7 @@ const totalWithDiscount = computed(() => {
                   hide-actions
                 >
                   <v-stepper-header class="elevation-0 bg-transparent">
-                    <v-stepper
+                    <v-stepper-item
                       :complete="step > 1"
                       step="1"
                       color="primary"
@@ -271,11 +141,11 @@ const totalWithDiscount = computed(() => {
                         </div>
                         <div class="text-caption text-grey">Order Items</div>
                       </div>
-                    </v-stepper>
+                    </v-stepper-item>
 
                     <v-divider class="mx-4"></v-divider>
 
-                    <v-stepper
+                    <v-stepper-item
                       :complete="step > 2"
                       step="2"
                       color="primary"
@@ -305,11 +175,11 @@ const totalWithDiscount = computed(() => {
                         </div>
                         <div class="text-caption text-grey">Payment</div>
                       </div>
-                    </v-stepper>
+                    </v-stepper-item>
 
                     <v-divider class="mx-4"></v-divider>
 
-                    <v-stepper step="3" color="primary" class="pa-4">
+                    <v-stepper-item step="3" color="primary" class="pa-4">
                       <template #icon>
                         <v-avatar
                           :color="step >= 3 ? 'primary' : 'grey-lighten-2'"
@@ -334,241 +204,15 @@ const totalWithDiscount = computed(() => {
                         </div>
                         <div class="text-caption text-grey">Review</div>
                       </div>
-                    </v-stepper>
+                    </v-stepper-item>
                   </v-stepper-header>
                 </v-stepper>
 
-                <v-row class="mt-8">
+                <v-row class="mt-8 align-center">
                   <v-col cols="12" md="8">
-                    <v-card class="elevation-8 rounded-xl mb-6" color="surface">
-                      <v-card-title
-                        class="d-flex align-center justify-space-between pa-6"
-                      >
-                        <div class="d-flex align-center">
-                          <v-avatar color="primary" size="40" class="me-3">
-                            <v-icon color="white" size="20">mdi-cart</v-icon>
-                          </v-avatar>
-                          <div>
-                            <div class="text-h5 font-weight-bold text-primary">
-                              Сагсан дахь хоолнууд
-                            </div>
-                            <div class="text-body-2 text-grey">
-                              {{ totalItems }} нэр төрөл
-                            </div>
-                          </div>
-                        </div>
-                        <v-btn
-                          color="error"
-                          variant="outlined"
-                          prepend-icon="mdi-delete"
-                          @click="cartStore.clearCart()"
-                          rounded="xl"
-                          class="text-none"
-                        >
-                          Бүгдийг устгах
-                        </v-btn>
-                      </v-card-title>
+                    <Map />
 
-                      <v-divider class="mx-6"></v-divider>
-
-                      <v-card-text class="pa-6">
-                        <v-row>
-                          <template
-                            v-for="[day, dayItems] in cartStore.cart"
-                            :key="day"
-                          >
-                            <v-col
-                              v-for="({ item, quantity }, index) in dayItems"
-                              :key="item.id || index"
-                              cols="12"
-                            >
-                              <v-card
-                                class="elevation-4 rounded-lg transition-all duration-300"
-                                :class="{
-                                  'animate-pulse bg-success-lighten-5':
-                                    animateAdd === item.id,
-                                }"
-                                color="surface"
-                                hover
-                              >
-                                <v-card-text class="pa-4">
-                                  <v-row align="center" no-gutters>
-                                    <v-col cols="12" sm="3" class="text-center">
-                                      <div
-                                        class="position-relative d-inline-block"
-                                      >
-                                        <v-img
-                                          :src="
-                                            item.imageUrl ||
-                                            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'
-                                          "
-                                          height="100"
-                                          width="100"
-                                          class="rounded-lg elevation-3"
-                                          cover
-                                        />
-                                        <v-chip
-                                          color="amber"
-                                          size="small"
-                                          class="position-absolute"
-                                          style="top: -8px; right: -8px"
-                                          prepend-icon="mdi-star"
-                                        >
-                                          4.8
-                                        </v-chip>
-                                      </div>
-                                    </v-col>
-
-                                    <v-col cols="12" sm="5" class="pa-4">
-                                      <div
-                                        class="text-h6 font-weight-bold mb-2"
-                                      >
-                                        {{ item.name }}
-                                      </div>
-                                      <div class="text-body-2 text-grey mb-2">
-                                        <v-icon size="small" class="me-1"
-                                          >mdi-leaf</v-icon
-                                        >
-                                        Орц:
-                                        {{
-                                          item.ingredients?.join(", ") ||
-                                          "Органик найрлага"
-                                        }}
-                                      </div>
-                                      <v-chip
-                                        color="primary"
-                                        size="small"
-                                        variant="outlined"
-                                        class="mt-1"
-                                      >
-                                        {{ quantity }} ширхэг
-                                      </v-chip>
-                                    </v-col>
-
-                                    <v-col cols="12" sm="4" class="pa-4">
-                                      <div class="d-flex flex-column align-end">
-                                        <v-card
-                                          class="d-flex align-center pa-2 mb-3 elevation-2"
-                                          color="grey-lighten-4"
-                                          rounded="xl"
-                                        >
-                                          <v-chip
-                                            class="mx-2 font-weight-bold"
-                                            color="primary"
-                                            size="small"
-                                          >
-                                            {{ quantity }}
-                                          </v-chip>
-                                        </v-card>
-
-                                        <!-- Price -->
-                                        <div class="text-end mb-3">
-                                          <div
-                                            class="text-h6 font-weight-bold text-primary"
-                                          >
-                                            {{
-                                              formatPrice(
-                                                item.price * quantity
-                                              )
-                                            }}₮
-                                          </div>
-                                          <div class="text-caption text-grey">
-                                            {{ formatPrice(item.price) }}₮ each
-                                          </div>
-                                        </div>
-
-                                        <!-- <v-btn
-                                          icon="mdi-close"
-                                          size="small"
-                                          color="error"
-                                          variant="text"
-                                          @click="cartStore.removeItem(item.id)"
-                                          class="elevation-2"
-                                        /> -->
-                                      </div>
-                                    </v-col>
-                                  </v-row>
-                                </v-card-text>
-                              </v-card>
-                            </v-col>
-                          </template>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-
-                    <v-card class="elevation-8 rounded-xl mb-6" color="surface">
-                      <v-card-title class="d-flex align-center pa-6">
-                        <v-icon color="primary" size="24" class="me-2"
-                          >mdi-map-marker</v-icon
-                        >
-                        <span class="text-h6 font-weight-bold text-primary">
-                          Байршлаа сонгох
-                        </span>
-                      </v-card-title>
-
-                      <v-divider class="mx-6"></v-divider>
-
-                      <v-card-text class="pa-6">
-                        <div class="map-wrapper">
-                          <div v-if="!mapLoaded" class="map-loading">
-                            <v-progress-circular
-                              size="32"
-                              indeterminate
-                              color="primary"
-                              class="mr-2"
-                            />
-                            <span>Газрын зураг ачаалж байна...</span>
-                          </div>
-                          <div
-                            ref="mapRef"
-                            class="map-container"
-                            v-show="mapLoaded"
-                          ></div>
-                        </div>
-
-                        <div class="mt-4">
-                          <div class="d-flex align-center">
-                            <v-icon color="success" class="mr-2"
-                              >mdi-map-marker</v-icon
-                            >
-                            <div>
-                              <div
-                                v-if="address.loading"
-                                class="d-flex align-center"
-                              >
-                                <v-progress-circular
-                                  size="16"
-                                  indeterminate
-                                  color="primary"
-                                  class="mr-2"
-                                />
-                                <span class="text-body-2"
-                                  >Байршил тодорхойлж байна...</span
-                                >
-                              </div>
-                              <div
-                                v-else-if="address.name"
-                                class="text-body-2 font-weight-medium"
-                              >
-                                {{ address.name }}
-                              </div>
-                              <div v-else class="text-body-2 text-grey">
-                                Газрын зураг дээр дарж байршлаа сонгоно уу
-                              </div>
-                            </div>
-                          </div>
-                          <div class="text-caption text-grey mt-1">
-                            <v-icon size="small" class="me-1"
-                              >mdi-crosshairs-gps</v-icon
-                            >
-                            Координат: {{ address.lat.toFixed(5) }},
-                            {{ address.lng.toFixed(5) }}
-                          </div>
-                        </div>
-                      </v-card-text>
-                    </v-card>
-
-                    <v-card class="elevation-8 rounded-xl mb-6" color="surface">
+                    <!-- <v-card class="elevation-8 rounded-xl mb-6" color="surface">
                       <v-card-title class="d-flex align-center pa-6">
                         <v-icon color="primary" size="24" class="me-2"
                           >mdi-tag</v-icon
@@ -586,7 +230,7 @@ const totalWithDiscount = computed(() => {
                           :key="coupon.id"
                           class="mb-3"
                         >
-                          <v-card
+                          <v-card   
                             outlined
                             class="coupon-card"
                             :class="{
@@ -641,7 +285,7 @@ const totalWithDiscount = computed(() => {
                           >
                         </v-row>
                       </v-card-text>
-                    </v-card>
+                    </v-card> -->
 
                     <!-- Order Summary -->
                     <v-card
@@ -811,7 +455,6 @@ const totalWithDiscount = computed(() => {
 
                           <v-btn
                             block
-                            size="large"
                             color="primary"
                             variant="elevated"
                             class="mt-6 text-none font-weight-bold"
