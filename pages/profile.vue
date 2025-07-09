@@ -4,9 +4,9 @@
     <!-- Header with back button -->
     <div class="header-section mb-5 profile-header">
       <div class="d-flex align-center">
-        <v-btn 
-          icon 
-          variant="text" 
+        <v-btn
+          icon
+          variant="text"
           @click="$router.go(-1)"
           class="mr-3"
           size="small"
@@ -14,7 +14,7 @@
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <h1 class="text-h5 font-weight-bold">Профайл</h1>
-      </div>  
+      </div>
     </div>
 
     <!-- Profile Content -->
@@ -24,16 +24,36 @@
           <v-card class="profile-main-card pa-6" elevation="8">
             <div class="d-flex flex-column align-center">
               <!-- Avatar and Name -->
-              <v-avatar size="120" class="mb-3 profile-avatar elevation-4" color="grey-lighten-4">
-                <v-img 
-                  :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+              <v-avatar
+                size="120"
+                class="mb-3 profile-avatar elevation-4"
+                color="grey-lighten-4"
+              >
+                <v-img
+                  :src="
+                    userStore.user?.avatar ||
+                    'https://randomuser.me/api/portraits/men/85.jpg'
+                  "
                   alt="User Avatar"
-                />  
+                />
               </v-avatar>
-              <h2 class="text-h6 font-weight-bold mb-1">{{ userStore.user?.name || 'Username' }}</h2>
-              <div class="text-grey-darken-1 mb-2">{{ userStore.user?.email }}</div>
-              <v-btn color="primary" variant="tonal" size="small" class="mb-4" @click="editProfile">
-                <v-icon left size="small">mdi-account-edit</v-icon> Хувийн мэдээлэл засах
+              <!-- <h2>{{ userStore.user.isVip }}</h2> -->
+              <h2 color="success" v-if="userStore.user.isVip">VIP</h2>
+              <h2 class="text-h6 font-weight-bold mb-1">
+                {{ userStore.user?.name || "Username" }}
+              </h2>
+              <div class="text-grey-darken-1 mb-2">
+                {{ userStore.user?.email }}
+              </div>
+              <v-btn
+                color="primary"
+                variant="tonal"
+                size="small"
+                class="mb-4"
+                @click="editProfile"
+              >
+                <v-icon left size="small">mdi-account-edit</v-icon> Хувийн
+                мэдээлэл засах
               </v-btn>
             </div>
 
@@ -60,22 +80,41 @@
             </v-row>
 
             <!-- Personal Info Card -->
-            <v-card class="info-banner mb-4" color="orange-lighten-5" elevation="1">
+            <v-card
+              class="info-banner mb-4"
+              color="orange-lighten-5"
+              elevation="1"
+            >
               <v-list>
                 <v-list-item>
-                  <v-list-item><v-icon color="primary">mdi-phone</v-icon></v-list-item>
-                  <v-list-item-title>{{ userStore.user?.phone || 'Утас оруулаагүй' }}</v-list-item-title>
+                  <v-list-item
+                    ><v-icon color="primary">mdi-phone</v-icon></v-list-item
+                  >
+                  <v-list-item-title>{{
+                    userStore.user?.phone || "Утас оруулаагүй"
+                  }}</v-list-item-title>
                 </v-list-item>
                 <v-divider />
                 <v-list-item>
-                  <v-list-item><v-icon color="primary">mdi-map-marker</v-icon></v-list-item>
-                  <v-list-item-title>{{ userStore.user?.address || 'Хаяг оруулаагүй' }}</v-list-item-title>
+                  <v-list-item
+                    ><v-icon color="primary"
+                      >mdi-map-marker</v-icon
+                    ></v-list-item
+                  >
+                  <v-list-item-title>{{
+                    userStore.user?.address || "Хаяг оруулаагүй"
+                  }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-card>
 
             <!-- Logout Button -->
-            <v-btn color="error" variant="outlined" block @click="showLogoutDialog = true">
+            <v-btn
+              color="error"
+              variant="outlined"
+              block
+              @click="showLogoutDialog = true"
+            >
               <v-icon left size="small">mdi-logout</v-icon> Гарах
             </v-btn>
           </v-card>
@@ -91,8 +130,11 @@
             <!-- Avatar Section -->
             <div class="text-center mb-6">
               <v-avatar size="100" class="mb-4 elevation-2">
-                <v-img 
-                  :src="userStore.user?.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'" 
+                <v-img
+                  :src="
+                    userStore.user?.avatar ||
+                    'https://randomuser.me/api/portraits/men/85.jpg'
+                  "
                   alt="User Avatar"
                 />
               </v-avatar>
@@ -103,9 +145,9 @@
                 style="display: none"
                 @change="onAvatarSelected"
               />
-              <v-btn 
-                variant="outlined" 
-                color="primary" 
+              <v-btn
+                variant="outlined"
+                color="primary"
                 size="small"
                 prepend-icon="mdi-camera"
                 @click="triggerFileInput"
@@ -117,48 +159,48 @@
 
             <!-- Form Fields -->
             <div class="form-fields">
-              <v-text-field 
-                v-model="editName" 
-                label="Нэр" 
+              <v-text-field
+                v-model="editName"
+                label="Нэр"
                 variant="outlined"
                 prepend-inner-icon="mdi-account"
                 class="mb-4"
                 hide-details
               />
-              
-              <v-text-field 
-                v-model="editPhone" 
-                label="Утасны дугаар" 
+
+              <v-text-field
+                v-model="editPhone"
+                label="Утасны дугаар"
                 variant="outlined"
                 prepend-inner-icon="mdi-phone"
                 class="mb-4"
                 hide-details
               />
-              
-              <v-text-field 
-                v-model="editEmail" 
-                label="И-мэйл хаяг" 
+
+              <v-text-field
+                v-model="editEmail"
+                label="И-мэйл хаяг"
                 type="email"
                 variant="outlined"
                 prepend-inner-icon="mdi-email"
                 class="mb-4"
                 hide-details
               />
-              
-              <v-text-field 
-                v-model="editAddress" 
-                label="Гэрийн хаяг" 
+
+              <v-text-field
+                v-model="editAddress"
+                label="Гэрийн хаяг"
                 variant="outlined"
                 prepend-inner-icon="mdi-map-marker"
                 class="mb-4"
                 hide-details
               />
             </div>
-            
+
             <!-- Alert -->
-            <v-alert 
-              v-if="editResult" 
-              :type="editResultColor === 'text-success' ? 'success' : 'error'" 
+            <v-alert
+              v-if="editResult"
+              :type="editResultColor === 'text-success' ? 'success' : 'error'"
               class="mb-4"
               variant="tonal"
             >
@@ -167,9 +209,9 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-              <v-btn 
-                color="primary" 
-                type="submit" 
+              <v-btn
+                color="primary"
+                type="submit"
                 :loading="saving"
                 size="large"
                 block
@@ -177,9 +219,9 @@
               >
                 Хадгалах
               </v-btn>
-              <v-btn 
-                variant="outlined" 
-                color="grey" 
+              <v-btn
+                variant="outlined"
+                color="grey"
                 @click="cancelEdit"
                 size="large"
                 block
@@ -195,11 +237,15 @@
     <!-- Not logged in -->
     <div v-else class="not-logged-in">
       <v-card class="text-center pa-8" elevation="0">
-        <v-icon size="80" color="grey-lighten-2" class="mb-4">mdi-account-off</v-icon>
+        <v-icon size="80" color="grey-lighten-2" class="mb-4"
+          >mdi-account-off</v-icon
+        >
         <h3 class="text-h6 mb-2">Та нэвтрээгүй байна</h3>
-        <p class="text-grey-darken-1 mb-6">Профайл үзэхийн тулд эхлээд нэвтэрнэ үү</p>
-        <v-btn 
-          color="primary" 
+        <p class="text-grey-darken-1 mb-6">
+          Профайл үзэхийн тулд эхлээд нэвтэрнэ үү
+        </p>
+        <v-btn
+          color="primary"
           size="large"
           @click="$router.push('/auth')"
           block
@@ -221,20 +267,14 @@
         </v-card-text>
         <v-card-actions class="pa-6 pt-0">
           <v-spacer />
-          <v-btn 
-            variant="outlined" 
-            color="grey" 
+          <v-btn
+            variant="outlined"
+            color="grey"
             @click="showLogoutDialog = false"
           >
             Болих
           </v-btn>
-          <v-btn 
-            color="error" 
-            @click="logout" 
-            class="ml-3"
-          >
-            Гарах
-          </v-btn>
+          <v-btn color="error" @click="logout" class="ml-3"> Гарах </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -242,149 +282,154 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores/user'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "../stores/user";
 
 const userStore = useUserStore();
-const router = useRouter()
+const router = useRouter();
 
 // State variables
-const editing = ref(false)
-const saving = ref(false)
-const showLogoutDialog = ref(false)
-const fileInput = ref(null)
-const avatarUploading = ref(false)
+const editing = ref(false);
+const saving = ref(false);
+const showLogoutDialog = ref(false);
+const fileInput = ref(null);
+const avatarUploading = ref(false);
 
 // Edit form data
-const editName = ref('')
-const editEmail = ref('')
-const editPhone = ref('')
-const editAddress = ref('')
-const editResult = ref('')
-const editResultColor = ref('text-success')
-
+const editName = ref("");
+const editEmail = ref("");
+const editPhone = ref("");
+const editAddress = ref("");
+const editResult = ref("");
+const editResultColor = ref("text-success");
 
 onMounted(() => {
-    userStore.loadUser();
-})
+  userStore.loadUser();
+});
 
 function editProfile() {
-  editing.value = true
-  editName.value = userStore.user.value.name || ''
-  editEmail.value = userStore.user.value.email || ''
-  editPhone.value = userStore.user.value.phone || ''
-  editAddress.value = userStore.user.value.address || ''
-  editResult.value = ''
+  editing.value = true;
+  editName.value = userStore.user.value.name || "";
+  editEmail.value = userStore.user.value.email || "";
+  editPhone.value = userStore.user.value.phone || "";
+  editAddress.value = userStore.user.value.address || "";
+  editResult.value = "";
 }
 
 function cancelEdit() {
-  editing.value = false
-  editResult.value = ''
+  editing.value = false;
+  editResult.value = "";
 }
 
 async function saveProfile() {
-  editResult.value = ''
-  saving.value = true
-  
+  editResult.value = "";
+  saving.value = true;
+
   try {
-    const token = localStorage.getItem('token')
-    const response = await fetch(`https://backend-production-25f11.up.railway.app/users/${user.value.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        name: editName.value,
-        phone: editPhone.value,
-        address: editAddress.value,
-        email: editEmail.value 
-      })
-    })
-    
-    const data = await response.json()
-    
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `https://backend-production-25f11.up.railway.app/users/${user.value.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: editName.value,
+          phone: editPhone.value,
+          address: editAddress.value,
+          email: editEmail.value,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
     if (response.ok) {
-      userStore.user.value.name = editName.value
-      userStore.user.value.phone = editPhone.value
-      userStore.user.value.address = editAddress.value
-      userStore.user.value.email = editEmail.value
-      localStorage.setItem('user', JSON.stringify(userStore.user.value))
-            
+      userStore.user.value.name = editName.value;
+      userStore.user.value.phone = editPhone.value;
+      userStore.user.value.address = editAddress.value;
+      userStore.user.value.email = editEmail.value;
+      localStorage.setItem("user", JSON.stringify(userStore.user.value));
+
       setTimeout(() => {
-        editing.value = false
-        editResult.value = ''
-      }, 1500)
+        editing.value = false;
+        editResult.value = "";
+      }, 1500);
     } else {
-      editResultColor.value = 'text-error'
-      editResult.value = data.message || 'Алдаа гарлаа, дахин оролдоно уу.'
+      editResultColor.value = "text-error";
+      editResult.value = data.message || "Алдаа гарлаа, дахин оролдоно уу.";
     }
   } catch (error) {
-    editResultColor.value = 'text-error'
-    editResult.value = 'Сүлжээний алдаа, дахин оролдоно уу.'
+    editResultColor.value = "text-error";
+    editResult.value = "Сүлжээний алдаа, дахин оролдоно уу.";
   } finally {
-    saving.value = false
+    saving.value = false;
   }
 }
 
 function triggerFileInput() {
-  fileInput.value && fileInput.value.click()
+  fileInput.value && fileInput.value.click();
 }
 
 async function onAvatarSelected(event) {
-  const file = event.target.files[0]
-  if (!file) return
-  avatarUploading.value = true
+  const file = event.target.files[0];
+  if (!file) return;
+  avatarUploading.value = true;
   try {
-    const token = localStorage.getItem('token')
-    const formData = new FormData()
-    formData.append('avatar', file)
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("avatar", file);
     // Change endpoint if your backend uses a different one
-    const response = await fetch(`https://backend-production-25f11.up.railway.app/users/${userStore.user.value.id}/avatar`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    })
-    const data = await response.json()
+    const response = await fetch(
+      `https://backend-production-25f11.up.railway.app/users/${userStore.user.value.id}/avatar`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = await response.json();
     if (response.ok && data.avatar) {
-      userStore.user.value.avatar = data.avatar
-      localStorage.setItem('user', JSON.stringify(userStore.user.value))
-      editResultColor.value = 'text-success'
-      editResult.value = 'Зураг амжилттай шинэчлэгдлээ!'
+      userStore.user.value.avatar = data.avatar;
+      localStorage.setItem("user", JSON.stringify(userStore.user.value));
+      editResultColor.value = "text-success";
+      editResult.value = "Зураг амжилттай шинэчлэгдлээ!";
     } else {
-      editResultColor.value = 'text-error'
-      editResult.value = data.message || 'Зураг шинэчлэхэд алдаа гарлаа'
+      editResultColor.value = "text-error";
+      editResult.value = data.message || "Зураг шинэчлэхэд алдаа гарлаа";
     }
   } catch (e) {
-    editResultColor.value = 'text-error'
-    editResult.value = 'Сүлжээний алдаа'
+    editResultColor.value = "text-error";
+    editResult.value = "Сүлжээний алдаа";
   }
-  avatarUploading.value = false
+  avatarUploading.value = false;
 }
 
 function logout() {
-  localStorage.removeItem('token')
+  localStorage.removeItem("token");
   userStore.logOut();
   showLogoutDialog.value = false;
-  router.push('/auth')
+  router.push("/auth");
 }
-
 </script>
 
 <style scoped>
 .profile-container {
   position: relative;
-  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  background: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80")
+    center/cover no-repeat;
   min-height: 100vh;
   overflow: hidden;
 }
 .profile-bg-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(2px);
   z-index: 0;
 }
@@ -412,14 +457,23 @@ function logout() {
   border: 4px solid #fff;
   box-shadow: 0 2px 12px #ff980033;
 }
-.info-banner { border-radius: 16px; }
+.info-banner {
+  border-radius: 16px;
+}
 .quick-actions .v-btn {
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 2px 8px #ff980033;
   margin-bottom: 4px;
 }
-.quick-actions .caption { font-size: 0.85rem; color: #888; }
-.edit-card { border-radius: 18px; }
-.action-buttons .v-btn { font-weight: 600; }
+.quick-actions .caption {
+  font-size: 0.85rem;
+  color: #888;
+}
+.edit-card {
+  border-radius: 18px;
+}
+.action-buttons .v-btn {
+  font-weight: 600;
+}
 </style>

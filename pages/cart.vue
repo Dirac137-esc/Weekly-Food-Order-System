@@ -3,12 +3,6 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
 
-// declare global {
-//   interface Window {
-//     mapInstance?: L.Map;
-//   }
-// }
-
 const cartStore = useCartStore();
 const step = ref(1);
 const router = useRouter();
@@ -49,15 +43,6 @@ const onCardNumberInput = (event: Event) => {
   target.value = formatCardNumber(target.value);
   formData.value.cardNumber = target.value;
 };
-
-// const addItem = (id: string, item: any) => {
-//   cartStore.addItem(id, item); // Ямар өдөр хоол нэмэх вээ гэдэг аргумент дутуу байгаа
-//   // Тэрийг нь бараг menus/this-week-ээс fetch хийж байгаад хийчихэж болох байх аа гэж бодож байна .
-//   animateAdd.value = id;
-//   setTimeout(() => {
-//     animateAdd.value = null;
-//   }, 600);
-// };
 
 function toStatus() {
   showSuccess.value = true;
@@ -138,13 +123,6 @@ async function initializeMap() {
       return;
     }
 
-    // Өмнөх map instance устгах
-    // if (window.mapInstance) {
-    //   console.log("Өмнөх map instance устгаж байна...");
-    //   window.mapInstance.remove();
-    //   window.mapInstance = undefined;
-    // }
-
     // Container бэлдэх
     const mapContainer = mapRef.value;
     mapContainer.innerHTML = "";
@@ -203,19 +181,7 @@ async function initializeMap() {
 
 onMounted(async () => {
   console.log("Component mount хийгдлээ");
-
-  //   await nextTick();
-  //   setTimeout(async () => {
-  //     await initializeMap();
-  //   }, 500);
 });
-
-// onUnmounted(() => {
-//   if (window.mapInstance) {
-//     window.mapInstance.remove();
-//     window.mapInstance = undefined;
-//   }
-// });
 
 const coupons = ref([
   {
@@ -486,13 +452,6 @@ const totalWithDiscount = computed(() => {
                                           color="grey-lighten-4"
                                           rounded="xl"
                                         >
-                                          <!-- <v-btn
-                                          icon="mdi-minus"
-                                          size="small"
-                                          color="error"
-                                          variant="text"
-                                          @click="cartStore.decreaseItem(_id)"
-                                        /> -->
                                           <v-chip
                                             class="mx-2 font-weight-bold"
                                             color="primary"
@@ -500,13 +459,6 @@ const totalWithDiscount = computed(() => {
                                           >
                                             {{ quantity }}
                                           </v-chip>
-                                          <!-- <v-btn
-                                          icon="mdi-plus"
-                                          size="small"
-                                          color="success"
-                                          variant="text"
-                                          @click="addItem(_id, item)"
-                                        /> -->
                                         </v-card>
 
                                         <!-- Price -->

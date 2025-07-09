@@ -1,93 +1,92 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import MoreBtn from '~/components/Admin/MoreBtn.vue'
-import { useApi } from '@/composables/useApi'
+import { ref, onMounted } from "vue";
+import MoreBtn from "~/components/admin/MoreBtn.vue";
+import { useApi } from "@/composables/useApi";
 interface StatItem {
-  title: string
-  stats: string
-  icon: string
-  color: string
+  title: string;
+  stats: string;
+  icon: string;
+  color: string;
 }
-const statistics = ref<StatItem[]>([])
+const statistics = ref<StatItem[]>([]);
 const moreList = [
-  { title: 'Share',   value: 'Share'   },
-  { title: 'Refresh', value: 'Refresh' },
-  { title: 'Update',  value: 'Update'  },
-]
+  { title: "Share", value: "Share" },
+  { title: "Refresh", value: "Refresh" },
+  { title: "Update", value: "Update" },
+];
 const fetchStatistics = async () => {
   try {
-    const orders: any[] = await useApi('/orders', 'GET')
+    const orders: any[] = await useApi("/orders", "GET");
 
+    const totalSales = orders.length;
 
-    const totalSales = orders.length
-
-
-    const userSet = new Set<string>()
-    orders.forEach(order => {
-      const uid = typeof order.user === 'object' && order.user._id
+    const userSet = new Set<string>();
+    orders.forEach((order) => {
+      const uid =
+        typeof order.user === "object" && order.user._id
           ? order.user._id
-          : order.user
-      userSet.add(uid)
-    })
-    const uniqueUsers = userSet.size
-    const foodSet = new Set<string>()
-    let totalRevenue = 0
-    orders.forEach(order => {
-      totalRevenue += order.totalCost || 0
+          : order.user;
+      userSet.add(uid);
+    });
+    const uniqueUsers = userSet.size;
+    const foodSet = new Set<string>();
+    let totalRevenue = 0;
+    orders.forEach((order) => {
+      totalRevenue += order.totalCost || 0;
       order.items.forEach((item: any) => {
-        const id = typeof item.food === 'object' && item.food._id
+        const id =
+          typeof item.food === "object" && item.food._id
             ? item.food._id
-            : item.food
-        foodSet.add(id)
-      })
-    })
-    const totalProducts = foodSet.size
+            : item.food;
+        foodSet.add(id);
+      });
+    });
+    const totalProducts = foodSet.size;
 
     statistics.value = [
       {
-        title: 'Борлуулалт',
+        title: "Борлуулалт",
         stats: totalSales.toLocaleString(),
-        icon: 'mdi-chart-pie',
+        icon: "mdi-chart-pie",
 
-        color: 'primary',
+        color: "primary",
       },
       {
-        title: 'Үйлчлүүлэгч',
+        title: "Үйлчлүүлэгч",
         stats: uniqueUsers.toLocaleString(),
-        icon: 'mdi-account-group-outline',
+        icon: "mdi-account-group-outline",
 
-        color: 'success',
+        color: "success",
       },
       {
-        title: 'Бүтээгдэхүүн',
+        title: "Бүтээгдэхүүн",
         stats: totalProducts.toLocaleString(),
-        icon: 'mdi-laptop',
+        icon: "mdi-laptop",
 
-        color: 'warning',
+        color: "warning",
       },
       {
-        title: 'Орлого',
-        stats: totalRevenue.toLocaleString('mn-MN', {
-          style: 'currency',
-          currency: 'MNT',
+        title: "Орлого",
+        stats: totalRevenue.toLocaleString("mn-MN", {
+          style: "currency",
+          currency: "MNT",
         }),
-        icon: 'mdi-currency-mnt',
+        icon: "mdi-currency-mnt",
 
-        color: 'info',
+        color: "info",
       },
-    ]
+    ];
   } catch (err: any) {
-    console.error('Статистик татаж чадсангүй:', err)
+    console.error("Статистик татаж чадсангүй:", err);
   }
-}
-onMounted(fetchStatistics)
+};
+onMounted(fetchStatistics);
 
 const onMoreAction = (action: string) => {
-  if (action === 'Refresh') {
-    fetchStatistics()
+  if (action === "Refresh") {
+    fetchStatistics();
   }
-
-}
+};
 </script>
 
 <template>
@@ -100,29 +99,20 @@ const onMoreAction = (action: string) => {
     </template>
 
     <template #append>
-
-      <MoreBtn
-          :menu-list="moreList"
-          @select="onMoreAction"
-      />
+      <MoreBtn :menu-list="moreList" @select="onMoreAction" />
     </template>
 
     <VCardText class="pt-10">
       <VRow>
         <VCol
-            v-for="item in statistics"
-            :key="item.title"
-            cols="12"
-            sm="6"
-            md="3"
+          v-for="item in statistics"
+          :key="item.title"
+          cols="12"
+          sm="6"
+          md="3"
         >
           <div class="d-flex align-center gap-x-3">
-            <VAvatar
-                :color="item.color"
-                rounded
-                size="40"
-                class="elevation-2"
-            >
+            <VAvatar :color="item.color" rounded size="40" class="elevation-2">
               <VIcon size="24" :icon="item.icon" />
             </VAvatar>
             <div class="d-flex flex-column">
