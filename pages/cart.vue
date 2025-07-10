@@ -3,10 +3,9 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useRouter } from "vue-router";
 import Map from "~/components/cart/map.vue";
-
+import Payment from "~/components/cart/payment.vue";
 const locationStore = useLocationStore();
 const cartStore = useCartStore();
-const step = ref(1);
 const router = useRouter();
 
 const formData = ref({
@@ -46,13 +45,6 @@ const onCardNumberInput = (event: Event) => {
   formData.value.cardNumber = target.value;
 };
 
-function toStatus() {
-  showSuccess.value = true;
-  setTimeout(() => {
-    showSuccess.value = false;
-    router.push("./status");
-  }, 1000);
-}
 const coupons = ref([
   {
     id: "coupon1",
@@ -105,188 +97,17 @@ const totalWithDiscount = computed(() => {
               color="surface"
             >
               <v-card-text class="pa-8">
-                <v-stepper
-                  v-model="step"
-                  class="mb-8 elevation-0 bg-transparent"
-                  hide-actions
-                >
-                  <v-stepper-header class="elevation-0 bg-transparent">
-                    <v-stepper-item
-                      :complete="step > 1"
-                      step="1"
-                      color="primary"
-                      class="pa-4"
-                    >
-                      <template #icon>
-                        <v-avatar
-                          :color="step >= 1 ? 'primary' : 'grey-lighten-2'"
-                          size="48"
-                          class="elevation-4"
-                        >
-                          <v-icon v-if="step > 1" color="white" size="20">
-                            mdi-check
-                          </v-icon>
-                          <span
-                            v-else
-                            class="text-h6 font-weight-bold"
-                            :class="step >= 1 ? 'text-white' : 'text-grey'"
-                          >
-                            1
-                          </span>
-                        </v-avatar>
-                      </template>
-                      <div class="text-center mt-2">
-                        <div class="text-subtitle-1 font-weight-bold">
-                          Захиалга
-                        </div>
-                        <div class="text-caption text-grey">Order Items</div>
-                      </div>
-                    </v-stepper-item>
+                <Stepper />
 
-                    <v-divider class="mx-4"></v-divider>
-
-                    <v-stepper-item
-                      :complete="step > 2"
-                      step="2"
-                      color="primary"
-                      class="pa-4"
-                    >
-                      <template #icon>
-                        <v-avatar
-                          :color="step >= 2 ? 'primary' : 'grey-lighten-2'"
-                          size="48"
-                          class="elevation-4"
-                        >
-                          <v-icon v-if="step > 2" color="white" size="20">
-                            mdi-check
-                          </v-icon>
-                          <span
-                            v-else
-                            class="text-h6 font-weight-bold"
-                            :class="step >= 2 ? 'text-white' : 'text-grey'"
-                          >
-                            2
-                          </span>
-                        </v-avatar>
-                      </template>
-                      <div class="text-center mt-2">
-                        <div class="text-subtitle-1 font-weight-bold">
-                          Төлбөр
-                        </div>
-                        <div class="text-caption text-grey">Payment</div>
-                      </div>
-                    </v-stepper-item>
-
-                    <v-divider class="mx-4"></v-divider>
-
-                    <v-stepper-item step="3" color="primary" class="pa-4">
-                      <template #icon>
-                        <v-avatar
-                          :color="step >= 3 ? 'primary' : 'grey-lighten-2'"
-                          size="48"
-                          class="elevation-4"
-                        >
-                          <v-icon v-if="step > 3" color="white" size="20">
-                            mdi-check
-                          </v-icon>
-                          <span
-                            v-else
-                            class="text-h6 font-weight-bold"
-                            :class="step >= 3 ? 'text-white' : 'text-grey'"
-                          >
-                            3
-                          </span>
-                        </v-avatar>
-                      </template>
-                      <div class="text-center mt-2">
-                        <div class="text-subtitle-1 font-weight-bold">
-                          Хянах
-                        </div>
-                        <div class="text-caption text-grey">Review</div>
-                      </div>
-                    </v-stepper-item>
-                  </v-stepper-header>
-                </v-stepper>
-
-                <v-row class="mt-8 align-center">
-                  <v-col cols="12" md="8">
+                <v-row class="mt-8 align-start">
+                  <v-col cols="12" md="6">
                     <Map />
-
-                    <!-- <v-card class="elevation-8 rounded-xl mb-6" color="surface">
-                      <v-card-title class="d-flex align-center pa-6">
-                        <v-icon color="primary" size="24" class="me-2"
-                          >mdi-tag</v-icon
-                        >
-                        <span class="text-h6 font-weight-bold text-primary">
-                          Хөнгөлөлт
-                        </span>
-                      </v-card-title>
-
-                      <v-divider class="mx-6"></v-divider>
-
-                      <v-card-text class="pa-6">
-                        <div
-                          v-for="coupon in coupons"
-                          :key="coupon.id"
-                          class="mb-3"
-                        >
-                          <v-card   
-                            outlined
-                            class="coupon-card"
-                            :class="{
-                              'coupon-selected': selectedCoupons.includes(
-                                coupon.id
-                              ),
-                            }"
-                            @click="toggleCoupon(coupon.id)"
-                          >
-                            <v-card-text class="d-flex align-center">
-                              <v-icon
-                                v-if="selectedCoupons.includes(coupon.id)"
-                                color="success"
-                                class="mr-2"
-                              >
-                                mdi-check-circle
-                              </v-icon>
-                              <v-icon v-else color="grey" class="mr-2">
-                                mdi-circle-outline
-                              </v-icon>
-                              <div>
-                                <div
-                                  class="font-weight-bold"
-                                  style="padding-left: 6px"
-                                >
-                                  {{ coupon.label }}
-                                </div>
-                                <div
-                                  class="text-caption"
-                                  style="padding-left: 6px"
-                                >
-                                  {{ coupon.description }}
-                                </div>
-                              </div>
-                              <v-spacer />
-                              <v-chip
-                                size="small"
-                                color="error"
-                                variant="tonal"
-                                prepend-icon="mdi-tag"
-                              >
-                                -{{ coupon.amount.toLocaleString() }}₮
-                              </v-chip>
-                            </v-card-text>
-                          </v-card>
-                        </div>
-                        <v-divider v-if="totalDiscount > 0" class="my-3" />
-                        <v-row v-if="totalDiscount > 0" justify="space-between">
-                          <span class="font-weight-medium">Нийт хөнгөлөлт</span>
-                          <span class="font-weight-bold text-success"
-                            >-{{ totalDiscount.toLocaleString() }}₮</span
-                          >
-                        </v-row>
-                      </v-card-text>
-                    </v-card> -->
-
+                    <v-text-field
+                      type="text"
+                      label="Байршилийн дэлгэрэнгүй мэдээлэл "
+                      v-model="locationStore.details"
+                    >
+                    </v-text-field>
                     <!-- Order Summary -->
                     <v-card
                       class="elevation-8 rounded-xl"
@@ -358,126 +179,8 @@ const totalWithDiscount = computed(() => {
                       </v-card-text>
                     </v-card>
                   </v-col>
-
-                  <!-- Payment -->
-                  <v-col cols="12" md="4">
-                    <v-card class="elevation-8 rounded-xl" color="surface">
-                      <v-card-title class="d-flex align-center pa-6">
-                        <v-icon color="secondary" size="24" class="me-2"
-                          >mdi-credit-card</v-icon
-                        >
-                        <span class="text-h6 font-weight-bold text-secondary">
-                          Төлбөр төлөх
-                        </span>
-                      </v-card-title>
-
-                      <v-card-text class="pa-6">
-                        <!-- Payment Methods -->
-                        <v-card
-                          class="elevation-2 rounded-lg pa-4 mb-6"
-                          color="grey-lighten-5"
-                        >
-                          <v-row align="center" justify="space-around">
-                            <v-col cols="4" class="text-center">
-                              <v-img
-                                src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
-                                height="24"
-                                contain
-                              />
-                            </v-col>
-                            <v-col cols="4" class="text-center">
-                              <v-img
-                                src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg"
-                                height="24"
-                                contain
-                              />
-                            </v-col>
-                            <v-col cols="4" class="text-center">
-                              <v-img
-                                src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
-                                height="24"
-                                contain
-                              />
-                            </v-col>
-                          </v-row>
-                        </v-card>
-
-                        <!-- Payment Form -->
-                        <v-form>
-                          <v-text-field
-                            v-model="formData.cardHolder"
-                            label="Карт эзэмшигчийн нэр"
-                            placeholder="Таны нэр"
-                            prepend-inner-icon="mdi-account"
-                            variant="outlined"
-                            color="primary"
-                            class="mb-4"
-                            rounded="lg"
-                          />
-
-                          <v-text-field
-                            v-model="formData.cardNumber"
-                            label="Картын дугаар"
-                            placeholder="xxxx xxxx xxxx xxxx"
-                            prepend-inner-icon="mdi-credit-card"
-                            variant="outlined"
-                            color="primary"
-                            class="mb-4"
-                            rounded="lg"
-                            @input="onCardNumberInput"
-                          />
-
-                          <v-row>
-                            <v-col cols="6">
-                              <v-text-field
-                                v-model="formData.expiryDate"
-                                label="Дуусах огноо"
-                                type="month"
-                                prepend-inner-icon="mdi-calendar"
-                                variant="outlined"
-                                color="primary"
-                                rounded="lg"
-                              />
-                            </v-col>
-                            <v-col cols="6">
-                              <v-text-field
-                                v-model="formData.cvc"
-                                label="CVC"
-                                placeholder="000"
-                                prepend-inner-icon="mdi-shield-lock"
-                                variant="outlined"
-                                color="primary"
-                                maxlength="3"
-                                rounded="lg"
-                              />
-                            </v-col>
-                          </v-row>
-
-                          <v-btn
-                            block
-                            color="primary"
-                            variant="elevated"
-                            class="mt-6 text-none font-weight-bold"
-                            rounded="xl"
-                            @click="toStatus"
-                          >
-                            <v-icon class="me-2">mdi-credit-card</v-icon>
-                            Төлбөр төлөх - {{ formatPrice(totalWithDiscount) }}₮
-                          </v-btn>
-                        </v-form>
-
-                        <!-- Security Notice -->
-                        <v-alert
-                          type="success"
-                          variant="tonal"
-                          class="mt-6"
-                          rounded="lg"
-                          icon="mdi-shield-check"
-                          title="Аюулгүй төлбөр"
-                          text="Таны мэдээлэл 256-bit SSL шифрлэлтээр хамгаалагдсан"
-                        />
-                      </v-card-text>
-                    </v-card>
+                  <v-col cols="12" md="6">
+                    <Payment />
                   </v-col>
                 </v-row>
               </v-card-text>

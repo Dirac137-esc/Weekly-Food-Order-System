@@ -82,19 +82,14 @@
 
                   <v-col cols="12" sm="4" class="pa-4">
                     <div class="d-flex flex-column align-end">
-                      <v-card
-                        class="d-flex align- pa-2 mb-3 elevation-2"
-                        color="grey-lighten-4"
+                      <!-- <v-chip
+                        color="primary"
+                        class="mx-2 font-weight-bold"
+                        size="small"
                         rounded="xl"
                       >
-                        <v-chip
-                          class="mx-2 font-weight-bold"
-                          color="primary"
-                          size="small"
-                        >
-                          {{ quantity }}
-                        </v-chip>
-                      </v-card>
+                        {{ quantity }}
+                      </v-chip> -->
 
                       <!-- Price -->
                       <div class="text-end mb-3">

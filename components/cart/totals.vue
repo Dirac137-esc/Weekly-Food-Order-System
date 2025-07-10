@@ -15,6 +15,9 @@
       <span class="font-weight-bold">ТӨЛӨХ НИЙТ ДҮН</span>
       <span class="font-weight-bold">{{ totalAmount.toLocaleString() }}₮</span>
     </v-row>
+    <v-row class="justify-end mt-7">
+      <v-btn :disabled="!cartStore.cart.size" to="/cart">Үргэлжлүүлэх</v-btn>
+    </v-row>
   </v-card>
 </template>
 

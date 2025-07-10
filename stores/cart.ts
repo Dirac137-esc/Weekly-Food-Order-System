@@ -93,6 +93,9 @@ export const useCartStore = defineStore("cart", () => {
     } else {
       removeItem(dayKey, itemId);
     }
+    if (cart.value.size === 0) {
+      cart.value.clear();
+    }
     syncToStorage();
   }
 

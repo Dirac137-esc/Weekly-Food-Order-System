@@ -1,7 +1,7 @@
 <template>
   <!-- Нэмэлт тэмдэглэл -->
   <v-col cols="12" class="sticky-payment">
-    <v-card class="pa-6" outlined>
+    <v-card class="elevation-8 pa-6" outlined>
       <div class="font-weight-bold mb-4">Төлбөр төлөх</div>
       <div class="d-flex align-center mb-4">
         <v-img
@@ -27,14 +27,6 @@
       <v-row>
         <v-col cols="6"><v-text-field label="Дуусах огноо" outlined /></v-col>
         <v-col cols="6"><v-text-field label="CVC" outlined /></v-col>
-        <v-col cols="12">
-          <v-textarea
-            v-model="orderNotes"
-            label="Захиалгийн талаар нэмэлт мэдээлэл"
-            rows="2"
-            outlined
-            class="mb-4"
-        /></v-col>
       </v-row>
       <v-btn
         block
@@ -150,6 +142,7 @@ async function order() {
         });
 
       orderPromises.push(orderPromise);
+      cartStore.cart.clear();
     }
 
     const results = await Promise.all(orderPromises);
@@ -162,14 +155,12 @@ async function order() {
     }
 
     if (failed.length > 0) {
-      // Show error notification
       console.error("Some orders failed:", failed);
     }
 
     return results;
   } catch (error) {
     console.error("Order processing error:", error);
-    // Show error notification to user
     throw error;
   }
 }
