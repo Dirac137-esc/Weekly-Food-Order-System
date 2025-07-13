@@ -1,145 +1,252 @@
 <template>
   <v-container class="py-6">
-    <v-card elevation="2">
-      <v-card-title class="bg-warning text-white">
+    <v-card elevation="2" rounded="xl">
+      <v-card-title class="bg-warning text-white text-h6 d-flex align-center">
         <v-icon start class="mr-2">mdi-receipt</v-icon>
         Захиалгын жагсаалт
       </v-card-title>
 
       <v-card-text>
+
         <v-alert
-          v-if="msg"
-          :type="msgType"
-          class="mb-4"
-          border="start"
-          variant="tonal"
+            v-if="msg"
+            :type="msgType"
+            class="mb-4"
+            border="start"
+            variant="tonal"
+            elevation="1"
         >
           {{ msg }}
         </v-alert>
 
-        <div class="d-flex justify-space-between align-center mb-4">
-          <h3 class="text-h6">Нийт захиалга: {{ orders.length }}</h3>
-          <v-btn
-            color="primary"
-            @click="fetchOrders"
-            :loading="loading"
-            prepend-icon="mdi-refresh"
+        <div class="d-flex justify-space-between align-center mb-6">
+          <h3 class="text-h6 font-weight-medium">Нийт захиалга: {{ orders.length }}</h3>
+          <MoreBtn
+              color="primary"
+              @click="fetchOrders"
+              :loading="loading"
+              prepend-icon="mdi-refresh"
+              variant="flat"
+              class="rounded"
           >
             Шинэчлэх
-          </v-btn>
+          </MoreBtn>
         </div>
 
-        <v-table class="rounded-lg elevation-1" density="comfortable">
-          <thead>
-            <tr>
-              <th>Огноо</th>
-              <th>Долоо хоног</th>
-              <th>Хэрэглэгч</th>
-              <th>Нийт дүн</th>
-              <th>Захиалсан хоол</th>
-              <th>Төлбөр</th>
-              <th>Хүргэлт</th>
-              <th>Хаяг</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="order in orders" :key="order._id">
-              <td>{{ formatDate(order.date) }}</td>
-              <td>{{ mongolianWeekdays[order.weekday] || "—" }}</td>
 
-              <td>{{ order.user?.name || order.user?.email }}</td>
-              <td>{{ order.totalCost.toLocaleString() }}₮</td>
+        <v-row class="mb-6" dense>
+          <v-col cols="12" md="3">
+            <v-text-field
+                v-model="filters.user"
+                label="Хэрэглэгчийн нэр…"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
 
-              <td>
-                <div v-if="order.items?.length">
-                  <div
-                    v-for="(item, index) in order.items"
-                    :key="index"
-                    class="d-flex align-center mb-1"
-                  >
-                    <v-chip
-                      class="me-2"
-                      color="primary"
-                      size="small"
-                      label
-                      text-color="white"
-                    >
-                      {{ item.food?.name || "—" }}
-                    </v-chip>
-                    <span
-                      class="ms-1 px-2 py-1 text-caption rounded bg-grey-lighten-3 text-grey-darken-3"
-                      style="font-weight: 500; line-height: 1"
-                    >
-                      ×{{ item.qty }}
-                    </span>
-                  </div>
-                </div>
-                <div v-else>—</div>
-              </td>
+          <v-col cols="6" md="2">
+            <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+            >
+              <template #activator="{ props }">
+                <v-text-field
+                    v-model="filters.dateRangeFormatted"
+                    label="Огноо"
+                    readonly
+                    density="compact"
+                    v-bind="props"
+                    variant="outlined"
+                    hide-details
+                />
+              </template>
+              <v-date-picker
+                  v-model="filters.dateRange"
+                  range
+                  scrollable
+                  @change="menu = false"
+              />
+            </v-menu>
+          </v-col>
 
-              <td style="max-width: 140px">
-                <v-select
-                  v-model="order.paymentStatus"
-                  :items="paymentStatuses"
-                  :item-title="(s) => s"
-                  density="compact"
-                  hide-details
-                  variant="underlined"
-                  @update:model-value="
-                    (val) => updateStatus(order, 'paymentStatus', val)
-                  "
+          <v-col cols="6" md="2">
+            <v-select
+                v-model="filters.weekday"
+                :items="['Даваа','Мягмар','Лхагва','Пүрэв','Баасан','Бямба','Ням']"
+                label="Өдөр"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
+
+          <v-col cols="6" md="2">
+            <v-text-field
+                v-model.number="filters.minTotal"
+                label="Нийт дүн (min)"
+                type="number"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
+
+          <v-col cols="6" md="2">
+            <v-text-field
+                v-model.number="filters.maxTotal"
+                label="Нийт дүн (max)"
+                type="number"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
+
+          <v-col cols="6" md="2">
+            <v-select
+                v-model="filters.paymentStatus"
+                :items="['pending','paid','refund']"
+                label="Төлөлт"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
+
+          <v-col cols="6" md="2">
+            <v-select
+                v-model="filters.deliveryStatus"
+                :items="['pending','delivering','complete']"
+                label="Хүргэлт"
+                clearable
+                density="compact"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
+        </v-row>
+
+
+        <v-data-table
+            :headers="headers"
+            :items="filteredOrders"
+            v-model:sort-desc.sync="sortDesc"
+            class="rounded-xl elevation-1"
+            density="comfortable"
+            hover
+        >
+          <template #item.date="{ item }">
+            {{ formatDate(item.date) }}
+          </template>
+
+          <template #item.weekday="{ item }">
+            {{ mongolianWeekdays[item.weekday] || '—' }}
+          </template>
+
+          <template #item.userName="{ item }">
+            {{ item.user?.name || item.user?.email }}
+          </template>
+
+          <template #item.totalCost="{ item }">
+            {{ item.totalCost.toLocaleString() }}₮
+          </template>
+
+          <template #item.items="{ item }">
+            <div v-if="item.items?.length">
+              <div
+                  v-for="(it, i) in item.items"
+                  :key="i"
+                  class="d-flex align-center mb-1"
+              >
+                <v-chip
+                    class="me-2"
+                    color="primary"
+                    size="small"
+                    label
+                    text-color="white"
                 >
-                  <template #selection="{ item }">
-                    <v-chip
-                      :color="getStatusColor(item.raw)"
-                      text-color="white"
-                      size="small"
-                      label
-                      class="text-subtitle-2"
-                    >
-                      {{ item.raw }}
-                    </v-chip>
-                  </template>
-                </v-select>
-              </td>
-
-              <!-- Delivery Status -->
-              <td style="max-width: 160px">
-                <v-select
-                  v-model="order.deliveryStatus"
-                  :items="deliveryStatuses"
-                  :item-title="(s) => s"
-                  density="compact"
-                  hide-details
-                  variant="underlined"
-                  @update:model-value="
-                    (val) => updateStatus(order, 'deliveryStatus', val)
-                  "
+                  {{ it.food?.name || '—' }}
+                </v-chip>
+                <span
+                    class="px-2 py-1 text-caption rounded bg-grey-lighten-3 text-grey-darken-2 font-weight-medium"
+                    style="line-height: 1"
                 >
-                  <template #selection="{ item }">
-                    <v-chip
-                      :color="getStatusColor(item.raw)"
-                      text-color="white"
-                      size="small"
-                      label
-                    >
-                      {{ item.raw }}
-                    </v-chip>
-                  </template>
-                </v-select>
-              </td>
+                  ×{{ it.qty }}
+                </span>
+              </div>
+            </div>
+            <div v-else>—</div>
+          </template>
 
-              <td>{{ order.location?.address || "—" }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+          <template #item.paymentStatus="{ item }">
+            <v-select
+                v-model="item.paymentStatus"
+                :items="paymentStatuses"
+                density="compact"
+                hide-details
+                variant="underlined"
+                @update:model-value="val => updateStatus(item, 'paymentStatus', val)"
+            >
+              <template #selection="{ item: sel }">
+                <v-chip
+                    :color="getStatusColor(sel.raw)"
+                    text-color="white"
+                    size="small"
+                    label
+                    class="text-caption"
+                >
+                  {{ sel.raw }}
+                </v-chip>
+              </template>
+            </v-select>
+          </template>
+
+          <template #item.deliveryStatus="{ item }">
+            <v-select
+                v-model="item.deliveryStatus"
+                :items="deliveryStatuses"
+                density="compact"
+                hide-details
+                variant="underlined"
+                @update:model-value="val => updateStatus(item, 'deliveryStatus', val)"
+            >
+              <template #selection="{ item: sel }">
+                <v-chip
+                    :color="getStatusColor(sel.raw)"
+                    text-color="white"
+                    size="small"
+                    label
+                    class="text-caption"
+                >
+                  {{ sel.raw }}
+                </v-chip>
+              </template>
+            </v-select>
+          </template>
+
+          <template #item.address="{ item }">
+            {{ item.location?.address || '—' }}
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
+
+
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useApi } from "@/composables/useApi";
+import { ref, computed, onMounted, watch } from 'vue';
+import { useApi } from '@/composables/useApi';
+import MoreBtn from "~/components/Admin/MoreBtn.vue";
 
 interface Order {
   _id: string;
@@ -147,79 +254,161 @@ interface Order {
   weekday: string;
   user?: { name?: string; email?: string };
   totalCost: number;
+  items?: Array<{ food?: { name: string }; qty: number }>;
   paymentStatus: string;
   deliveryStatus: string;
   location?: { address: string };
 }
+
+
 const mongolianWeekdays: Record<string, string> = {
-  monday: "Даваа",
-  tuesday: "Мягмар",
-  wednesday: "Лхагва",
-  thursday: "Пүрэв",
-  friday: "Баасан",
-  saturday: "Бямба",
-  sunday: "Ням",
+  monday: 'Даваа',
+  tuesday: 'Мягмар',
+  wednesday: 'Лхагва',
+  thursday: 'Пүрэв',
+  friday: 'Баасан',
+  saturday: 'Бямба',
+  sunday: 'Ням',
 };
+
 
 const orders = ref<Order[]>([]);
 const loading = ref(false);
-const msg = ref("");
-const msgType = ref<"success" | "error">("success");
+const msg = ref('');
+const msgType = ref<'success' | 'error'>('success');
 
-const paymentStatuses = ["pending", "paid", "refund"];
-const deliveryStatuses = ["pending", "delivering", "complete"];
+
+const paymentStatuses = ['pending', 'paid', 'refund'];
+const deliveryStatuses = ['pending', 'delivering', 'complete'];
+
+
+const headers = [
+  { text: 'Огноо',         value: 'date',           sortable: true },
+  { text: 'Өдөр',          value: 'weekday',        sortable: true },
+  { text: 'Хэрэглэгч',     value: 'userName',       sortable: true },
+  { text: 'Нийт дүн',      value: 'totalCost',      sortable: true },
+  { text: 'Захиалсан хоол', value: 'items',          sortable: false },
+  { text: 'Төлбөр',        value: 'paymentStatus',  sortable: true },
+  { text: 'Хүргэлт',       value: 'deliveryStatus', sortable: true },
+  { text: 'Хаяг',          value: 'address',        sortable: false },
+];
+
+
+const sortDesc = ref<boolean[]>([]);
+
+const filters = ref({
+  user: '',
+  dateRange: [] as string[],
+  dateRangeFormatted: '',
+  weekday: '',
+  minTotal: null as number | null,
+  maxTotal: null as number | null,
+  paymentStatus: '',
+  deliveryStatus: ''
+});
+const menu = ref(false);
 
 async function fetchOrders() {
   loading.value = true;
-  msg.value = "";
+  msg.value = '';
   try {
-    const data = await useApi("/orders");
+    const data = await useApi('/orders');
     if (Array.isArray(data)) {
       orders.value = data;
     } else {
-      msg.value = "Захиалга татахад алдаа гарлаа";
-      msgType.value = "error";
+      msg.value = 'Захиалга татахад алдаа гарлаа';
+      msgType.value = 'error';
     }
   } catch (err: any) {
-    msg.value = err.message || "Сүлжээний алдаа";
-    msgType.value = "error";
+    msg.value = err.message || 'Сүлжээний алдаа';
+    msgType.value = 'error';
   } finally {
     loading.value = false;
   }
 }
+onMounted(fetchOrders);
+watch(
+    () => filters.value.dateRange,
+    (val) => {
+      if (val.length === 2) {
+        const [start, end] = val;
+        filters.value.dateRangeFormatted = `${new Date(start).toLocaleDateString('mn-MN')} – ${new Date(end).toLocaleDateString('mn-MN')}`;
+      } else {
+        filters.value.dateRangeFormatted = '';
+      }
+    }
+);
+
+
+const filteredOrders = computed(() =>
+    orders.value.filter(o => {
+
+      if (filters.value.user) {
+        const name = (o.user?.name || o.user?.email || '').toLowerCase();
+        if (!name.includes(filters.value.user.toLowerCase())) return false;
+      }
+
+      if (filters.value.weekday && mongolianWeekdays[o.weekday] !== filters.value.weekday)
+        return false;
+
+      if (
+          (filters.value.minTotal != null && o.totalCost < filters.value.minTotal) ||
+          (filters.value.maxTotal != null && o.totalCost > filters.value.maxTotal)
+      )
+        return false;
+
+      if (filters.value.dateRange.length === 2) {
+        const [fromStr, toStr] = filters.value.dateRange;
+        const orderDate = new Date(o.date);
+
+        // Strip time part from both sides for accurate comparison
+        const from = new Date(fromStr);
+        from.setHours(0, 0, 0, 0);
+
+        const to = new Date(toStr);
+        to.setHours(23, 59, 59, 999);
+
+        if (orderDate < from || orderDate > to) return false;
+      }
+
+
+      if (filters.value.paymentStatus && o.paymentStatus !== filters.value.paymentStatus)
+        return false;
+      return !(filters.value.deliveryStatus && o.deliveryStatus !== filters.value.deliveryStatus);
+
+
+    })
+);
+
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("mn-MN");
+  return new Date(dateStr).toLocaleDateString('mn-MN');
 }
 
 async function updateStatus(
-  order: Order,
-  field: "paymentStatus" | "deliveryStatus",
-  value: string
+    order: Order,
+    field: 'paymentStatus' | 'deliveryStatus',
+    value: string
 ) {
   try {
-    await useApi(`/orders/${order._id}`, "PUT", { [field]: value });
+    await useApi(`/orders/${order._id}`, 'PUT', { [field]: value });
   } catch (err: any) {
-    msg.value = err.message || "Сүлжээний алдаа";
-    msgType.value = "error";
+    msg.value = err.message || 'Сүлжээний алдаа';
+    msgType.value = 'error';
     await fetchOrders();
   }
 }
-
 function getStatusColor(status: string): string {
   switch (status) {
-    case "paid":
-    case "complete":
-      return "green";
-    case "delivering":
-      return "blue";
-    case "refund":
-      return "deep-orange";
-    case "pending":
+    case 'paid':
+    case 'complete':
+      return 'green';
+    case 'delivering':
+      return 'blue';
+    case 'refund':
+      return 'deep-orange';
     default:
-      return "grey";
+      return 'grey';
   }
 }
-
-onMounted(fetchOrders);
 </script>

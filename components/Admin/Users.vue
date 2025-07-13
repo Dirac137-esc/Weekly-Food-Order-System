@@ -37,7 +37,6 @@
               <th>Утас</th>
               <th>Хаяг</th>
               <th>VIP status</th>
-              <th>ID</th>
             </tr>
           </thead>
           <tbody>
@@ -59,9 +58,7 @@
               </td>
 
 
-              <td class="text-truncate" style="max-width: 180px">
-                {{ user._id }}
-              </td>
+
             </tr>
           </tbody>
         </v-table>
