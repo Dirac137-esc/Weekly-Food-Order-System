@@ -104,6 +104,7 @@
     <v-table>
       <thead>
         <tr class="bg-primary">
+          <th class="text-center" style="font-size: 17px">Өдөр</th>
           <th class="text-center" style="font-size: 17px">Нэр</th>
           <th class="text-center" style="font-size: 17px">Үнэ</th>
           <th class="text-center" style="font-size: 17px">Ширхэг</th>
@@ -118,6 +119,7 @@
           v-for="{ day, item, quantity, sliderDay } in cartStore.cartItems"
           :key="`${day}-${item.id}`"
         >
+          <td class="text-center">{{ daysMn[sliderDay] }}</td>
           <td class="text-center">
             {{ item?.name.charAt(0).toUpperCase() + item?.name.slice(1) }}
           </td>
