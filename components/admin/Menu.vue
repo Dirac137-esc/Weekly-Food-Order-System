@@ -248,8 +248,7 @@ export default {
     this.fetchFoods();
     this.setDefaultWeek();
     this.loadMenuForWeek();
-    const config = useRuntimeConfig();
-    this.API_BASE = config.public.apiBase;
+
   },
   methods: {
     // --- FOOD CRUD ---
@@ -530,25 +529,4 @@ export default {
 </script>
 
 <style scoped>
-.day-column h3 {
-  word-break: break-word;
-  white-space: normal;
-  font-size: 0.95rem;
-  line-height: 1.2rem;
-}
-.day-drop-zone {
-  min-height: 160px;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-.opacity-50 {
-  opacity: 0.5;
-  pointer-events: none;
-}
 </style>

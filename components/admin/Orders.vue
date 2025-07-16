@@ -136,10 +136,11 @@
         </v-row>
 
 
-        <v-data-table
-            :headers="headers"
-            :items="filteredOrders"
-            v-model:sort-desc.sync="sortDesc"
+         <v-data-table
+               :headers="headers"
+               :items="filteredOrders"
+               item-key="_id"
+            sort-icon="mdi-swap-vertical"
             class="rounded-xl elevation-1"
             density="comfortable"
             hover
@@ -152,9 +153,14 @@
             {{ mongolianWeekdays[item.weekday] || '—' }}
           </template>
 
-          <template #item.userName="{ item }">
-            {{ item.user?.name || item.user?.email }}
-          </template>
+            <template #item.userName="{ item }">
+              <div
+                  class="text-truncate"
+                  :title="item.user?.name || item.user?.email || '—'"
+                >
+                {{ item.user?.name || item.user?.email || '—' }}
+              </div>
+           </template>
 
           <template #item.totalCost="{ item }">
             {{ item.totalCost.toLocaleString() }}₮
@@ -234,8 +240,14 @@
           </template>
 
           <template #item.address="{ item }">
-            {{ item.location?.address || '—' }}
+            <div
+                class="address-cell text-truncate"
+                :title="item.location?.address || '—'"
+            >
+              {{ item.location?.address || '—' }}
+            </div>
           </template>
+
         </v-data-table>
       </v-card-text>
     </v-card>
@@ -246,7 +258,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { useApi } from '@/composables/useApi';
-import MoreBtn from "~/components/Admin/MoreBtn.vue";
+import MoreBtn from "~/components/admin/MoreBtn.vue";
 
 interface Order {
   _id: string;
@@ -283,15 +295,16 @@ const deliveryStatuses = ['pending', 'delivering', 'complete'];
 
 
 const headers = [
-  { text: 'Огноо',         value: 'date',           sortable: true },
-  { text: 'Өдөр',          value: 'weekday',        sortable: true },
-  { text: 'Хэрэглэгч',     value: 'userName',       sortable: true },
+  { text: 'Огноо',         value: 'date',           sortable: true  },
+  { text: 'Өдөр',          value: 'weekday',        sortable: false },
+  { text: 'Хэрэглэгч',     value: 'userName',       sortable: false, cellClass: 'user-cell' },
   { text: 'Нийт дүн',      value: 'totalCost',      sortable: true },
-  { text: 'Захиалсан хоол', value: 'items',          sortable: false },
-  { text: 'Төлбөр',        value: 'paymentStatus',  sortable: true },
-  { text: 'Хүргэлт',       value: 'deliveryStatus', sortable: true },
+  { text: 'Захиалсан хоол', value: 'items',         sortable: false },
+  { text: 'Төлбөр',        value: 'paymentStatus',  sortable: false },
+  { text: 'Хүргэлт',       value: 'deliveryStatus', sortable: false },
   { text: 'Хаяг',          value: 'address',        sortable: false },
 ];
+
 
 
 const sortDesc = ref<boolean[]>([]);
@@ -412,3 +425,17 @@ function getStatusColor(status: string): string {
   }
 }
 </script>
+<style scoped>
+.address-cell {
+  max-width: 200px;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-cell {
+  width: 150px;
+}
+</style>
