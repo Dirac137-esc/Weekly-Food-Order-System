@@ -111,7 +111,7 @@ const onMoreAction = (action: string) => {
           sm="6"
           md="3"
         >
-          <div class="d-flex align-center gap-x-3">
+          <div class="d-flex align-center ga-3">
             <VAvatar :color="item.color" rounded size="40" class="elevation-2">
               <VIcon size="24" :icon="item.icon" />
             </VAvatar>

@@ -57,19 +57,25 @@
             </div>
             <!-- Түргэн товчлуурууд -->
             <v-row class="quick-actions mb-4" justify="center">
-              <v-col cols="4" class="text-center">
+              <v-col cols="3" class="text-center">
                 <v-btn icon color="orange" variant="text"
                   ><v-icon size="large">mdi-map-marker</v-icon></v-btn
                 >
                 <div class="caption mt-1">Хаяг</div>
               </v-col>
-              <v-col cols="4" class="text-center">
+              <v-col cols="3" class="text-center">
+                <v-btn @click="fetchOwnOrder" icon color="black" variant="text"
+                  ><v-icon size="large">mdi-history</v-icon></v-btn
+                >
+                <div class="caption mt-1">Түүх</div>
+              </v-col>
+              <v-col cols="3" class="text-center">
                 <v-btn icon color="pink" variant="text"
                   ><v-icon size="large">mdi-heart</v-icon></v-btn
                 >
                 <div class="caption mt-1">Хадгалсан</div>
               </v-col>
-              <v-col cols="4" class="text-center">
+              <v-col cols="3" class="text-center">
                 <v-btn icon color="blue" variant="text"
                   ><v-icon size="large">mdi-cog</v-icon></v-btn
                 >
@@ -279,6 +285,8 @@ const editPhone = ref("");
 const editAddress = ref("");
 const editResult = ref("");
 const editResultColor = ref("text-success");
+const historyOn = ref(false);
+let orders = reactive([]);
 
 // -------------------
 // Профайл мэдээлэл ачаалах
@@ -353,6 +361,36 @@ async function saveProfile() {
     saving.value = false;
   }
 }
+
+// async function fetchOwnOrder() {
+//   const token = localStorage.getItem("token");
+
+//   historyOn.value = !historyOn.value;
+//   if (!historyOn.value) {
+//     return;
+//   }
+//   const res = await fetch(
+//     `https://backend-production-25f11.up.railway.app/users/profile`,
+//     {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     }
+//   );
+//   if (!res.ok) {
+//     console.log(await res.json());
+//     return;
+//   }
+//   let data = await res.json();
+//   data = data.orders;
+//   for (const [key, value] of Object.entries(data)) {
+//     if (value.user === userStore.user.id) {
+//       orders.push(value);
+//     }
+//   }
+// }
 
 // -------------------
 // Аватар солих товч дарахад file input trigger
