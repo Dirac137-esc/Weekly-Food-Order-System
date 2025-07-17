@@ -4,16 +4,10 @@
       <v-container class="pt-10" style="max-width: 1200px">
         <v-row dense>
           <v-col cols="12" md="7">
-            <!-- <Map /> -->
             <Cart />
-            <!-- <v-radio-group v-model="vatType" class="mb-4">
-              <v-radio label="Хувь хүн" value="person" />
-              <v-radio label="Байгууллага" value="company" />
-            </v-radio-group> -->
           </v-col>
           <v-col cols="12" md="5">
             <Totals />
-            <!-- <Payment /> -->
           </v-col>
         </v-row>
       </v-container>
@@ -24,13 +18,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
-import Map from "~/components/cart/map.vue";
 import Cart from "~/components/cart/cart.vue";
 import Totals from "~/components/cart/totals.vue";
-import Payment from "~/components/cart/payment.vue";
-
-const cartStore = useCartStore();
-const vatType = ref<"person" | "company">("person");
 
 // Хувируулах утгууд
 </script>

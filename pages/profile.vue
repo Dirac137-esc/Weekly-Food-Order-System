@@ -83,6 +83,26 @@
               </v-col>
             </v-row>
             <!-- Хувийн мэдээлэл -->
+            <v-table v-if="historyOn">
+              <thead>
+                <tr>
+                  <th class="text-center">Захиалсан хоол</th>
+                  <th class="text-center">Нийт</th>
+                  <th class="text-center">Байршил</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="order in orders" :key="order._id">
+                  <td class="text-center">
+                    <div v-for="item in order.items" :key="item.food">
+                      {{ item._id }} x{{ item.qty }}
+                    </div>
+                  </td>
+                  <td class="text-center">{{ order.totalCost }}₮</td>
+                  <td class="text-center">{{ order.location.address }}</td>
+                </tr>
+              </tbody>
+            </v-table>
             <v-card
               class="info-banner mb-4"
               color="orange-lighten-5"
@@ -239,6 +259,7 @@
         >
       </v-card>
     </div>
+
     <!-- Гарах баталгаажуулах цонх -->
     <v-dialog v-model="showLogoutDialog" max-width="400">
       <v-card class="dialog-card">
@@ -362,35 +383,37 @@ async function saveProfile() {
   }
 }
 
-// async function fetchOwnOrder() {
-//   const token = localStorage.getItem("token");
+async function fetchOwnOrder() {
+  const token = localStorage.getItem("token");
 
-//   historyOn.value = !historyOn.value;
-//   if (!historyOn.value) {
-//     return;
-//   }
-//   const res = await fetch(
-//     `https://backend-production-25f11.up.railway.app/users/profile`,
-//     {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//     }
-//   );
-//   if (!res.ok) {
-//     console.log(await res.json());
-//     return;
-//   }
-//   let data = await res.json();
-//   data = data.orders;
-//   for (const [key, value] of Object.entries(data)) {
-//     if (value.user === userStore.user.id) {
-//       orders.push(value);
-//     }
-//   }
-// }
+  historyOn.value = !historyOn.value;
+  if (!historyOn.value) {
+    return;
+  }
+  const res = await fetch(
+    `https://backend-production-25f11.up.railway.app/users/profile`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!res.ok) {
+    console.log(await res.json());
+    return;
+  }
+  let data = await res.json();
+  data = data.orders;
+  orders = [];
+  for (const [key, value] of Object.entries(data)) {
+    if (value.user === userStore.user.id) {
+      orders.push(value);
+    }
+  }
+  console.log(orders);
+}
 
 // -------------------
 // Аватар солих товч дарахад file input trigger
