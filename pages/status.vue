@@ -244,7 +244,9 @@ const paymentStatusLabel = computed(() => {
 
 const deliveryStatusLabel = computed(() => statuses[step.value - 1].label);
 const deliveryStatusColor = computed(() => statuses[step.value - 1].color);
-
+definePageMeta({
+  middleware: 'auth',
+})
 function nextStep() {
   if (step.value < 3) step.value++;
 }

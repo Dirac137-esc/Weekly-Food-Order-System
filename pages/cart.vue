@@ -7,7 +7,9 @@ import Payment from "~/components/cart/payment.vue";
 const locationStore = useLocationStore();
 const cartStore = useCartStore();
 const router = useRouter();
-
+definePageMeta({
+  middleware: 'auth',
+})
 const formData = ref({
   cardHolder: "",
   cardNumber: "",
