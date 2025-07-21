@@ -362,6 +362,7 @@ function registerWithFacebook() {
 </script>
 
 <style scoped>
+
 html,
 body {
   overflow: hidden !important;

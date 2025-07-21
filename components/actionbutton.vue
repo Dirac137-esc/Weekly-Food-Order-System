@@ -1,5 +1,5 @@
 <template>
-  <v-fab
+  <!-- <v-fab
     app
     location="right bottom"
     size="large"
@@ -30,17 +30,19 @@
         <v-icon size="24">mdi-delete</v-icon>
       </v-btn>
     </v-speed-dial>
-  </v-fab>
+  </v-fab> -->
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref } from 'vue'
 const open = ref(false)
 </script>
 
 <style scoped>
-/* Position FAB relative to screen */
 :deep(.v-fab) {
   z-index: 1000;
 }
-</style>
+* {
+  font-family: "JetBrains Mono", sans-serif;
+}
+</style> -->

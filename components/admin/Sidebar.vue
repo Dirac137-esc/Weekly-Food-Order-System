@@ -23,8 +23,4 @@
 defineProps<{ menu: any[]; selected: string }>()
 </script>
 
-<style scoped>
-
-</style>
-
 

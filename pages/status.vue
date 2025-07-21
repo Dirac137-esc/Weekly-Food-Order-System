@@ -251,6 +251,7 @@ function nextStep() {
 </script>
 
 <style scoped>
+
 .status-bg {
   background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
   min-height: 100vh;

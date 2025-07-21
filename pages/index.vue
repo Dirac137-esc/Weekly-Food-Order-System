@@ -10,13 +10,14 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
+
     <h1 class="py-5 text-center">
       Таны сонгосон өдөр :
       {{ daysMn[sliderday] }}
     </h1>
 
-    <v-row>
-      <v-col>
+    <v-row >
+      <v-col >
         <v-carousel
           v-if="menu[days[sliderday]] && menu[days[sliderday]].length"
           hide-delimiters
@@ -39,6 +40,7 @@
           show-ticks="always"
           thumb-size="15"
           class="my-5"
+          style="font-size: clamp(0.5rem, 2vw, 1.125rem);"
         >
         </v-slider>
       </v-col>
@@ -64,7 +66,7 @@
             <div class="d-flex">
               <v-chip
                 v-for="ingredient in item.ingredients"
-                class="rounded-xl"
+                class="rounded-xl mr-1"
                 >{{ ingredient }}</v-chip
               >
             </div>
@@ -101,7 +103,7 @@
         <h2>{{ cartStore.total }} төгрөг</h2>
       </v-col>
     </v-row>
-    <v-table>
+    <v-table >
       <thead>
         <tr class="bg-primary">
           <th class="text-center" style="font-size: 17px">Өдөр</th>
@@ -203,9 +205,3 @@ function goCart() {
   router.push("/order");
 }
 </script>
-
-<style>
-* {
-  font-family: "JetBrains Mono", sans-serif;
-}
-</style>

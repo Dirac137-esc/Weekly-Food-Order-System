@@ -10,3 +10,4 @@ defineOptions({
 <template>
   <VueApexCharts v-bind="$attrs" />
 </template>
+

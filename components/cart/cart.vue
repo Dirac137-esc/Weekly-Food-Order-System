@@ -4,7 +4,7 @@
     <div class="text-subtitle-1 grey--text mt-2">Сагс хоосон байна</div>
   </div>
   <v-card v-else class="elevation-8 rounded-xl mb-6" color="surface" outlined>
-    <v-card-title class="d-flex align-center justify-space-between pa-6">
+    <v-card-title class="d-flex flex-column justify-center align-space-between pa-6 wrap">
       <div class="d-flex align-center">
         <v-avatar color="primary" size="40" class="me-3">
           <v-icon color="white" size="20">mdi-cart</v-icon>
@@ -22,7 +22,7 @@
         prepend-icon="mdi-delete"
         @click="cartStore.clearCart()"
         rounded="xl"
-        class="text-none"
+        class="text-none my-3"
       >
         Бүгдийг устгах
       </v-btn>
@@ -45,8 +45,8 @@
             >
               <v-card-text class="pa-4">
                 <v-row align="center" no-gutters>
-                  <v-col cols="12" sm="3">
-                    <div class="position-relative d-inline-block">
+                  <v-col cols="6" sm="3">
+                    <div class="d-flex pa-5 position-relative d-inline-block">
                       <v-img
                         :src="
                           item.imageUrl ||
@@ -60,7 +60,7 @@
                     </div>
                   </v-col>
 
-                  <v-col cols="12" sm="5" class="pa-4">
+                  <v-col cols="6" sm="5" class="d-flex flex-column pb-4">
                     <div class="text-h6 font-weight-bold mb-2">
                       {{ item.name }} <br />
                     </div>
@@ -73,6 +73,7 @@
                       size="small"
                       variant="outlined"
                       class="mt-1"
+                      style="width: fit-content;"
                     >
                       {{ days[day] }} :
 
@@ -80,16 +81,8 @@
                     </v-chip>
                   </v-col>
 
-                  <v-col cols="12" sm="4" class="pa-4">
-                    <div class="d-flex flex-column align-end">
-                      <!-- <v-chip
-                        color="primary"
-                        class="mx-2 font-weight-bold"
-                        size="small"
-                        rounded="xl"
-                      >
-                        {{ quantity }}
-                      </v-chip> -->
+                  <v-col cols="12" sm="4" >
+                    <div class="d-flex flex-sm-column flex-row justify-space-around  align-center">
 
                       <!-- Price -->
                       <div class="text-end mb-3">
@@ -100,8 +93,7 @@
                           {{ formatPrice(item.price) }}₮ тус бүр
                         </div>
                       </div>
-                    </div>
-                    <div class="d-flex justify-end mb-2">
+                      <div class="d-flex justify-center   ml-5">
                       <v-btn
                         icon="mdi-plus"
                         color="success"
@@ -117,6 +109,8 @@
                         @click="cartStore.decreaseItem(day, item.id)"
                       ></v-btn>
                     </div>
+                    </div>
+                    
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -152,3 +146,4 @@ const cartItemCount = computed(() =>
   }, 0)
 );
 </script>
+

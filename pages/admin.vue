@@ -36,3 +36,4 @@ const currentView = computed(() => {
   );
 });
 </script>
+

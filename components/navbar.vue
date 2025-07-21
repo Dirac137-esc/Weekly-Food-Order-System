@@ -1,9 +1,9 @@
 <template>
-  <v-app-bar app color="primary" dark elevation="4" height="64" class="px-5">
+  <v-app-bar app color="primary" dark elevation="4" height="64" class="px-2">
     <!-- Title -->
     <div class="d-flex align-center">
-      <v-icon size="28" class="mr-2">mdi-food</v-icon>
-      <v-app-bar-title class="text-h6 font-weight-bold">
+      <v-icon style="font-size: clamp(1rem , 2vh, 2rem );" size="28" >mdi-food</v-icon>
+      <v-app-bar-title class="font-weight-bold d-none d-sm-flex" style="font-size: clamp(0.75rem, 2vw , 1.25rem);">
         Хоолны захиалга
       </v-app-bar-title>
     </div>
@@ -12,8 +12,8 @@
 
     <div class="d-flex align-center">
       <!-- Home -->
-      <v-btn icon to="/" class="mx-1" size="large" variant="text">
-        <v-icon>mdi-home</v-icon>
+      <v-btn icon to="/" class="mx-1" size="default" variant="text">
+        <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-home</v-icon>
         <v-tooltip activator="parent" location="bottom">
           Нүүр хуудас
         </v-tooltip>
@@ -23,7 +23,7 @@
       <v-badge
                  v-if="uniqueCount > 0"
                  :content="uniqueCount"
-                 color="error"
+                 color="white"
                  overlap
                  bordered
                 location="end bottom"
@@ -31,8 +31,8 @@
                  offset-y="6"
                  class="mx-1"
                >
-        <v-btn @click="toCart" icon size="large" variant="text">
-          <v-icon>mdi-cart</v-icon>
+        <v-btn @click="toCart" icon size="default" variant="text">
+          <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-cart</v-icon>
           <v-tooltip activator="parent" location="bottom">
             Таны сагс ({{ uniqueCount }})
           </v-tooltip>
@@ -43,18 +43,18 @@
           @click="toCart"
           icon
           class="mx-1"
-          size="large"
+          size="default"
           variant="text"
       >
-        <v-icon>mdi-cart</v-icon>
+        <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-cart</v-icon>
         <v-tooltip activator="parent" location="bottom">
           Сагс
         </v-tooltip>
       </v-btn>
 
       <!-- Theme -->
-      <v-btn @click="themeChange" icon class="mx-1" size="large" variant="text">
-        <v-icon>
+      <v-btn @click="themeChange" icon class="mx-1" size="default" variant="text">
+        <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">
           {{ isDarkTheme ? "mdi-weather-sunny" : "mdi-weather-night" }}
         </v-icon>
         <v-tooltip activator="parent" location="bottom">
@@ -73,11 +73,11 @@
       >
         <!-- badge -->
         <template #badge>
-          <v-icon small>mdi-crown</v-icon>
+          <v-icon color="orange" small>mdi-crown</v-icon>
         </template>
 
-        <v-btn icon to="/profile" size="large" variant="text">
-          <v-icon>mdi-account</v-icon>
+        <v-btn icon to="/profile" size="default" variant="text">
+          <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-account</v-icon>
           <v-tooltip activator="parent" location="bottom">
             Профайл (VIP)
           </v-tooltip>
@@ -89,10 +89,10 @@
           icon
           to="/profile"
           class="mx-1"
-          size="large"
+          size="default"
           variant="text"
       >
-        <v-icon>mdi-account</v-icon>
+        <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-account</v-icon>
         <v-tooltip activator="parent" location="bottom">
           Профайл
         </v-tooltip>
@@ -104,11 +104,11 @@
           icon
           to="/admin"
           class="mx-1"
-          size="large"
+          size="default"
           variant="text"
           color="warning"
       >
-        <v-icon>mdi-shield-crown</v-icon>
+        <v-icon style="font-size: clamp(1rem , 2vh, 2rem );">mdi-shield-crown</v-icon>
         <v-tooltip activator="parent" location="bottom">
           Админ самбар
         </v-tooltip>
@@ -158,7 +158,6 @@ const uniqueCount = computed(() => {
   return ids.size;
 });
 
-// prevent non‑admins in /admin
 watchEffect(() => {
   if (
       typeof window !== "undefined" &&
@@ -169,10 +168,3 @@ watchEffect(() => {
   }
 });
 </script>
-
-<style scoped>
-* {
-  font-family: "JetBrains Mono", sans-serif;
-}
-
-</style>

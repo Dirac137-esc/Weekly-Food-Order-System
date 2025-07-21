@@ -18,20 +18,18 @@
           {{ msg }}
         </v-alert>
 
-        <div class="d-flex justify-space-between align-center mb-6">
+        <div class="d-flex justify-space-between align-center mb-6 mt-3">
           <h3 class="text-h6 font-weight-medium">
             Нийт захиалга: {{ orders.length }}
           </h3>
-          <MoreBtn
+          <v-btn
             color="primary"
             @click="fetchOrders"
             :loading="loading"
             prepend-icon="mdi-refresh"
-            variant="flat"
-            class="rounded mt-3"
           >
             Шинэчлэх
-          </MoreBtn>
+          </v-btn>
         </div>
 
         <v-row class="mb-6" dense>
@@ -441,7 +439,9 @@ function getStatusColor(status: string): string {
   }
 }
 </script>
+
 <style scoped>
+
 .address-cell {
   max-width: 200px;
 }

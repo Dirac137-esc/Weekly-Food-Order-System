@@ -42,8 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from "#imports";
-import { useLocationStore } from "#imports";
+import { useCartStore } from "../../stores/cart";
+import { useLocationStore } from "../../stores/location";
 let cartStore = useCartStore();
 let locationStore = useLocationStore();
 const orderNotes = ref("");

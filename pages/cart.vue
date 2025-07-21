@@ -212,9 +212,6 @@ const totalWithDiscount = computed(() => {
 </template>
 
 <style>
-* {
-  font-family: "JetBrains Mono", sans-serif;
-}
 
 .animate-pulse {
   animation: pulse 0.6s ease-in-out;

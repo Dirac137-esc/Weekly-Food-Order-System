@@ -110,6 +110,7 @@ async function fetchUsers() {
 onMounted(fetchUsers);
 </script>
 <style scoped>
+
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;

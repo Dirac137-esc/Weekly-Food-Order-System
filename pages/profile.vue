@@ -19,8 +19,8 @@
     <!-- Профайл мэдээлэл (харах) -->
     <div v-if="userStore.user && !editing" class="profile-content-boxed">
       <v-row justify="center">
-        <v-col cols="12" md="7" lg="5">
-          <v-card class="profile-main-card pa-6" elevation="8">
+        <v-col cols="12" md="7" lg="5" >
+          <v-card color="primary" class="profile-main-card pa-6" elevation="8">
             <div class="d-flex flex-column align-center">
               <!-- Аватар, нэр -->
               <v-avatar
@@ -36,8 +36,6 @@
                   alt="User Avatar"
                 />
               </v-avatar>
-              <!-- <h2>{{ userStore.user.isVip }}</h2> -->
-              <h2 color="success" v-if="userStore.user.isVip">VIP</h2>
               <h2 class="text-h6 font-weight-bold mb-1">
                 {{ userStore.user?.name || "Username" }}
               </h2>
@@ -480,7 +478,7 @@ function logout() {
 .profile-bg-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.7);
+  /* background: rgba(255, 255, 255, 0.7); */
   backdrop-filter: blur(2px);
   z-index: 0;
 }
