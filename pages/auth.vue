@@ -171,6 +171,7 @@
                     density="compact"
                   />
                 </div>
+
                 <div class="text-center">
                   <v-alert
                     v-if="registerResult"
@@ -220,6 +221,20 @@
               </v-btn>
             </v-col>
           </v-row>
+          <v-dialog v-model="notValidEmail" max-width="400">
+            <v-card>
+              <v-card-title class="text-center"
+                >Email is not valid</v-card-title
+              >
+              <v-card-text>Check your email again .</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="notValidEmail = false"
+                  >OK</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-col>
     </v-row>
@@ -247,7 +262,7 @@ const registerRememberMe = ref(false);
 const registerResult = ref(""); // Бүртгэлийн үр дүнгийн мессеж
 const loginResult = ref(""); // Нэвтрэх үр дүнгийн мессеж
 const router = useRouter();
-
+const notValidEmail = ref(false);
 // -------------------
 // Хуудас ачаалахад санах функц
 // -------------------
@@ -265,6 +280,10 @@ onMounted(() => {
 // -------------------
 async function login() {
   loginResult.value = "";
+  if (!checkEmail(loginEmail.value)) {
+    notValidEmail.value = true;
+    return;
+  }
   try {
     // Backend руу нэвтрэх хүсэлт илгээх
     const response = await fetch(
@@ -283,7 +302,7 @@ async function login() {
       // Амжилттай нэвтэрсэн бол хэрэглэгчийн мэдээллийг хадгална
       loginResult.value = "Амжилттай нэвтэрлээ!";
       userStore.saveUser(result.user);
-    //   console.log(result.user);
+      //   console.log(result.user);
       if (result.token) localStorage.setItem("token", result.token);
       // "Намайг санах" сонгосон бол email-ийг хадгална
       if (loginRememberMe.value)
@@ -298,12 +317,21 @@ async function login() {
   }
 }
 
+function checkEmail(email) {
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
+}
+
 // -------------------
 // Бүртгүүлэх функц
 // -------------------
 async function register() {
   registerResult.value = "";
   try {
+    if (!checkEmail(registerEmail.value)){
+      notValidEmail.value = true;
+      return;
+    }
     // Backend руу бүртгүүлэх хүсэлт илгээх
     const response = await fetch(
       "https://backend-production-25f11.up.railway.app/auth/register",
@@ -338,7 +366,8 @@ async function register() {
 // Нэвтрэхэд амжилттай болвол эхлэл хуудас руу автоматаар шилжүүлнэ
 // -------------------
 watch(loginResult, (val) => {
-  if (val === "Амжилттай нэвтэрлээ!") setTimeout(() => router.push("/home"), 1200);
+  if (val === "Амжилттай нэвтэрлээ!")
+    setTimeout(() => router.push("/home"), 1200);
 });
 
 // -------------------
@@ -362,7 +391,6 @@ function registerWithFacebook() {
 </script>
 
 <style scoped>
-
 html,
 body {
   overflow: hidden !important;
