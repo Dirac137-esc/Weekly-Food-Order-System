@@ -1,15 +1,15 @@
-<script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from "vue";
+<script setup>
+import { ref, computed, onMounted, nextTick, watch } from "vue";
 import { useCartStore } from "~/stores/cart";
+import { useLocationStore } from "../stores/location";
 import { useRouter } from "vue-router";
-import Map from "~/components/cart/map.vue";
 import Payment from "~/components/cart/payment.vue";
 const locationStore = useLocationStore();
 const cartStore = useCartStore();
 const router = useRouter();
 definePageMeta({
-  middleware: 'auth',
-})
+  middleware: "auth",
+});
 const formData = ref({
   cardHolder: "",
   cardNumber: "",
@@ -17,7 +17,6 @@ const formData = ref({
   cvc: "",
 });
 
-const animateAdd = ref<string | null>(null);
 const showSuccess = ref(false);
 const totalItems = computed(() => {
   let total = 0;
@@ -28,12 +27,13 @@ const totalItems = computed(() => {
   }
   return total;
 });
-
-const formatPrice = (price: number) => {
+let searchTimeout = null;
+const formatPrice = (price) => {
   return new Intl.NumberFormat("mn-MN").format(price);
 };
 
-const formatCardNumber = (value: string) => {
+const possiblePlace = ref([]);
+const formatCardNumber = (value) => {
   return value
     .replace(/\s+/g, "")
     .replace(/[^0-9]/gi, "")
@@ -41,8 +41,8 @@ const formatCardNumber = (value: string) => {
     .trim();
 };
 
-const onCardNumberInput = (event: Event) => {
-  const target = event.target as HTMLInputElement;
+const onCardNumberInput = (event) => {
+  const target = event.target;
   target.value = formatCardNumber(target.value);
   formData.value.cardNumber = target.value;
 };
@@ -67,9 +67,9 @@ const coupons = ref([
     amount: 7000,
   },
 ]);
-const selectedCoupons = ref<string[]>([]);
+const selectedCoupons = ref([]);
 
-function toggleCoupon(id: string) {
+function toggleCoupon(id) {
   const index = selectedCoupons.value.indexOf(id);
   if (index >= 0) {
     selectedCoupons.value.splice(index, 1);
@@ -86,6 +86,61 @@ const totalDiscount = computed(() =>
 const totalWithDiscount = computed(() => {
   return Math.max(0, cartStore.total - totalDiscount.value);
 });
+const searchInput = ref("");
+const location = ref("");
+// Watch for search input changes with debouncing
+watch(searchInput, (newValue) => {
+  // Clear previous timeout
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  
+  // Set new timeout for 300ms delay
+  searchTimeout = setTimeout(() => {
+    if (newValue && newValue.length >= 1) {
+      onSearch(newValue);
+    } else {
+      possiblePlace.value = [];
+    }
+  }, 300);
+});
+async function onSearch(searchValue) {
+  if (!searchValue || searchValue.trim() === "") {
+    possiblePlace.value = [];
+    return;
+  }
+
+  possiblePlace.value = [];
+  console.log("Searching for:", searchValue);
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(
+      "https://backend-production-25f11.up.railway.app/api/search-address",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          address: searchValue,
+        }),
+      }
+    );
+
+    const wholeData = await res.json();
+
+    for (let i = 0; i < wholeData.data.length; i++) {
+      possiblePlace.value.push(wholeData.data[i].full_address);
+    }
+
+    console.log("Search results:", possiblePlace.value);
+  } catch (error) {
+    console.error("Network error:", error);
+  }
+}
 </script>
 
 <template>
@@ -103,13 +158,15 @@ const totalWithDiscount = computed(() => {
 
                 <v-row class="mt-8 align-start">
                   <v-col cols="12" md="6">
-                    <Map />
-                    <v-text-field
-                      type="text"
-                      label="Байршилийн дэлгэрэнгүй мэдээлэл "
-                      v-model="locationStore.details"
-                    >
-                    </v-text-field>
+                    <v-autocomplete
+                      label="Байршилийн дэлгэрэнгүй мэдээлэл"
+                      :items="possiblePlace"
+                      v-model="location"
+                      v-model:search="searchInput"
+                      no-filter
+                      clearable
+                    />
+
                     <!-- Order Summary -->
                     <v-card
                       class="elevation-8 rounded-xl"
@@ -214,7 +271,6 @@ const totalWithDiscount = computed(() => {
 </template>
 
 <style>
-
 .animate-pulse {
   animation: pulse 0.6s ease-in-out;
 }

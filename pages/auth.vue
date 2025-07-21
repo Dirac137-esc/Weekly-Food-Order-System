@@ -280,10 +280,10 @@ onMounted(() => {
 // -------------------
 async function login() {
   loginResult.value = "";
-  if (!checkEmail(loginEmail.value)) {
-    notValidEmail.value = true;
-    return;
-  }
+//   if (!checkEmail(loginEmail.value)) {
+//     notValidEmail.value = true;
+//     return;
+//   }
   try {
     // Backend руу нэвтрэх хүсэлт илгээх
     const response = await fetch(
