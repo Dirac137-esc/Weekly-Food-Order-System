@@ -109,7 +109,7 @@
               <v-list>
                 <v-list-item>
                   <v-list-item
-                    ><v-icon color="primary">mdi-phone</v-icon></v-list-item
+                    ><v-icon color="white">mdi-phone</v-icon></v-list-item
                   >
                   <v-list-item-title>{{
                     userStore.user?.phone || "Утас оруулаагүй"
@@ -481,7 +481,6 @@ function logout() {
 .profile-bg-overlay {
   position: absolute;
   inset: 0;
-  /* background: rgba(255, 255, 255, 0.7); */
   backdrop-filter: blur(2px);
   z-index: 0;
 }
@@ -499,11 +498,11 @@ function logout() {
   justify-content: center;
   align-items: flex-start;
   min-height: 60vh;
+  padding: 0 12px;
 }
-.profile-main-card {
-  background: linear-gradient(135deg, #e3f0ff 0%, #f5faff 100%);
+.profile-main-card,
+.edit-card {
   border-radius: 22px;
-  box-shadow: 0 4px 32px #1976d220;
 }
 .profile-avatar {
   border: 4px solid #fff;
@@ -522,14 +521,16 @@ function logout() {
   font-size: 0.85rem;
   color: #888;
 }
-.edit-card {
-  border-radius: 18px;
-}
 .action-buttons .v-btn {
   font-weight: 600;
 }
+
 @media (max-width: 960px) {
-  .profile-content-boxed,
+  .profile-content-boxed {
+  width: 100% !important;
+  padding: 0 8px !important; /* эсвэл 4px */
+  box-sizing: border-box;
+  }
   .edit-card,
   .profile-main-card {
     min-width: 98vw !important;
@@ -542,6 +543,100 @@ function logout() {
   }
   .profile-header {
     margin-bottom: 16px !important;
+    padding-left: 8px;
+    padding-right: 8px;
   }
+}
+@media (max-width: 600px) {
+.profile-content-boxed {
+  width: 100% !important;
+  padding: 0 8px !important; /* эсвэл 4px */
+  box-sizing: border-box;
+}
+.edit-card,
+.profile-main-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  box-sizing: border-box;
+}
+  .profile-content-boxed {
+    padding: 0 2vw !important; /* Prevent touching screen edge */
+  }
+  .profile-header {
+    margin-bottom: 10px !important;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  .quick-actions .caption {
+    font-size: 0.75rem;
+  }
+  .edit-card {
+    max-width: 98vw !important;
+  }
+  /* Shrink quit button on phone */
+  .profile-main-card .v-btn[block] {
+    font-size: 0.95rem !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-width: 0 !important;
+    width: 90% !important;
+    margin: 0 auto 8px auto !important;
+    display: block !important;
+  }
+  .v-container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+}
+:deep(.v-theme--dark) .profile-container {
+  background: #111 !important;
+}
+:deep(.v-theme--dark) .profile-main-card,
+:deep(.v-theme--dark) .edit-card,
+:deep(.v-theme--dark) .info-banner,
+:deep(.v-theme--dark) .v-card,
+:deep(.v-theme--dark) .v-list,
+:deep(.v-theme--dark) .v-table,
+:deep(.v-theme--dark) .v-dialog,
+:deep(.v-theme--dark) .v-alert {
+  background: #1f1e1e !important;
+  color: #fff !important;
+}
+:deep(.v-theme--dark) .profile-header,
+:deep(.v-theme--dark) .profile-content-boxed,
+:deep(.v-theme--dark) .not-logged-in,
+:deep(.v-theme--dark) .quick-actions .caption,
+:deep(.v-theme--dark) .v-list-item-title,
+:deep(.v-theme--dark) .v-btn,
+:deep(.v-theme--dark) .v-icon,
+:deep(.v-theme--dark) h1,
+:deep(.v-theme--dark) h2,
+:deep(.v-theme--dark) h3,
+:deep(.v-theme--dark) p,
+:deep(.v-theme--dark) label,
+:deep(.v-theme--dark) .text-grey-darken-1 {
+  color: #fff !important;
+}
+:deep(.v-theme--dark) .v-btn--outlined {
+  border-color: #fff !important;
+}
+:deep(.v-theme--dark) .v-divider {
+  border-color: #333 !important;
+}
+:deep(.v-theme--dark) .quick-actions .v-btn {
+  background: #222 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px #0003 !important;
+}
+:deep(.v-theme--dark) .profile-avatar {
+  border-color: #222 !important;
+  box-shadow: 0 2px 12px #0006 !important;
 }
 </style>
