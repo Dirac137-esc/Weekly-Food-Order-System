@@ -283,7 +283,7 @@ async function login() {
       // Амжилттай нэвтэрсэн бол хэрэглэгчийн мэдээллийг хадгална
       loginResult.value = "Амжилттай нэвтэрлээ!";
       userStore.saveUser(result.user);
-      console.log(result.user);
+    //   console.log(result.user);
       if (result.token) localStorage.setItem("token", result.token);
       // "Намайг санах" сонгосон бол email-ийг хадгална
       if (loginRememberMe.value)
