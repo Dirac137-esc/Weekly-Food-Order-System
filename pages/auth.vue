@@ -192,35 +192,36 @@
               </v-form>
             </div>
           </transition>
-        </v-card>
-        <div
-          class="action-section-outside mr-10 d-flex flex-column"
-          style="height: 30%"
-        >
-          <div class="text-center mb-4" style="color: #666; font-size: 0.9rem">
-            Та мөн үүгээр нэвтрэх боломжтой
+          <!-- Social login section -->
+          <div
+            class="action-section-outside mt-6 d-flex flex-column"
+            style="height: 30%"
+          >
+            <div class="text-center mb-4" style=" font-size: 0.9rem">
+              Та мөн үүгээр нэвтрэх боломжтой
+            </div>
+            <v-row no-gutters>
+              <v-col cols="12">
+                <v-btn
+                  color="red"
+                  class="social-btn"
+                  block
+                  @click="isLogin ? loginWithGoogle() : registerWithGoogle()"
+                >
+                  <v-icon left>mdi-google</v-icon> Google
+                </v-btn>
+                <v-btn
+                  color="blue darken-4"
+                  class="social-btn"
+                  block
+                  @click="isLogin ? loginWithFacebook() : registerWithFacebook()"
+                >
+                  <v-icon left>mdi-facebook</v-icon> Facebook
+                </v-btn>
+              </v-col>
+            </v-row>
           </div>
-          <v-row no-gutters>
-            <v-col cols="12">
-              <v-btn
-                color="red"
-                class="social-btn"
-                block
-                @click="isLogin ? loginWithGoogle() : registerWithGoogle()"
-              >
-                <v-icon left>mdi-google</v-icon> Google
-              </v-btn>
-              <v-btn
-                color="blue darken-4"
-                class="social-btn"
-                block
-                @click="isLogin ? loginWithFacebook() : registerWithFacebook()"
-              >
-                <v-icon left>mdi-facebook</v-icon> Facebook
-              </v-btn>
-            </v-col>
-          </v-row>
-        </div>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -434,7 +435,6 @@ body {
 .action-section-outside {
   margin-top: 48px;
   padding: 24px 16px 16px 16px;
-  background: rgba(255, 255, 255, 0.85);
   border-radius: 1.5rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   width: 100%;
@@ -450,36 +450,28 @@ body {
 }
 
 @media (max-width: 960px) {
-  .quote-col {
+  .quote-col,
+  .left-side,
+  .display-1 {
     display: none !important;
   }
   .right-card,
-  .auth-card,
   .action-section-outside {
-    max-width: 98vw !important;
-    margin: 0 auto !important;
-    border-radius: 1rem !important;
-    padding: 12px 4px !important;
-    min-height: unset !important;
+    margin-left: -35% !important;
+    margin-right: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 70% !important;
+    padding: 16px !important;
+    position: relative !important;
   }
-  .mr-5,
-  .mr-10 {
+  .action-section-outside {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  .mt-10 {
-    margin-top: 12px !important;
-  }
-  .action-section-outside {
-    margin-top: 24px !important;
-    padding: 12px 4px 8px 4px !important;
-  }
-  .display-1 {
-    font-size: 2rem !important;
-  }
-  [style*="margin-left: 50vw;"] {
-    margin-left: 0 !important;
-  }
-}
-@media (max-width: 960px) {
+
 }
 </style>
