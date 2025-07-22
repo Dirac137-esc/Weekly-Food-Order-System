@@ -1,207 +1,318 @@
-<template>
-  <v-container class="pt-16">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+<style>
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background-size: 400% 400%;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  animation: gradientFlow 8s ease-in-out infinite;
+}
 
-    <h1 class="py-5 text-center">
-      Таны сонгосон өдөр :
-      {{ daysMn[sliderday] }}
-    </h1>
-
-    <v-row >
-      <v-col >
-        <v-carousel
-          v-if="menu[days[sliderday]] && menu[days[sliderday]].length"
-          hide-delimiters
-        >
-          <v-carousel-item
-            v-for="item in menu[days[sliderday]]"
-            :key="item._id"
-          >
-            <v-img :src="item.imageUrl" cover></v-img>
-          </v-carousel-item>
-        </v-carousel>
-
-        <v-slider
-          v-model="sliderday"
-          :max="6"
-          :step="1"
-          :ticks="daysMn"
-          :color="sliderday === today ? 'success' : 'primary'"
-          density="compact"
-          show-ticks="always"
-          thumb-size="15"
-          class="my-5"
-          style="font-size: clamp(0.5rem, 2vw, 1.125rem);"
-        >
-        </v-slider>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        v-for="item in menu[days[sliderday]]"
-        :key="item._id"
-        cols="12"
-        md="4"
-      >
-        <!-- Тухайн ямарваа нэгэн барааг тодосгохыг хүсвэл v-card дээр нэмэх css -->
-        <!-- :style="sliderday === today ? 'box-shadow: 0px 0px 10px rgba(10, 255, 10, 0.5);' : ''" -->
-        <v-card>
-          <v-img :src="item.imageUrl" height="200px" cover></v-img>
-          <v-card-title>
-            <v-icon :color="today === sliderday ? `green` : `primary`" size="20"
-              >mdi-food</v-icon
-            >
-            {{ item.name }}</v-card-title
-          >
-          <v-card-subtitle>
-            <div class="d-flex">
-              <v-chip
-                v-for="ingredient in item.ingredients"
-                class="rounded-xl mr-1"
-                >{{ ingredient }}</v-chip
-              >
-            </div>
-          </v-card-subtitle>
-          <v-card-text>Үнэ: {{ item?.price }}₮</v-card-text>
-          <v-card-actions class="justify-center">
-            <v-btn
-              class="bg-red"
-              :disabled="sliderday < today"
-              color="white"
-              @click="cartStore.decreaseItem(days[sliderday], item._id)"
-            >
-              <v-icon icon="mdi-minus"></v-icon>
-            </v-btn>
-
-            <v-btn
-              :disabled="sliderday < today"
-              color="white"
-              class="bg-success"
-              @click="cartStore.addItem(days[sliderday], item, sliderday)"
-            >
-              <v-icon icon="mdi-plus"></v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-divider class="my-4" />
-
-    <v-row>
-      <v-col class="d-flex justify-space-between mb-5">
-        <h2>Нийт</h2>
-        <h2>{{ cartStore.total }} төгрөг</h2>
-      </v-col>
-    </v-row>
-    <v-table >
-      <thead>
-        <tr class="bg-primary">
-          <th class="text-center" style="font-size: 17px">Өдөр</th>
-          <th class="text-center" style="font-size: 17px">Нэр</th>
-          <th class="text-center" style="font-size: 17px">Үнэ</th>
-          <th class="text-center" style="font-size: 17px">Ширхэг</th>
-          <th class="text-center" style="font-size: 17px">
-            Тус хоолны нийт үнийн дүн
-          </th>
-          <th class="text-center" style="font-size: 17px">Устгах уу ?</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="{ day, item, quantity, sliderDay } in cartStore.cartItems"
-          :key="`${day}-${item.id}`"
-        >
-          <td class="text-center">{{ daysMn[sliderDay] }}</td>
-          <td class="text-center">
-            {{ item?.name.charAt(0).toUpperCase() + item?.name.slice(1) }}
-          </td>
-          <td class="text-center">{{ item?.price }}</td>
-          <td class="text-center">{{ quantity }}</td>
-          <td class="text-center">{{ item?.price * quantity }}</td>
-          <td class="text-center">
-            <v-btn color="red" @click="cartStore.removeItem(day, item.id)">
-              Устгах
-            </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
-    <v-row class="justify-end">
-      <v-col cols="auto" class="mt-5">
-        <v-btn class="justify-end" color="success" @click="goCart"
-          >Үргэлжлүүлэх</v-btn
-        >
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
-<script setup>
-import { useCartStore } from "../stores/cart";
-import { onMounted, ref } from "vue";
-import { useRouter } from "#imports";
-
-const cartStore = useCartStore();
-const router = useRouter();
-const sliderday = ref((new Date().getDay() + 6) % 7);
-const today = ref((new Date().getDay() + 6) % 7);
-const days = {
-  0: "monday",
-  1: "tuesday",
-  2: "wednesday",
-  3: "thursday",
-  4: "friday",
-  5: "saturday",
-  6: "sunday",
-};
-
-const daysMn = {
-  0: "Даваа ",
-  1: "Мягмар",
-  2: "Лхагва",
-  3: "Пүрэв",
-  4: "Баасан",
-  5: "Бямба",
-  6: "Ням",
-};
-let menu = ref([]);
-
-async function fetchData() {
-  // console.log(`Bearer ${localStorage.getItem("token")}`);
-  try {
-    const res = await fetch(
-      "https://backend-production-25f11.up.railway.app/menus/this-week",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const json = await res.json();
-    menu.value = json.days;
-  } catch (e) {
-    console.log(e);
+@keyframes gradientFlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
 }
 
-onMounted(() => {
-  fetchData();
-  console.log();
-});
-
-function goCart() {
-  router.push("/order");
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.05"><path d="M0,20 Q250,80 500,20 T1000,20 L1000,100 L0,100 Z"/></svg>');
+  background-size: 100% 100%, 100% 100%, cover;
+  background-position: 0% 0%, 100% 100%, bottom;
+  animation: floatingLights 6s ease-in-out infinite alternate;
 }
-</script>
+
+@keyframes floatingLights {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+.hero-content {
+  animation: fadeInUp 1.5s ease-out;
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-title {
+  animation: slideInFromLeft 1s ease-out 0.3s both;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease-in-out infinite;
+
+  .gradient-text {
+    background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero-subtitle {
+  animation: slideInFromRight 1s ease-out 0.6s both;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hero-button-container {
+  animation: bounceIn 1s ease-out 0.9s both;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.v-btn.hero-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, #4caf50, #45a049) !important;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.v-btn.hero-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+  z-index: 1;
+}
+
+.pulse-animation {
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4) !important;
+  }
+  50% {
+    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.8) !important;
+  }
+}
+
+.floating-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: floatUp 8s infinite linear;
+}
+
+.particle:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+.particle:nth-child(2) {
+  left: 20%;
+  animation-delay: 1s;
+}
+.particle:nth-child(3) {
+  left: 30%;
+  animation-delay: 2s;
+}
+.particle:nth-child(4) {
+  left: 70%;
+  animation-delay: 3s;
+}
+.particle:nth-child(5) {
+  left: 80%;
+  animation-delay: 4s;
+}
+.particle:nth-child(6) {
+  left: 90%;
+  animation-delay: 5s;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .hero-title {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1.25rem !important;
+  }
+}
+</style>
+<template>
+  <div id="app">
+    <v-app>
+      <section class="hero-section">
+        <div class="floating-particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+        </div>
+
+        <v-container class="fill-height" fluid>
+          <v-row justify="center" align="center" class="fill-height">
+            <v-col cols="12" md="10" lg="8" xl="6">
+              <div
+                class="hero-content text-center d-flex flex-column justify-center align-center"
+              >
+                <h1
+                  class="hero-title text-h2 text-md-h1 font-weight-bold white--text mb-6"
+                >
+                  Хурдан, амттай,<br />
+                  <span class="gradient-text">найдвартай</span> хоол
+                </h1>
+
+                <p
+                  class="hero-subtitle text-h6 text-md-h5 white--text mb-12 opacity-90"
+                >
+                  Та өлсөж байна уу ? Би лав өлсөж байна 😊
+                </p>
+
+                <div class="hero-button-container">
+                  <v-btn
+                    size="x-large"
+                    class="hero-button pulse-animation rounded-xl px-12 py-4 d-flex"
+                    prepend-icon="mdi-silverware-fork-knife"
+                    elevation="8"
+                  >
+                    <template v-slot:prepend>
+                      <v-icon size="28" class="me-3"></v-icon>
+                    </template>
+                    <NuxtLink to="/auth" style="text-decoration: none; color: white;" >
+                      <span class="text-h6 font-weight-bold pt-0"
+                        >Хоол захиалах</span
+                      >
+                    </NuxtLink>
+                  </v-btn>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </section>
+    </v-app>
+  </div>
+</template>

@@ -19,8 +19,8 @@
     <!-- Профайл мэдээлэл (харах) -->
     <div v-if="userStore.user && !editing" class="profile-content-boxed">
       <v-row justify="center">
-        <v-col cols="12" md="7" lg="5" >
-          <v-card class="profile-main-card pa-6" elevation="8">
+        <v-col cols="12" md="7" lg="5">
+          <v-card color="primary" class="profile-main-card pa-6" elevation="8">
             <div class="d-flex flex-column align-center">
               <!-- Аватар, нэр -->
               <v-avatar
@@ -325,6 +325,9 @@ function editProfile() {
   editAddress.value = userStore.user.value.address || "";
   editResult.value = "";
 }
+definePageMeta({
+  middleware: "auth",
+});
 
 // -------------------
 // Болих товч дарахад форм хаах

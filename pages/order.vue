@@ -16,12 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useCartStore } from "@/stores/cart";
+
 import Cart from "~/components/cart/cart.vue";
 import Totals from "~/components/cart/totals.vue";
-
-// Хувируулах утгууд
+definePageMeta({
+  middleware: 'auth',
+})
 </script>
 
 <style scoped>

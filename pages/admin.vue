@@ -16,7 +16,9 @@ import Dashboard from "~/components/admin/dashboard.vue";
 import Users from "~/components/admin/Users.vue";
 import Orders from "~/components/admin/Orders.vue";
 import Menu from "~/components/admin/Menu.vue";
-
+definePageMeta({
+  middleware: 'auth',
+})
 const selected = ref("dashboard");
 const menu = [
   { key: "dashboard", title: "Самбар", icon: "mdi-view-dashboard" },
