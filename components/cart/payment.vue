@@ -41,7 +41,8 @@
   </v-col>
 </template>
 
-<script setup lang="ts">
+<script setup>
+
 import { useCartStore } from "../../stores/cart";
 import { useLocationStore } from "../../stores/location";
 let cartStore = useCartStore();
@@ -96,6 +97,7 @@ async function order() {
         food: item.id,
         qty: quantity,
       }));
+            console.log("Sending address:", locationStore.details.address);
 
       const orderPromise = fetch(
         `https://backend-production-25f11.up.railway.app/orders`,
@@ -110,13 +112,7 @@ async function order() {
             items: itemsPayload,
             totalCost: dayTotal,
             location: {
-              latitude: parseFloat(locationStore.lat.toFixed(6)),
-              longitude: parseFloat(locationStore.lng.toFixed(6)),
-              address: `${locationStore.details || ""} ${
-                locationStore.name || ""
-              }`.trim(),
-              additionalNote: orderNotes.value || "No additional notes",
-            },
+                address : locationStore.details.address}
           }),
         }
       )
@@ -165,3 +161,4 @@ async function order() {
   }
 }
 </script>
+    

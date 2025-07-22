@@ -129,13 +129,13 @@ async function onSearch(searchValue) {
         }),
       }
     );
-
+      console.log(location.value)
     const wholeData = await res.json();
 
     for (let i = 0; i < wholeData.data.length; i++) {
       possiblePlace.value.push(wholeData.data[i].full_address);
     }
-
+    locationStore.details.address = searchValue;
     console.log("Search results:", possiblePlace.value);
   } catch (error) {
     console.error("Network error:", error);

@@ -378,13 +378,13 @@ function forgotPassword() {
   alert("Нууц үгээ мартсан уу?");
 }
 function loginWithGoogle() {
-  alert("Google-р нэвтрэх");
+window.location.href = 'https://backend-production-25f11.up.railway.app/auth/google'
 }
 function loginWithFacebook() {
   alert("Facebook-р нэвтрэх");
 }
 function registerWithGoogle() {
-  alert("Google-р бүртгүүлэх");
+window.location.href = 'https://backend-production-25f11.up.railway.app/auth/google'
 }
 function registerWithFacebook() {
   alert("Facebook-р бүртгүүлэх");
